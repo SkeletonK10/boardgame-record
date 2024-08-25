@@ -1,3 +1,33 @@
+.horizontal { 
+  display: flex;
+  flex-direction: row;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 3.5rem;
+  padding-left: 0.5rem;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: rgba(var(--foreground-rgb));
+  color: rgba(var(--background-start-rgb));
+}
+
+.headerButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: auto;
+  
+  padding-right: 0.5rem;
+  
+  cursor: pointer;
+}
+
 .main {
   display: flex;
   flex-direction: column;
