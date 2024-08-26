@@ -21,12 +21,37 @@ export class UserService {
     };
   }
 
-  findAll() {
-    return `This action returns all user`;
+  async findAll() {
+    const result = await this.userRepository.find({
+      select: {
+        id: true,
+        username: true,
+        nickname: true,
+      },
+    });
+    return {
+      code: 'OK',
+      msg: 'All users has been found',
+      data: result,
+    };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOneById(id: number) {
+    const result = await this.userRepository.findOne({
+      where: {
+        id,
+      },
+      select: {
+        id: true,
+        username: true,
+        nickname: true,
+      },
+    });
+    return {
+      code: 'OK',
+      msg: result ? `User #${id} has been found` : `User #${id} does not exist`,
+      data: result,
+    };
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
