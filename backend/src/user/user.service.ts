@@ -13,12 +13,10 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    const existingUser = await this.findOneByUsername(createUserDto.username);
+    if (existingUser) throw new Error(`USER_ALREADY_EXISTS`);
     const userEntity = await this.userRepository.create(createUserDto);
-    await this.userRepository.save(userEntity);
-    return {
-      code: 'OK',
-      msg: 'User has been succesfully created',
-    };
+    return await this.userRepository.save(userEntity);
   }
 
   async findAll() {
@@ -29,29 +27,16 @@ export class UserService {
         nickname: true,
       },
     });
-    return {
-      code: 'OK',
-      msg: 'All users has been found',
-      data: result,
-    };
+    return result;
   }
 
-  async findOneById(id: number) {
+  async findOneByUsername(username: string) {
     const result = await this.userRepository.findOne({
       where: {
-        id,
-      },
-      select: {
-        id: true,
-        username: true,
-        nickname: true,
+        username,
       },
     });
-    return {
-      code: 'OK',
-      msg: result ? `User #${id} has been found` : `User #${id} does not exist`,
-      data: result,
-    };
+    return result;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
