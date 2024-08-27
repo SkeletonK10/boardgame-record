@@ -9,6 +9,10 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/cache": "^11.13.1",
+    "@emotion/styled": "^11.13.0",
+    "@mui/material": "^6.0.0",
+    "@mui/material-nextjs": "^6.0.0",
     "axios": "^1.7.5",
     "next": "14.2.5",
     "react": "^18",
