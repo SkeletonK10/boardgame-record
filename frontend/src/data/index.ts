@@ -4,4 +4,8 @@ export const text = {
     signIn: "로그인",
     register: "회원가입",
   },
+
+  register: {
+    title: "회원가입",
+  },
 };
