@@ -1,12 +1,10 @@
 import {
-  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 
 @Entity({ name: 'user' })
 export class User {
@@ -31,11 +29,6 @@ export class User {
   @Column({ default: 1 })
   authority: number;
 
-  @Column()
+  @Column({ nullable: true })
   currentRefreshToken?: string;
-
-  @BeforeInsert()
-  private beforeInsert() {
-    this.password = bcrypt.hashSync(this.password, 10);
-  }
 }

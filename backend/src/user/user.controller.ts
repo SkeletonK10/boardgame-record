@@ -67,10 +67,13 @@ export class UserController {
   //   }
   // }
 
-  @Patch(':username')
-  update(@Param('username') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.userService.update(+id, updateUserDto);
-  }
+  // @Patch(':username')
+  // update(
+  //   @Param('username') username: string,
+  //   @Body() updateUserDto: UpdateUserDto,
+  // ) {
+  //   return this.userService.update(username, updateUserDto);
+  // }
 
   @Delete(':username')
   remove(@Param('username') id: string) {
