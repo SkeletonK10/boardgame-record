@@ -13,7 +13,7 @@ export class User {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ unique: true })
   username: string;
 
   @Column()
@@ -27,6 +27,12 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ default: 1 })
+  authority: number;
+
+  @Column()
+  currentRefreshToken?: string;
 
   @BeforeInsert()
   private beforeInsert() {
