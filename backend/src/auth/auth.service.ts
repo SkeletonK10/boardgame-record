@@ -45,7 +45,7 @@ export class AuthService {
       },
       {
         secret: this.configService.get(`JWT_ACCESS_TOKEN_SECRET_KEY`),
-        expiresIn: '10m',
+        expiresIn: '1m',
       },
     );
   }
@@ -58,7 +58,7 @@ export class AuthService {
       },
       {
         secret: this.configService.get(`JWT_REFRESH_TOKEN_SECRET_KEY`),
-        expiresIn: '2d',
+        expiresIn: '3m',
       },
     );
   }
@@ -79,5 +79,21 @@ export class AuthService {
       return false;
     }
     return true;
+  }
+
+  async refresh(refreshToken: string) {
+    const decodedRefreshToken = this.jwtService.verify(refreshToken, {
+      secret: this.configService.get(`JWT_REFRESH_TOKEN_SECRET_KEY`),
+    });
+    const comp = await this.compareUserRefreshToken(
+      decodedRefreshToken.username,
+      refreshToken,
+    );
+    if (!comp) throw new Error(`AUTH_WRONG_REFRESH_TOKEN`);
+    const user = await this.userService.findOneByUsername(
+      decodedRefreshToken.username,
+    );
+
+    return this.getAccessToken(user);
   }
 }
