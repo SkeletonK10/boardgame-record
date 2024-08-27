@@ -4,6 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UserService {
@@ -13,8 +14,11 @@ export class UserService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
+    // TODO: 회원가입 시 아이디/비밀번호 검증
+
     const existingUser = await this.findOneByUsername(createUserDto.username);
     if (existingUser) throw new Error(`USER_ALREADY_EXISTS`);
+    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
     const userEntity = await this.userRepository.create(createUserDto);
     return await this.userRepository.save(userEntity);
   }
@@ -39,8 +43,15 @@ export class UserService {
     return result;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(username: string, updateUserDto: UpdateUserDto) {
+    const user = await this.findOneByUsername(username);
+    updateUserDto.password = await bcrypt.hash(updateUserDto.password, 10);
+    const updatedUser = {
+      ...user,
+      ...updateUserDto,
+    };
+    const result = await this.userRepository.save(updatedUser);
+    return result;
   }
 
   remove(id: number) {
