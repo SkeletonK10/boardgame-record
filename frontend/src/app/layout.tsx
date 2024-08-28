@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import AppBar from "./appbar";
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v13-appRouter";
-import RootThemeProvider from "./theme";
 import { Box } from "@mui/material";
+import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -17,14 +16,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body>
-        <AppRouterCacheProvider>
-          <RootThemeProvider>
-            <AppBar />
-            <Box component="main" sx={{ flexGrow: 1, padding: "6rem" }}>
-              {children}
-            </Box>
-          </RootThemeProvider>
-        </AppRouterCacheProvider>
+        <Providers>
+          <AppBar />
+          <Box component="main" sx={{ flexGrow: 1, padding: "6rem" }}>
+            {children}
+          </Box>
+        </Providers>
       </body>
     </html>
   );
