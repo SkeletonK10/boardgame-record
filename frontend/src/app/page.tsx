@@ -1,13 +1,11 @@
 import { text } from "@/data";
-import styles from "./page.module.css";
+import { Box } from "@mui/material";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
-      <div>
-        <h2>{text.main.title}</h2>
-        <h3>{text.main.developing}</h3>
-      </div>
-    </main>
+    <Box>
+      <h2>{text.main.title}</h2>
+      <h3>{text.main.developing}</h3>
+    </Box>
   );
 }

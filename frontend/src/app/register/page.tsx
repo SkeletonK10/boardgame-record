@@ -1,9 +1,9 @@
 import { text } from "@/data";
-import styles from "./page.module.css";
+import { Box } from "@mui/material";
 
 export default function Home() {
   return (
-    <main className={styles.main}>
+    <Box>
       <h2>{text.register.title}</h2>
       <form>
         <div>
@@ -20,6 +20,6 @@ export default function Home() {
         </div>
         <button type="submit">회원가입</button>
       </form>
-    </main>
+    </Box>
   );
 }
