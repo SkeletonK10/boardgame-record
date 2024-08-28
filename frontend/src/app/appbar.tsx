@@ -17,6 +17,7 @@ import {
   List,
   ListItemText,
 } from "@mui/material";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -33,6 +34,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 
 export default function AppBar() {
   const [open, setOpen] = useState(false);
+  const { data: session } = useSession();
   const router = useRouter();
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -60,6 +62,11 @@ export default function AppBar() {
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { md: "flex" } }}>
+            {session ? (
+              <Typography>{`${session.user?.name}`}</Typography>
+            ) : (
+              <></>
+            )}
             <IconButton size="large" color="inherit">
               <AccountCircle />
             </IconButton>
