@@ -1,20 +1,34 @@
-'use client';
+"use client";
 
-import { text } from '@/data';
-import { AccountCircle, ChevronLeft, Menu } from '@mui/icons-material';
-import { AppBar as MuiAppBar, Box, IconButton, Toolbar, Typography, Drawer, styled, Divider, ListItemButton, ListItemIcon, ListItem, List, ListItemText } from '@mui/material';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { text } from "@/lib/data";
+import { AccountCircle, ChevronLeft, Menu } from "@mui/icons-material";
+import {
+  AppBar as MuiAppBar,
+  Box,
+  IconButton,
+  Toolbar,
+  Typography,
+  Drawer,
+  styled,
+  Divider,
+  ListItemButton,
+  ListItemIcon,
+  ListItem,
+  List,
+  ListItemText,
+} from "@mui/material";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const drawerWidth = 200;
 
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
+const DrawerHeader = styled("div")(({ theme }) => ({
+  display: "flex",
+  alignItems: "center",
   padding: theme.spacing(0, 1),
   // necessary for content to be below app bar
   ...theme.mixins.toolbar,
-  justifyContent: 'center',
+  justifyContent: "center",
 }));
 
 export default function AppBar() {
@@ -22,12 +36,12 @@ export default function AppBar() {
   const router = useRouter();
   return (
     <Box sx={{ flexGrow: 1 }}>
-      <MuiAppBar position='fixed'>
+      <MuiAppBar position="fixed">
         <Toolbar>
           <IconButton
             onClick={() => setOpen(true)}
-            size='large'
-            color='inherit'
+            size="large"
+            color="inherit"
           >
             <Menu />
           </IconButton>
@@ -35,21 +49,18 @@ export default function AppBar() {
             variant="h6"
             noWrap
             component="div"
-            onClick={() => router.push('/')}
+            onClick={() => router.push("/")}
             sx={{
-              display: { sm: 'block' },
-              userSelect: 'none',
-              cursor: 'pointer',
+              display: { sm: "block" },
+              userSelect: "none",
+              cursor: "pointer",
             }}
           >
             {text.main.title}
           </Typography>
           <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: { md: 'flex' } }}>
-            <IconButton
-              size='large'
-              color='inherit'
-            >
+          <Box sx={{ display: { md: "flex" } }}>
+            <IconButton size="large" color="inherit">
               <AccountCircle />
             </IconButton>
           </Box>
@@ -59,9 +70,9 @@ export default function AppBar() {
         sx={{
           width: drawerWidth,
           flexShrink: 0,
-          '& .MuiDrawer-paper': {
+          "& .MuiDrawer-paper": {
             width: drawerWidth,
-            boxSizing: 'border-box',
+            boxSizing: "border-box",
           },
         }}
         variant="persistent"
@@ -69,21 +80,19 @@ export default function AppBar() {
         open={open}
       >
         <DrawerHeader>
-          <IconButton onClick={() => setOpen(false)} size='large'>
+          <IconButton onClick={() => setOpen(false)} size="large">
             <ChevronLeft />
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
-          {['테스트1', '테스트2', '테스트3'].map((value) => (
+          {["테스트1", "테스트2", "테스트3"].map((value) => (
             <ListItem key={value} disablePadding>
               <ListItemButton>
                 <ListItemIcon>
                   <Menu />
                 </ListItemIcon>
-                <ListItemText>
-                  {value}
-                </ListItemText>
+                <ListItemText>{value}</ListItemText>
               </ListItemButton>
             </ListItem>
           ))}
