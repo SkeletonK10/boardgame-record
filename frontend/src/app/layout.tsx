@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "./header";
+import AppBar from "./appbar";
 import { AppRouterCacheProvider } from '@mui/material-nextjs/v13-appRouter';
-import { ThemeProvider } from "@mui/material";
 import RootThemeProvider from "./theme";
 
 export const metadata: Metadata = {
@@ -20,7 +19,7 @@ export default function RootLayout({
       <body>
         <AppRouterCacheProvider>
           <RootThemeProvider>
-            <Header />
+            <AppBar />
             {children}
           </RootThemeProvider>
         </AppRouterCacheProvider>
