@@ -9,4 +9,8 @@ export const text = {
   register: {
     title: `회원가입`,
   },
+
+  signIn: {
+    title: `로그인`,
+  },
 };
