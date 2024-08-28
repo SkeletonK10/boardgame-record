@@ -1,18 +1,36 @@
 'use client';
 
-import styles from './page.module.css';
 import { text } from '@/data';
+import { AccountCircle } from '@mui/icons-material';
+import { AppBar, Box, IconButton, Toolbar, Typography } from '@mui/material';
 import { useRouter } from 'next/navigation';
 
 export default function Header() {
   const router = useRouter();
   return (
-    <header role='banner' className={styles.header}>
-      <div onClick={() => router.push('/')}>{text.main.title}</div>
-      <div className={styles.horizontal}>
-        <div className={styles.headerButton} onClick={() => router.push('/signin')}>{text.main.signIn}</div>
-        <div className={styles.headerButton} onClick={() => router.push('/register')}>{text.main.register}</div>
-      </div>
-    </header>
+    <Box sx={{ flexGrow: 1 }}>
+      <AppBar position='static'>
+        <Toolbar>
+          <Typography
+            variant="h6"
+            noWrap
+            component="div"
+            onClick={() => router.push('/')}
+            sx={{ display: { sm: 'block' }, userSelect: 'none', cursor: 'pointer' }}
+          >
+            {text.main.title}
+          </Typography>
+          <Box sx={{ flexGrow: 1 }} />
+          <Box sx={{ display: { md: 'flex' } }}>
+            <IconButton
+              size='large'
+              color='inherit'
+            >
+              <AccountCircle />
+            </IconButton>
+          </Box>
+        </Toolbar>
+      </AppBar>
+    </Box>
   );
 }
