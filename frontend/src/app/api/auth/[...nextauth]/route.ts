@@ -24,9 +24,16 @@ const handler = NextAuth({
         const data = (response.data as any).data;
         if (data) {
           cookies().set("refresh", data.refresh);
+          const authResponse = await axios.get(
+            `${process.env.NEXT_PUBLIC_BACKEND_URL}/auth`,
+            {
+              headers: { Authorization: data.access },
+            }
+          );
+          const nickname = (authResponse.data as any).nickname;
           return {
-            id: data.id,
-            name: data.username,
+            id: username!,
+            name: nickname || username!,
             token: data.access,
           };
         } else {
@@ -44,7 +51,7 @@ const handler = NextAuth({
   },
   session: {
     strategy: "jwt",
-    maxAge: 60 * 10,
+    maxAge: +process.env.NEXT_PUBLIC_REFRESH_DURATION!,
   },
 });
 
