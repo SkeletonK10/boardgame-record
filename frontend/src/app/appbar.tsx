@@ -17,7 +17,7 @@ import {
   List,
   ListItemText,
 } from "@mui/material";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -63,13 +63,59 @@ export default function AppBar() {
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { md: "flex" } }}>
             {session ? (
-              <Typography>{`${session.user?.name}`}</Typography>
+              <Toolbar component="div">
+                <IconButton
+                  size="large"
+                  color="inherit"
+                >
+                  <AccountCircle />
+                </IconButton>
+                <Typography
+                  noWrap
+                  component="div"
+                  onClick={() => {
+                    signOut();
+                    router.refresh();
+                  }}
+                  sx={{
+                    padding: '0.5rem',
+                    userSelect: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                로그아웃
+                </Typography>
+              </Toolbar>
             ) : (
-              <></>
+              <Toolbar component="div">
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  onClick={() => router.push("/api/auth/signin")}
+                    sx={{
+                    padding: '0.5rem',
+                    userSelect: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                로그인
+                </Typography>
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  onClick={() => router.push("/api/auth/register")}
+                  sx={{
+                    padding: '0.5rem',
+                    userSelect: "none",
+                    cursor: "pointer",
+                  }}
+                >
+                회원가입
+                </Typography>
+              </Toolbar>
             )}
-            <IconButton size="large" color="inherit">
-              <AccountCircle />
-            </IconButton>
           </Box>
         </Toolbar>
       </MuiAppBar>
