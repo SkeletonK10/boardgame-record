@@ -1,7 +1,7 @@
-'use client';
+"use client";
+import { api } from "@/lib/axiosInterceptor";
 import { text } from "@/lib/data";
 import { Box } from "@mui/material";
-import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -17,15 +17,12 @@ export default function Home() {
     const password = target.password.value;
     const nickname = target.nickname.value;
 
-    const response = await axios.post(
-    `${process.env.NEXT_PUBLIC_BACKEND_URL}/user`,
-      {
-        username,
-        password,
-        nickname,
-      }
-    );
-    
+    const response = await api.post(`/user`, {
+      username,
+      password,
+      nickname,
+    });
+
     const data = response.data;
     if (data) {
       alert(`회원가입 성공!`);
@@ -34,7 +31,7 @@ export default function Home() {
       alert(`알 수 없는 오류가 발생했습니다. 다시 시도해 주세요.`);
     }
   };
-  
+
   return (
     <Box>
       <h2>{text.register.title}</h2>
