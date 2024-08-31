@@ -1,34 +1,24 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller } from '@nestjs/common';
 import { MahjongService } from './mahjong.service';
-import { CreateMahjongDto } from './dto/create-mahjong.dto';
-import { UpdateMahjongDto } from './dto/update-mahjong.dto';
 
 @Controller('mahjong')
 export class MahjongController {
   constructor(private readonly mahjongService: MahjongService) {}
 
-  @Post()
-  create(@Body() createMahjongDto: CreateMahjongDto) {
-    return this.mahjongService.create(createMahjongDto);
-  }
+  // TODO: POST /
+  // Needs 'Mahjong Record Admin' Role
+  // Body: {east: {nickname, score}, south, west, north} (possibly Array)
 
-  @Get()
-  findAll() {
-    return this.mahjongService.findAll();
-  }
+  // TODO: GET /
+  // Returns briefly
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.mahjongService.findOne(+id);
-  }
+  // TODO: GET /:id
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateMahjongDto: UpdateMahjongDto) {
-    return this.mahjongService.update(+id, updateMahjongDto);
-  }
+  // TODO: PATCH /:id
+  // Needs 'Mahjong Record Admin' Role
+  // Body: {east: {nickname, score}, south, west, north}
+  // 우마는 cascade 필요 없으므로 그냥 계산하면 됨
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.mahjongService.remove(+id);
-  }
+  // TODO: DELETE /:id
+  // PATCH와 같음
 }

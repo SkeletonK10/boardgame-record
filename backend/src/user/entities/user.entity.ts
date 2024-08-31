@@ -26,6 +26,7 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
+  // TODO: OneToMany, enum으로 바꿔야 함
   @Column({ default: 1 })
   authority: number;
 
