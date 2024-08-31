@@ -21,7 +21,7 @@ import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-const drawerWidth = 200;
+const drawerWidth = 275;
 
 const DrawerHeader = styled("div")(({ theme }) => ({
   display: "flex",
@@ -36,6 +36,11 @@ export default function AppBar() {
   const [open, setOpen] = useState(false);
   const { data: session } = useSession();
   const router = useRouter();
+  const menuList = [
+    { name: `메인 페이지`, url: `/` },
+    { name: `마작 저장소`, url: `/mahjong` },
+    { name: `테스트(메인 페이지)`, url: `/` },
+  ]
   return (
     <Box sx={{ flexGrow: 1 }}>
       <MuiAppBar position="fixed">
@@ -139,13 +144,16 @@ export default function AppBar() {
         </DrawerHeader>
         <Divider />
         <List>
-          {["테스트1", "테스트2", "테스트3"].map((value) => (
-            <ListItem key={value} disablePadding>
-              <ListItemButton>
+          {menuList.map(({ name, url }, index) => (
+            <ListItem key={index} disablePadding>
+              <ListItemButton onClick={() => {
+                router.push(url);
+                setOpen(false);
+              }}>
                 <ListItemIcon>
                   <Menu />
                 </ListItemIcon>
-                <ListItemText>{value}</ListItemText>
+                <ListItemText>{name}</ListItemText>
               </ListItemButton>
             </ListItem>
           ))}
