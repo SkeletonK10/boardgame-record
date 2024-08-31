@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeormConfig } from './config/typeorm.config';
 import { AuthModule } from './auth/auth.module';
+import { MahjongModule } from './mahjong/mahjong.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AuthModule } from './auth/auth.module';
     }),
     UserModule,
     AuthModule,
+    MahjongModule,
   ],
   controllers: [AppController],
   providers: [AppService],
