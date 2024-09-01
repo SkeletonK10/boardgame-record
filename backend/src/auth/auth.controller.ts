@@ -3,6 +3,8 @@ import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signin-dto';
 import { JwtAccessTokenGuard } from './guard/access-token.guard';
 import { JwtRefreshTokenGuard } from './guard/refresh-token.guard';
+import { RoleGuard, Roles } from './guard/role.guard';
+import { Role } from 'src/user/entities/role.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -11,6 +13,20 @@ export class AuthController {
   @UseGuards(JwtAccessTokenGuard)
   @Get()
   async test(@Req() req: any) {
+    return req.user;
+  }
+
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.user)
+  @Get('/role/user')
+  async userRoleTest(@Req() req: any) {
+    return req.user;
+  }
+
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.admin)
+  @Get('/role/admin')
+  async adminRoleTest(@Req() req: any) {
     return req.user;
   }
 

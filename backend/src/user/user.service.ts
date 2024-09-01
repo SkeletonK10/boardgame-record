@@ -5,22 +5,38 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Role, UserRole } from './entities/role.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(UserRole)
+    private userRoleRepository: Repository<UserRole>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    // TODO: 회원가입 시 아이디/비밀번호 검증
+    // TODO: 아이디/비밀번호 검증
 
     const existingUser = await this.findOneByUsername(createUserDto.username);
     if (existingUser) throw new Error(`USER_ALREADY_EXISTS`);
-    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
-    const userEntity = await this.userRepository.create(createUserDto);
-    return await this.userRepository.save(userEntity);
+    const userInfo = {
+      ...createUserDto,
+      password: await bcrypt.hash(createUserDto.password, 10),
+    };
+    const user = this.userRepository.create(userInfo);
+    const res = await this.userRepository.save(user);
+    const userRole = await this.createRole(user, Role.user);
+    return res;
+  }
+
+  async createRole(user: User, role: Role) {
+    const res = await this.userRoleRepository.save({
+      role,
+      user,
+    });
+    return res;
   }
 
   async findAll() {
@@ -36,6 +52,7 @@ export class UserService {
 
   async findOneByUsername(username: string) {
     const result = await this.userRepository.findOne({
+      relations: ['roles'],
       where: {
         username,
       },

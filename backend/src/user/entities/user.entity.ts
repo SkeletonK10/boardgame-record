@@ -2,9 +2,11 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserRole } from './role.entity';
 
 @Entity({ name: 'user' })
 export class User {
@@ -26,9 +28,8 @@ export class User {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  // TODO: OneToMany, enum으로 바꿔야 함
-  @Column({ default: 1 })
-  authority: number;
+  @OneToMany(() => UserRole, (role) => role.user)
+  roles: UserRole[];
 
   @Column({ nullable: true })
   currentRefreshToken?: string;
