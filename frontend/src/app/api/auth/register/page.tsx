@@ -1,7 +1,7 @@
 "use client";
-import { api } from "@/lib/axiosInterceptor";
 import { text } from "@/lib/data";
 import { Box } from "@mui/material";
+import axios from "axios";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -17,7 +17,7 @@ export default function Home() {
     const password = target.password.value;
     const nickname = target.nickname.value;
 
-    const response = await api.post(`/user`, {
+    const response = await axios.post(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user`, {
       username,
       password,
       nickname,
