@@ -18,11 +18,16 @@ export default function LoginPage() {
     const result = await signIn("credentials", {
       username,
       password,
-      redirect: true,
-      callbackUrl: `/`,
+      redirect: false,
     });
     if (result?.error) {
-      console.error(result.error);
+      if (result.error === "CredentialsSignin")
+        alert(`아이디 또는 비밀번호가 다릅니다. 다시 시도해 주세요.`);
+      else
+        alert(
+          `알 수 없는 오류가 발생했습니다. 관리자에게 문의해 주세요.(로그인)`
+        );
+      router.refresh();
     } else {
       router.push(`/`);
     }
