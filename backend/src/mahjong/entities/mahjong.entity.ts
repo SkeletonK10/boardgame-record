@@ -1,20 +1,73 @@
-// TODO: 마작 관련 엔티티 정리하기
+import { User } from 'src/user/entities/user.entity';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+
+export enum MahjongCategory {
+  east = `동풍전`,
+  south = `반장전`,
+  other = `기타`,
+}
 
 // MahjongPlayer
 // User와 별개의 엔티티, OneToOne 매핑 (nickname)
 // 우마, 판수 등 추가 정보 필요
+@Entity()
+export class MahjongPlayer {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => User)
+  @JoinColumn()
+  user?: User;
+
+  @Column({ default: 0 })
+  rating: number;
+}
 
 // MahjongPlayerRecord
 // { player: MahjongPlayer, score: number }
+@Entity()
+export class MahjongPlayerRecord {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-// MahjongGameRecord
-// { east: MahjongPlayerRecord,
-//   south,
-//   west,
-//   north,
-//   category: '동풍전' | '반장전' | '기타',
-//   note: text,
-//   그리고또... 뭐있을까?
-// }
+  @ManyToOne(() => MahjongPlayer)
+  player: MahjongPlayer;
 
-export class Mahjong {}
+  @Column()
+  score: number;
+}
+
+@Entity()
+export class MahjongGameRecord {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => MahjongPlayerRecord)
+  @JoinColumn()
+  east: MahjongPlayerRecord;
+
+  @OneToOne(() => MahjongPlayerRecord)
+  @JoinColumn()
+  south: MahjongPlayerRecord;
+
+  @OneToOne(() => MahjongPlayerRecord)
+  @JoinColumn()
+  west: MahjongPlayerRecord;
+
+  @OneToOne(() => MahjongPlayerRecord)
+  @JoinColumn()
+  north?: MahjongPlayerRecord;
+
+  @Column()
+  category: MahjongCategory;
+
+  @Column({ type: 'text' })
+  note?: string;
+}
