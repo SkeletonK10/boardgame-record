@@ -10,8 +10,6 @@ import { JwtAccessTokenGuard } from './guard/access-token.guard';
 import { JwtRefreshTokenGuard } from './guard/refresh-token.guard';
 import { UserModule } from 'src/user/user.module';
 
-// TODO: Role Guard
-
 @Module({
   imports: [
     JwtModule.register({}),
