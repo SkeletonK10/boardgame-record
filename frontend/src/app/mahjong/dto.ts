@@ -23,7 +23,7 @@ export class MahjongGameRecord {
   east!: MahjongUserRecord;
   south!: MahjongUserRecord;
   west!: MahjongUserRecord;
-  north!: MahjongUserRecord;
+  north?: MahjongUserRecord;
 }
 
 export class MahjongMainPageDto {
