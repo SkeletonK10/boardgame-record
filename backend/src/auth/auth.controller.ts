@@ -5,15 +5,24 @@ import { JwtAccessTokenGuard } from './guard/access-token.guard';
 import { JwtRefreshTokenGuard } from './guard/refresh-token.guard';
 import { RoleGuard, Roles } from './guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
+import { UserService } from 'src/user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @UseGuards(JwtAccessTokenGuard)
   @Get()
   async test(@Req() req: any) {
-    return req.user;
+    const user = await this.userService.findOneByUsername(req.user.username);
+    return {
+      username: user.username,
+      nickname: user.nickname,
+      roles: user.roles,
+    };
   }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)

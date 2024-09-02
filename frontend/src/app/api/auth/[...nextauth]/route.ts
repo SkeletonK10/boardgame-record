@@ -23,11 +23,12 @@ const handler = NextAuth({
           cookies().set("access", data.access);
           cookies().set("refresh", data.refresh);
           const authResponse = await api.get(`/auth`);
-          const nickname = (authResponse.data as any).nickname;
+          const { nickname, roles } = authResponse.data as any;
           return {
             id: username!,
             name: nickname || username!,
             token: data.access,
+            role: roles || [],
           };
         } else {
           return null;
