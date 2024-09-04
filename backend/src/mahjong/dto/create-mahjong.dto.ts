@@ -2,12 +2,10 @@ import { MahjongCategory } from '../entities/game-record.entity';
 
 class MahjongPlay {
   playerName: string;
+  isGuest: boolean;
   score: number;
 }
 export class CreateMahjongGameDto {
   category: MahjongCategory;
-  east: MahjongPlay;
-  south: MahjongPlay;
-  west: MahjongPlay;
-  north?: MahjongPlay;
+  players: MahjongPlay[];
 }

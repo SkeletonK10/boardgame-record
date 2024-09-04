@@ -25,7 +25,7 @@ export class MahjongGameRecord {
   @Column()
   category: MahjongCategory;
 
-  @Column({ type: 'text' })
+  @Column({ type: 'text', nullable: true })
   note?: string;
 
   @CreateDateColumn()
