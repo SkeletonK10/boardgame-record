@@ -9,8 +9,8 @@ import { Role } from 'src/user/entities/role.entity';
 export class MahjongController {
   constructor(private readonly mahjongService: MahjongService) {}
 
-  // @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  // @Roles(Role.mahjongRecordAdmin)
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.mahjongRecordAdmin)
   @Post()
   async createGame(@Body() createMahjongGameDto: CreateMahjongGameDto) {
     try {
