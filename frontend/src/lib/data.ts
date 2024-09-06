@@ -13,4 +13,12 @@ export const text = {
   signIn: {
     title: `로그인`,
   },
+
+  mahjong: {
+    addRecord: {
+      title: `기록 추가`,
+      error: `기록 추가 중 문제가 발생했습니다.`,
+      success: `기록 추가 완료!`,
+    },
+  },
 };
