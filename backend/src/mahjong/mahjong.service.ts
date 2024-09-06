@@ -14,10 +14,11 @@ export class MahjongService {
   ) {}
 
   async create(createMahjongGameDto: CreateMahjongGameDto) {
+    // console.log(createMahjongGameDto);
     const players = createMahjongGameDto.players.map(
       ({ playerName }) => playerName,
     );
-    const scores = createMahjongGameDto.players.map(({ score }) => score);
+    const scores = createMahjongGameDto.players.map(({ score }) => +score);
 
     if (!this.verifyGame(players, scores)) {
       throw new Error(`INVALID_MAHJONG_GAME`);
@@ -101,9 +102,9 @@ export class MahjongService {
     const sortedRating = updatedRating
       .sort((v1, v2) => v1[1] - v2[1])
       .map((v) => v[0]);
-    console.log(scores);
-    console.log(sortedScores);
-    console.log(sortedRating);
+    // console.log(scores);
+    // console.log(sortedScores);
+    // console.log(sortedRating);
     return sortedRating;
   }
 
