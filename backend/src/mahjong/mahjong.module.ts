@@ -1,12 +1,11 @@
 import { Module } from '@nestjs/common';
 import { MahjongService } from './mahjong.service';
 import { MahjongController } from './mahjong.controller';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { MahjongGameRecord } from './entities/game-record.entity';
 import { MahjongPlayerModule } from './player/player.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([MahjongGameRecord]), MahjongPlayerModule],
+  imports: [MahjongPlayerModule, UserModule],
   controllers: [MahjongController],
   providers: [MahjongService],
 })

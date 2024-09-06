@@ -19,7 +19,6 @@ import { UserModule } from 'src/user/user.module';
   controllers: [AuthController],
   providers: [
     AuthService,
-    UserService,
     JwtAccessTokenStrategy,
     JwtRefreshTokenStrategy,
     JwtAccessTokenGuard,
