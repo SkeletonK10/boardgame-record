@@ -9,6 +9,7 @@ export const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
+  config.withCredentials = true;
   const accessToken = cookies().get("access")?.value;
   config.headers = {
     authorization: accessToken,
@@ -27,7 +28,10 @@ api.interceptors.response.use(
     if (config.url === REFRESH_URL || status !== 401 || config.sent) {
       return Promise.reject(err);
     }
-    const { access } = (await api.post(REFRESH_URL)).data as any;
+    config.sent = true;
+    const refresh = cookies().get("refresh")?.value;
+    const secondaryResponse = await api.post(REFRESH_URL, { refresh });
+    const { access } = (secondaryResponse.data as any).data;
     if (access) {
       cookies().set("access", access);
       config.headers = {

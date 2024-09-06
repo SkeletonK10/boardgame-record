@@ -1,11 +1,19 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignInDto } from './dto/signin-dto';
 import { JwtAccessTokenGuard } from './guard/access-token.guard';
-import { JwtRefreshTokenGuard } from './guard/refresh-token.guard';
 import { RoleGuard, Roles } from './guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { UserService } from 'src/user/user.service';
+import { RefreshDto } from './dto/refresh.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -60,11 +68,9 @@ export class AuthController {
     }
   }
 
-  @UseGuards(JwtRefreshTokenGuard)
   @Post('refresh')
-  async refresh(@Req() req: any) {
+  async refresh(@Body() { refresh }: RefreshDto) {
     try {
-      const refresh = req.cookies.refresh_token;
       const newAccessToken = await this.authService.refresh(refresh);
       return {
         code: `OK`,
@@ -75,7 +81,7 @@ export class AuthController {
       };
     } catch (err) {
       return {
-        code: `ERR_AUTH_SIGNIN`,
+        code: err instanceof Error ? err.message : `ERR_AUTH_REFRESH`,
         msg: `알 수 없는 에러가 발생했습니다.`,
       };
     }
