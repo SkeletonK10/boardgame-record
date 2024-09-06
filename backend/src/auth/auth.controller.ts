@@ -54,7 +54,7 @@ export class AuthController {
       };
     } catch (err) {
       return {
-        code: `ERR_AUTH_SIGNIN`,
+        code: err instanceof Error ? err.message : `ERR_AUTH_SIGNIN`,
         msg: `알 수 없는 에러가 발생했습니다.`,
       };
     }
