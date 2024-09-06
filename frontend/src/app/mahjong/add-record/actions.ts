@@ -8,16 +8,18 @@ export async function createRecord(prevState: any, formData: FormData) {
     const body = {
       category: formData.get("category"),
       players: ["east", "south", "west", "north"].map((val) => {
+        const playerName = formData.get(`${val}-player-name`);
+        const isGuest = formData.get(`${val}-is-guest`) === "on" ? true : false;
+        const score = formData.get(`${val}-score`);
         return {
-          playerName: formData.get(`${val}-player-name`),
-          isGuest: formData.get(`${val}-is-guest`),
-          score: formData.get(`${val}-score`),
+          playerName: playerName ? playerName : undefined,
+          isGuest: isGuest,
+          score: score ? score : undefined,
         };
       }),
     };
-    console.log(body);
     const response = await api.post(`/mahjong`, body);
-    console.log(response);
+    console.log(response.data);
     if (!(response.data as any).data)
       return { message: text.mahjong.addRecord.error };
     else return { message: text.mahjong.addRecord.success };

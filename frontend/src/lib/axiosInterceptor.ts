@@ -13,6 +13,7 @@ api.interceptors.request.use((config) => {
   const accessToken = cookies().get("access")?.value;
   config.headers = {
     authorization: accessToken,
+    "Content-type": "application/json",
   };
   return config;
 });
