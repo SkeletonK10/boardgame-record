@@ -26,7 +26,7 @@ export class MahjongPlayer {
   @JoinColumn()
   user?: User;
 
-  @Column({ default: 0 })
+  @Column({ type: 'decimal', precision: 10, scale: 1, default: 0 })
   rating: number;
 
   @OneToMany(() => MahjongPlayerRecord, (record) => record.player)
