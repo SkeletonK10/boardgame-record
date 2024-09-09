@@ -41,4 +41,12 @@ export class MahjongPlayerService {
     });
     return res;
   }
+
+  async getRanking() {
+    const res = await this.mahjongPlayerRepository.find({
+      select: ['nickname', 'rating'],
+      order: { rating: 'DESC' },
+    });
+    return res;
+  }
 }

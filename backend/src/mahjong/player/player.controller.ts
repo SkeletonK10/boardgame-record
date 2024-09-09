@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { MahjongPlayerService } from './player.service';
 import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
 import { JwtAccessTokenGuard } from 'src/auth/guard/access-token.guard';
@@ -23,5 +23,10 @@ export class MahjongPlayerController {
     return await this.MahjongplayerService.countGuestByPlayerName(
       body.playerName,
     );
+  }
+
+  @Get('ranking')
+  async getRanking() {
+    return await this.MahjongplayerService.getRanking();
   }
 }
