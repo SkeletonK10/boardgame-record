@@ -1,6 +1,6 @@
 export class MahjongUserRecord {
   nickname!: string;
-  score!: number; // Can be used 2 ways: single game score / Entire uma
+  score!: number;
 }
 
 export class MahjongGameRecord {
@@ -8,7 +8,12 @@ export class MahjongGameRecord {
   players!: MahjongUserRecord[];
 }
 
+export class MahjongRankingRecord {
+  nickname!: string;
+  rating!: number;
+}
+
 export class MahjongMainPageDto {
   record: MahjongGameRecord[] = [];
-  ranking: MahjongUserRecord[] = [];
+  ranking: MahjongRankingRecord[] = [];
 }

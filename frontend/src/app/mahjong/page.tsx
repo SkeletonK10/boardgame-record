@@ -34,42 +34,41 @@ const testRecord = [
 const testRanking = [
   {
     nickname: "참가자1",
-    score: 102.3,
+    rating: 102.3,
   },
   {
     nickname: "참가자2",
-    score: 12.3,
+    rating: 12.3,
   },
   {
     nickname: "참가자1",
-    score: -2.3,
+    rating: -2.3,
   },
   {
     nickname: "참가자1",
-    score: -60.3,
+    rating: -60.3,
   },
 ];
 
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
-    // const recordResponsePromise = api.get(`/mahjong/record`);
-    // const rankingResponsePromise = api.get(`/mahjong/ranking`);
-    // const [recordResponse, rankingResponse] = await Promise.all([
-    //   recordResponsePromise,
-    //   rankingResponsePromise,
-    // ]);
-    // const record = (recordResponse.data as any).data.slice(10);
-    // const ranking = (rankingResponse.data as any).data;
-    const record = ((await api.get(`/mahjong`)).data as any).data.slice(0, 5);
-    console.log(record);
+    const recordResponsePromise = api.get(`/mahjong`);
+    const rankingResponsePromise = api.get(`/mahjong/player/ranking`);
+    // console.log("VVVVVVVVVVVVVV");
+    const [recordResponse, rankingResponse] = await Promise.all([
+      recordResponsePromise,
+      rankingResponsePromise,
+    ]);
+    // console.log("AAAAAAAAAAAAA");
+    const record = (recordResponse.data as any).data.slice(0, 5);
+    const ranking = (rankingResponse.data as any).data;
+    // console.log(ranking);
     return {
       record,
-      // ranking,
-      ranking: testRanking,
+      ranking,
     };
   } catch (err) {
     // return test data
-    console.log("ASDFDASF");
     return {
       record: testRecord,
       ranking: testRanking,
@@ -173,7 +172,7 @@ export default async function MahjongMainPage() {
                         </Typography>
                       </Grid>
                       <Grid size={4}>
-                        <Box>{value.score}</Box>
+                        <Box>{value.rating}</Box>
                       </Grid>
                     </Grid>
                   </ListItemButton>
