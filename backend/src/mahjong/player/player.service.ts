@@ -14,13 +14,17 @@ export class MahjongPlayerService {
   ) {}
 
   async create(createMahjongPlayerDto: CreateMahjongPlayerDto) {
-    const { playerName } = createMahjongPlayerDto;
+    const { playerName, nickname } = createMahjongPlayerDto;
     const existingPlayer = await this.findOneByPlayerName(playerName);
     if (existingPlayer) throw new Error(`MAHJONG_PLAYER_ALREADY_EXIST`);
-    const user = await this.userService.findOneByUsername(playerName);
-    const player = this.mahjongPlayerRepository.create({ playerName, user });
+    const player = this.mahjongPlayerRepository.create({
+      playerName,
+      nickname,
+    });
     return await this.mahjongPlayerRepository.save(player);
   }
+
+  // TODO: User entity와 연동하는 메소드
 
   async findOneByPlayerName(playerName: string) {
     const res = await this.mahjongPlayerRepository.findOne({

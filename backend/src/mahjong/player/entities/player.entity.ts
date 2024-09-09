@@ -19,6 +19,9 @@ export class MahjongPlayer {
   @Column({ unique: true })
   playerName: string;
 
+  @Column()
+  nickname: string;
+
   @OneToOne(() => User)
   @JoinColumn()
   user?: User;
