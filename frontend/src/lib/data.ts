@@ -1,4 +1,9 @@
 export const text = {
+  error: {
+    noSession: `로그인이 필요합니다.`,
+    noRole: `페이지에 접근할 권한이 없습니다.`,
+  },
+
   main: {
     title: `보드게임 저장소? (beta)`,
     signIn: `로그인`,

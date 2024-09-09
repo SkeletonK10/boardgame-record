@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@mui/material";
 import { MahjongMainPageDto } from "./dto";
+import { AddButton } from "./add-button";
 
 const testRecord = [
   {
@@ -77,6 +78,11 @@ export default async function MahjongMainPage() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
+        <Grid size={2} />
+        <Grid size={8}>
+          <AddButton />
+        </Grid>
+        <Grid size={2} />
         <Grid size={{ xs: 12, sm: 6 }}>
           <Box
             sx={{
