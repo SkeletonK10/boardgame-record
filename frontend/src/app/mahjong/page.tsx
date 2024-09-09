@@ -5,21 +5,28 @@ import {
   List,
   ListItem,
   ListItemButton,
+  Paper,
   Typography,
 } from "@mui/material";
 import { MahjongMainPageDto } from "./dto";
 
 const testRecord = [
   {
-    east: { nickname: "참가자1", score: 73000 },
-    south: { nickname: "참가자2", score: -23000 },
-    west: { nickname: "참가자3", score: 25000 },
-    north: { nickname: "참가자4", score: 25000 },
+    category: "반장전",
+    players: [
+      { nickname: "참가자1", score: 73000 },
+      { nickname: "참가자2", score: -23000 },
+      { nickname: "참가자3", score: 25000 },
+      { nickname: "참가자4", score: 25000 },
+    ],
   },
   {
-    east: { nickname: "참가자2", score: 73000 },
-    south: { nickname: "참가자1", score: -23000 },
-    west: { nickname: "참가자3", score: 25000 },
+    category: "동풍전",
+    players: [
+      { nickname: "참가자2", score: 83000 },
+      { nickname: "참가자1", score: -13000 },
+      { nickname: "참가자3", score: 35000 },
+    ],
   },
 ];
 
@@ -94,40 +101,27 @@ export default async function MahjongMainPage() {
               {record.map((value, index) => (
                 <ListItem key={index}>
                   <ListItemButton>
-                    <Grid container spacing={1} sx={{ width: "100%" }}>
-                      <Grid size={6}>
-                        <Typography component="div" noWrap>
-                          {value.east.nickname}
-                        </Typography>
-                        <Typography component="div">
-                          {value.east.score}
-                        </Typography>
+                    <Paper elevation={2} sx={{ width: "100%" }}>
+                      <Grid container spacing={1} sx={{ width: "100%" }}>
+                        <Grid size={12}>
+                          <Typography
+                            component="div"
+                            noWrap
+                            sx={{ fontSize: "0.8rem" }}
+                          >
+                            {value.category}
+                          </Typography>
+                        </Grid>
+                        {value.players.map(({ nickname, score }) => (
+                          <Grid size={6} key={nickname}>
+                            <Typography component="div" noWrap>
+                              {nickname}
+                            </Typography>
+                            <Typography component="div">{score}</Typography>
+                          </Grid>
+                        ))}
                       </Grid>
-                      <Grid size={6}>
-                        <Typography component="div" noWrap>
-                          {value.south.nickname}
-                        </Typography>
-                        <Typography component="div">
-                          {value.south.score}
-                        </Typography>
-                      </Grid>
-                      <Grid size={6}>
-                        <Typography component="div" noWrap>
-                          {value.west.nickname}
-                        </Typography>
-                        <Typography component="div">
-                          {value.west.score}
-                        </Typography>
-                      </Grid>
-                      <Grid size={6}>
-                        <Typography component="div" noWrap>
-                          {value.north?.nickname}
-                        </Typography>
-                        <Typography component="div">
-                          {value.north?.score}
-                        </Typography>
-                      </Grid>
-                    </Grid>
+                    </Paper>
                   </ListItemButton>
                 </ListItem>
               ))}
