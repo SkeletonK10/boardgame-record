@@ -1,4 +1,5 @@
 import { api } from "@/lib/axiosInterceptor";
+import { Role } from "@/lib/data";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { cookies } from "next/headers";
@@ -28,7 +29,7 @@ const handler = NextAuth({
             id: username!,
             name: nickname || username!,
             token: data.access,
-            role: roles || [],
+            roles: roles.map(({ role }: { id: number; role: Role }) => role),
           };
         } else {
           return null;
@@ -37,6 +38,9 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
+    jwt({ token, user }) {
+      return { ...token, ...user };
+    },
     async session({ session, token }) {
       // 세션에 토큰 정보를 추가합니다.
       session.user = token as any;
