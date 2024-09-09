@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { MahjongService } from './mahjong.service';
 import { JwtAccessTokenGuard } from 'src/auth/guard/access-token.guard';
 import { CreateMahjongGameDto } from './dto/create-mahjong.dto';
@@ -30,10 +30,24 @@ export class MahjongController {
     }
   }
 
-  // TODO: GET /
-  // Returns briefly
-
-  // TODO: GET /:id
+  @Get()
+  async findAll() {
+    try {
+      const res = await this.mahjongService.findAll();
+      return {
+        code: `OK`,
+        msg: `모든 마작 경기`,
+        data: res,
+      };
+    } catch (err) {
+      const code =
+        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_CREATE`;
+      return {
+        code: code,
+        msg: `알 수 없는 에러가 발생했습니다.`,
+      };
+    }
+  }
 
   // TODO: PATCH /:id
   // Needs 'Mahjong Record Admin' Role

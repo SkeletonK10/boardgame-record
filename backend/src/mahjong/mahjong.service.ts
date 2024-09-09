@@ -38,14 +38,18 @@ export class MahjongService {
             await this.mahjongPlayerService.findOneByPlayerName(playerName);
           // 없으면 새로 생성
           if (!player) {
+            const nickname = playerName;
             if (isGuest) {
               const guestCount =
                 await this.mahjongPlayerService.countGuestByPlayerName(
                   playerName,
                 );
-              playerName += `_GUEST${guestCount + 1}`;
+              playerName += `${guestCount + 1}`;
             }
-            player = await this.mahjongPlayerService.create({ playerName });
+            player = await this.mahjongPlayerService.create({
+              playerName,
+              nickname,
+            });
           }
           const updatedPlayer = await this.updateRating(
             player,
@@ -122,5 +126,37 @@ export class MahjongService {
     );
     player.rating += delta;
     return player;
+  }
+
+  async findAll() {
+    const queryResult = await this.dataSource
+      .createQueryBuilder(MahjongPlayerRecord, 'record')
+      .leftJoin('record.game', 'game')
+      .orderBy('game.id')
+      .leftJoin('record.player', 'player')
+      .select(['game.id', 'game.category', 'player.nickname', 'record.score'])
+      .getRawMany();
+    // console.log(queryResult);
+
+    const groupedResult = queryResult.reduce((acc, v) => {
+      const { game_id } = v;
+      if (acc[game_id]) acc[game_id].push(v);
+      else acc[game_id] = [v];
+      return acc;
+    }, {});
+    // console.log(groupedResult);
+    const result = Object.values(groupedResult).map((game: Array<any>) => {
+      return {
+        category: game[0].game_category,
+        players: game.map((player) => {
+          return {
+            nickname: player.player_nickname,
+            score: player.record_score,
+          };
+        }),
+      };
+    });
+    console.log(result);
+    return result;
   }
 }
