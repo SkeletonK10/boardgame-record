@@ -52,20 +52,24 @@ const testRanking = [
 
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
-    const recordResponsePromise = api.get(`/mahjong/record`);
-    const rankingResponsePromise = api.get(`/mahjong/ranking`);
-    const [recordResponse, rankingResponse] = await Promise.all([
-      recordResponsePromise,
-      rankingResponsePromise,
-    ]);
-    const record = (recordResponse.data as any).data.slice(10);
-    const ranking = (rankingResponse.data as any).data;
+    // const recordResponsePromise = api.get(`/mahjong/record`);
+    // const rankingResponsePromise = api.get(`/mahjong/ranking`);
+    // const [recordResponse, rankingResponse] = await Promise.all([
+    //   recordResponsePromise,
+    //   rankingResponsePromise,
+    // ]);
+    // const record = (recordResponse.data as any).data.slice(10);
+    // const ranking = (rankingResponse.data as any).data;
+    const record = ((await api.get(`/mahjong`)).data as any).data.slice(0, 5);
+    console.log(record);
     return {
       record,
-      ranking,
+      // ranking,
+      ranking: testRanking,
     };
   } catch (err) {
     // return test data
+    console.log("ASDFDASF");
     return {
       record: testRecord,
       ranking: testRanking,
