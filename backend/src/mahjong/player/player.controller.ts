@@ -27,6 +27,20 @@ export class MahjongPlayerController {
 
   @Get('ranking')
   async getRanking() {
-    return await this.MahjongplayerService.getRanking();
+    try {
+      const res = await this.MahjongplayerService.getRanking();
+      return {
+        code: `OK`,
+        msg: `마작 우마 랭킹`,
+        data: res,
+      };
+    } catch (err) {
+      const code =
+        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_RANKING`;
+      return {
+        code: code,
+        msg: `알 수 없는 에러가 발생했습니다.`,
+      };
+    }
   }
 }
