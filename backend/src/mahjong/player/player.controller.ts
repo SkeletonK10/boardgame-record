@@ -25,10 +25,10 @@ export class MahjongPlayerController {
     );
   }
 
-  @Get('ranking')
-  async getRanking() {
+  @Get()
+  async getAll() {
     try {
-      const res = await this.MahjongplayerService.getRanking();
+      const res = await this.MahjongplayerService.getAll();
       return {
         code: `OK`,
         msg: `마작 우마 랭킹`,
@@ -42,5 +42,10 @@ export class MahjongPlayerController {
         msg: `알 수 없는 에러가 발생했습니다.`,
       };
     }
+  }
+
+  @Get('ranking')
+  async getRanking() {
+    return await this.getAll();
   }
 }

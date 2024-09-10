@@ -42,9 +42,9 @@ export class MahjongPlayerService {
     return res;
   }
 
-  async getRanking() {
+  async getAll() {
     const res = await this.mahjongPlayerRepository.find({
-      select: ['nickname', 'rating'],
+      select: ['playerName', 'nickname', 'rating'],
       order: { rating: 'DESC' },
     });
     return res;
