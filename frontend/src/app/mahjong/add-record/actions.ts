@@ -2,6 +2,7 @@
 
 import { api } from "@/lib/axiosInterceptor";
 import { text } from "@/lib/data";
+import { revalidatePath } from "next/cache";
 
 export async function fetchPlayers() {
   try {
@@ -34,7 +35,10 @@ export async function createRecord(prevState: any, formData: FormData) {
     // console.log(response.data);
     if (!(response.data as any).data)
       return { message: text.mahjong.addRecord.error };
-    else return { message: text.mahjong.addRecord.success };
+    else {
+      revalidatePath(`/mahjong`);
+      return { message: text.mahjong.addRecord.success };
+    }
   } catch (err) {
     // console.log((err as Error).message);
     return { message: text.mahjong.addRecord.error };
