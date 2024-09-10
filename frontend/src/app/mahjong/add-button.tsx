@@ -10,7 +10,7 @@ export function AddButton() {
   const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
   const handleClick = () => {
-    const requiredRoles = [Role.mahjongRecordAdmin];
+    const requiredRoles = [Role.mahjongRecordAdmin, Role.admin];
     const roles = (session?.user as any).roles;
     console.log(session);
     console.log(roles);
