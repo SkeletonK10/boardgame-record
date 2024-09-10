@@ -1,6 +1,19 @@
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { MahjongPlayer } from '../player/entities/player.entity';
 import { MahjongGameRecord } from './game-record.entity';
+
+export enum MahjongSeat {
+  east,
+  south,
+  west,
+  north,
+}
 
 @Entity()
 export class MahjongPlayerRecord {
@@ -14,5 +27,11 @@ export class MahjongPlayerRecord {
   player: MahjongPlayer;
 
   @Column()
+  seat: MahjongSeat;
+
+  @Column()
   score: number;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

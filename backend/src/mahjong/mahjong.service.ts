@@ -33,39 +33,42 @@ export class MahjongService {
     try {
       const playerRecords = await Promise.all(
         // 각 player마다
-        createMahjongGameDto.players.map(async ({ playerName, isGuest }, i) => {
-          let player =
-            await this.mahjongPlayerService.findOneByPlayerName(playerName);
-          // 없으면 새로 생성
-          if (!player) {
-            const nickname = playerName;
-            if (isGuest) {
-              const guestCount =
-                await this.mahjongPlayerService.countGuestByPlayerName(
-                  playerName,
-                );
-              playerName += `${guestCount + 1}`;
+        createMahjongGameDto.players.map(
+          async ({ playerName, isGuest }, seat) => {
+            let player =
+              await this.mahjongPlayerService.findOneByPlayerName(playerName);
+            // 없으면 새로 생성
+            if (!player) {
+              const nickname = playerName;
+              if (isGuest) {
+                const guestCount =
+                  await this.mahjongPlayerService.countGuestByPlayerName(
+                    playerName,
+                  );
+                playerName += `${guestCount + 1}`;
+              }
+              player = await this.mahjongPlayerService.create({
+                playerName,
+                nickname,
+              });
             }
-            player = await this.mahjongPlayerService.create({
-              playerName,
-              nickname,
+            const updatedPlayer = await this.updateRating(
+              player,
+              rating[seat],
+              queryRunner,
+            );
+            const recordDto = queryRunner.manager.create(MahjongPlayerRecord, {
+              player: updatedPlayer,
+              seat,
+              score: scores[seat],
             });
-          }
-          const updatedPlayer = await this.updateRating(
-            player,
-            rating[i],
-            queryRunner,
-          );
-          const recordDto = queryRunner.manager.create(MahjongPlayerRecord, {
-            player: updatedPlayer,
-            score: scores[i],
-          });
-          const record = await queryRunner.manager.save(
-            MahjongPlayerRecord,
-            recordDto,
-          );
-          return record;
-        }),
+            const record = await queryRunner.manager.save(
+              MahjongPlayerRecord,
+              recordDto,
+            );
+            return record;
+          },
+        ),
       );
       const game = queryRunner.manager.create(MahjongGameRecord, {
         category: createMahjongGameDto.category,
@@ -133,6 +136,7 @@ export class MahjongService {
       .createQueryBuilder(MahjongPlayerRecord, 'record')
       .leftJoin('record.game', 'game')
       .orderBy('game.id')
+      .addOrderBy('record.seat')
       .leftJoin('record.player', 'player')
       .select(['game.id', 'game.category', 'player.nickname', 'record.score'])
       .getRawMany();
@@ -147,6 +151,7 @@ export class MahjongService {
     // console.log(groupedResult);
     const result = Object.values(groupedResult).map((game: Array<any>) => {
       return {
+        id: queryResult[0].game_id,
         category: game[0].game_category,
         players: game.map((player) => {
           return {
