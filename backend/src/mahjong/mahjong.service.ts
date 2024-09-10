@@ -128,6 +128,9 @@ export class MahjongService {
       },
     );
     player.rating += delta;
+    const p = await this.mahjongPlayerService.findOneByPlayerName(
+      player.playerName,
+    );
     return player;
   }
 
@@ -163,5 +166,86 @@ export class MahjongService {
     });
     console.log(result);
     return result;
+  }
+
+  async findById(id: number) {
+    const queryResult = await this.dataSource
+      .createQueryBuilder(MahjongPlayerRecord, 'record')
+      .leftJoin('record.game', 'game')
+      .leftJoin('record.player', 'player')
+      .where('game.id = :id', { id })
+      .orderBy('record.seat')
+      .select([
+        'game.id',
+        'game.category',
+        'player.playerName',
+        'player.nickname',
+        'record.score',
+      ])
+      .getRawMany();
+    console.log(queryResult);
+    if (queryResult.length === 0) throw new Error(`ID_GAME_DOES_NOT_EXISTS`);
+    return {
+      category: queryResult[0].game_category,
+      players: queryResult.map((player) => {
+        return {
+          playerName: player.player_playerName,
+          nickname: player.player_nickname,
+          score: player.record_score,
+        };
+      }),
+    };
+  }
+
+  async delete(id: number) {
+    const game = await this.findById(id);
+    console.log(game);
+    const scores = game.players.map(({ score }) => +score);
+    const rating = this.calculateRating(scores);
+    const rollbackRating = rating.map((r) => -r);
+    console.log(rollbackRating);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const playerRecords = await Promise.all(
+        // 각 player마다
+        game.players.map(async ({ playerName }, i) => {
+          const player =
+            await this.mahjongPlayerService.findOneByPlayerName(playerName);
+          if (!player) {
+            return;
+          }
+          const updatedPlayer = await this.updateRating(
+            player,
+            rollbackRating[i],
+            queryRunner,
+          );
+          return;
+        }),
+      );
+      await queryRunner.manager
+        .createQueryBuilder()
+        .softDelete()
+        .from(MahjongPlayerRecord)
+        .where('game = :id', { id })
+        .execute();
+
+      await queryRunner.manager
+        .createQueryBuilder()
+        .softDelete()
+        .from(MahjongGameRecord)
+        .where('id = :id', { id })
+        .execute();
+
+      await queryRunner.commitTransaction();
+      await queryRunner.release();
+      return;
+    } catch (err) {
+      console.error(err);
+      await queryRunner.rollbackTransaction();
+      await queryRunner.release();
+      throw new Error(`MAHJONG_DELETE_GAME_RECORD_FAIL`);
+    }
   }
 }
