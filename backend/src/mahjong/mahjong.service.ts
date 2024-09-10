@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMahjongGameDto } from './dto/create-mahjong.dto';
 import { MahjongPlayerService } from './player/player.service';
-import { MahjongGameRecord } from './entities/game-record.entity';
+import {
+  MahjongCategory,
+  MahjongGameRecord,
+} from './entities/game-record.entity';
 import { DataSource, QueryRunner } from 'typeorm';
 import { MahjongPlayerRecord } from './entities/player-record.entity';
 import { MahjongPlayer } from './player/entities/player.entity';
@@ -23,7 +26,7 @@ export class MahjongService {
     if (!this.verifyGame(players, scores)) {
       throw new Error(`INVALID_MAHJONG_GAME`);
     }
-    const rating = this.calculateRating(scores);
+    const rating = this.calculateRating(scores, createMahjongGameDto.category);
 
     // TODO: 트랜잭션 따로 빼기
     // TODO: 로직 개선 (요청 따다닥 보내기)
@@ -95,7 +98,8 @@ export class MahjongService {
     return targetTotal === scoreTotal;
   }
 
-  calculateRating(scores: number[]) {
+  calculateRating(scores: number[], category: MahjongCategory) {
+    const multiplier = category === '반장전' ? 2 : 1;
     const playerCount = scores.length;
     const returnScore = playerCount === 4 ? 25000 : 35000;
     const sortedScores = scores
@@ -108,7 +112,7 @@ export class MahjongService {
     ]);
     const sortedRating = updatedRating
       .sort((v1, v2) => v1[1] - v2[1])
-      .map((v) => v[0]);
+      .map((v) => v[0] * multiplier);
     // console.log(scores);
     // console.log(sortedScores);
     // console.log(sortedRating);
@@ -201,7 +205,7 @@ export class MahjongService {
     const game = await this.findById(id);
     console.log(game);
     const scores = game.players.map(({ score }) => +score);
-    const rating = this.calculateRating(scores);
+    const rating = this.calculateRating(scores, game.category);
     const rollbackRating = rating.map((r) => -r);
     console.log(rollbackRating);
     const queryRunner = this.dataSource.createQueryRunner();
