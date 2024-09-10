@@ -62,8 +62,8 @@ export class MahjongController {
   // Body: {east: {nickname, score}, south, west, north}
   // 우마는 cascade 필요 없으므로 그냥 계산하면 됨
 
-  // @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  // @Roles(Role.mahjongRecordAdmin, Role.admin)
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.mahjongRecordAdmin, Role.admin)
   @Delete(':id')
   async deleteGame(@Param('id') id: number) {
     try {
