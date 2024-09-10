@@ -1,11 +1,12 @@
 "use client";
 import { text } from "@/lib/data";
-import { Box, FormControl, FormLabel, TextField, Grid2 as Grid, Checkbox, FormControlLabel, Button, RadioGroup, Radio } from "@mui/material";
+import { Box, FormControl, FormLabel, TextField, Grid2 as Grid, Checkbox, FormControlLabel, Button, RadioGroup, Radio, Autocomplete } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { createRecord } from "./actions";
+import { createRecord, fetchPlayers } from "./actions";
 import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
-import { useEffect } from "react";
+import { useEffect,  useState,  useTransition } from "react";
+import { MahjongPlayersDto } from "./dto";
 
 const initialState = {
   message: '',
@@ -15,9 +16,14 @@ export default function MahjongAddRecordPage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [formState, formAction] = useFormState(createRecord, initialState);
+  const [players, setPlayers] = useState<MahjongPlayersDto[]>([]);
+  const [isPending, startTransition] = useTransition();
   
   const playerLabel = [['east', '동'], ['south', '남'], ['west', '서'], ['north', '북']];
-  
+
+  useEffect(() => {
+    startTransition(async () => await setPlayers(await fetchPlayers()));
+  }, []);
   useEffect(() => {
     if (formState.message === text.mahjong.addRecord.success) {
       enqueueSnackbar(formState.message, { variant: "success" });
@@ -56,17 +62,29 @@ export default function MahjongAddRecordPage() {
             </RadioGroup>
           </FormControl>
           {playerLabel.map(([enVal, krVal]) => (
-            <Grid container key={enVal}>
+            <Grid container key={enVal} sx={{ width: '80%' }}>
               <Grid size={5}>
-                <FormControl>
-                  <FormLabel>{krVal} 이름</FormLabel>
-                  <TextField type="text" name={`${enVal}-player-name`}></TextField>
+                <FormControl sx={{ width: '100%' }}>
+                  {/* TODO: 플레이어 로딩 보이게 하기? */}
+                  <Autocomplete
+                    freeSolo
+                    options={players.map(({ playerName }) => {
+                      return {
+                        label: playerName,
+                        value: playerName,
+                    }})}
+                    renderInput=
+                      {(params) => <TextField {...params} name={`${enVal}-player-name`} label={`${krVal} 이름`} />}
+                    
+                  />
                 </FormControl>
               </Grid>
               <Grid size={5}>
-                <FormControl>
-                  <FormLabel>{krVal} 점수</FormLabel>
-                  <TextField type="text" name={`${enVal}-score`}></TextField>
+                <FormControl sx={{ width: '100%' }}>
+                  <TextField
+                    type="text"
+                    name={`${enVal}-score`}
+                    label={`${krVal} 점수`}></TextField>
                 </FormControl>
               </Grid>
               <Grid size={2}>

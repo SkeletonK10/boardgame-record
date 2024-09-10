@@ -3,6 +3,18 @@
 import { api } from "@/lib/axiosInterceptor";
 import { text } from "@/lib/data";
 
+export async function fetchPlayers() {
+  try {
+    const response = await api.get(`/mahjong/player`);
+    // console.log(response.data);
+    if (!(response.data as any).data) return [];
+    else return (response.data as any).data;
+  } catch (err) {
+    console.log((err as Error).message);
+    return [];
+  }
+}
+
 export async function createRecord(prevState: any, formData: FormData) {
   try {
     const body = {
@@ -19,12 +31,12 @@ export async function createRecord(prevState: any, formData: FormData) {
       }),
     };
     const response = await api.post(`/mahjong`, body);
-    console.log(response.data);
+    // console.log(response.data);
     if (!(response.data as any).data)
       return { message: text.mahjong.addRecord.error };
     else return { message: text.mahjong.addRecord.success };
   } catch (err) {
-    console.log((err as Error).message);
+    // console.log((err as Error).message);
     return { message: text.mahjong.addRecord.error };
   }
 }
