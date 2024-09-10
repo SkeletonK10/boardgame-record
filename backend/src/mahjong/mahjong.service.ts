@@ -168,7 +168,8 @@ export class MahjongService {
         }),
       };
     });
-    console.log(result);
+    result.reverse();
+    // console.log(result);
     return result;
   }
 
