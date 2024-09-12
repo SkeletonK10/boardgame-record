@@ -14,6 +14,7 @@ import { RoleGuard, Roles } from './guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { UserService } from 'src/user/user.service';
 import { RefreshDto } from './dto/refresh.dto';
+import { GrantRoleDto } from 'src/user/dto/grant-role.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -45,6 +46,24 @@ export class AuthController {
   @Get('/role/admin')
   async adminRoleTest(@Req() req: any) {
     return req.user;
+  }
+
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.admin)
+  @Post('/role')
+  async grantRole(@Body() grantRoleDto: GrantRoleDto) {
+    try {
+      const { user, role } = await this.userService.grantRole(grantRoleDto);
+      return {
+        code: `OK`,
+        msg: `'${user.username}' 유저에게 ${role} 역할 부여 완료!`,
+      };
+    } catch (err) {
+      return {
+        code: err instanceof Error ? err.message : `ERR_AUTH_GRANT_ROLE`,
+        msg: `알 수 없는 에러가 발생했습니다.`,
+      };
+    }
   }
 
   @Post('signin')

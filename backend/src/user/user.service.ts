@@ -6,6 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role, UserRole } from './entities/role.entity';
+import { GrantRoleDto } from './dto/grant-role.dto';
 
 @Injectable()
 export class UserService {
@@ -70,6 +71,13 @@ export class UserService {
     };
     const result = await this.userRepository.save(updatedUser);
     return result;
+  }
+
+  async grantRole(grantRoleDto: GrantRoleDto) {
+    const user = await this.findOneByUsername(grantRoleDto.username);
+    if (!user) throw new Error(`GRANT_ROLE_USER_NOT_FOUND`);
+    const res = await this.createRole(user, grantRoleDto.role);
+    return res;
   }
 
   remove(id: number) {
