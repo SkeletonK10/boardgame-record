@@ -106,7 +106,7 @@ export class MahjongService {
   }
 
   calculateRating(scores: number[], category: MahjongCategory) {
-    const multiplier = category === '반장전' ? 2 : 1;
+    const multiplier = category === '반장전' ? 1 : 0.5;
     const playerCount = scores.length;
     const returnScore = playerCount === 4 ? 25000 : 35000;
     const sortedScores = scores
