@@ -1,13 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMahjongGameDto } from './dto/create-mahjong.dto';
 import { MahjongPlayerService } from './player/player.service';
-import {
-  MahjongCategory,
-  MahjongGameRecord,
-} from './entities/game-record.entity';
+import { MahjongGameRecord } from './entities/game-record.entity';
 import { DataSource, QueryRunner } from 'typeorm';
 import { MahjongPlayerRecord } from './entities/player-record.entity';
 import { MahjongPlayer } from './player/entities/player.entity';
+import { MahjongRating } from './player/entities/rating.entity';
+import { MahjongCategory, MahjongRatingCategory } from './enum/mahjong.enum';
 
 @Injectable()
 export class MahjongService {
@@ -26,6 +25,10 @@ export class MahjongService {
     if (!this.verifyGame(players, scores)) {
       throw new Error(`INVALID_MAHJONG_GAME`);
     }
+    const ratingCategory =
+      players.length === 4
+        ? MahjongRatingCategory.fourPlayer
+        : MahjongRatingCategory.threePlayer;
     const rating = this.calculateRating(scores, createMahjongGameDto.category);
     const ranks = this.calculateRank(rating);
 
@@ -58,6 +61,7 @@ export class MahjongService {
             }
             const updatedPlayer = await this.updateRating(
               player,
+              ratingCategory,
               rating[seat],
               queryRunner,
             );
@@ -76,6 +80,7 @@ export class MahjongService {
         ),
       );
       const game = queryRunner.manager.create(MahjongGameRecord, {
+        ratingCategory: ratingCategory,
         category: createMahjongGameDto.category,
         players: playerRecords,
       });
@@ -134,21 +139,21 @@ export class MahjongService {
 
   async updateRating(
     player: MahjongPlayer,
+    ratingCategory: MahjongRatingCategory,
     delta: number,
     queryRunner: QueryRunner,
   ) {
     const res = await queryRunner.manager.update(
-      MahjongPlayer,
-      { playerName: player.playerName },
+      MahjongRating,
+      { player: player, category: ratingCategory },
       {
         rating: () => `rating + ${delta}`,
       },
     );
-    player.rating += delta;
     const p = await this.mahjongPlayerService.findOneByPlayerName(
       player.playerName,
     );
-    return player;
+    return p;
   }
 
   async findAll() {
@@ -158,7 +163,13 @@ export class MahjongService {
       .orderBy('game.id')
       .addOrderBy('record.seat')
       .leftJoin('record.player', 'player')
-      .select(['game.id', 'game.category', 'player.nickname', 'record.score'])
+      .select([
+        'game.id',
+        'game.ratingCategory',
+        'game.category',
+        'player.nickname',
+        'record.score',
+      ])
       .getRawMany();
     // console.log(queryResult);
 
@@ -172,6 +183,7 @@ export class MahjongService {
     const result = Object.values(groupedResult).map((game: Array<any>) => {
       return {
         id: queryResult[0].game_id,
+        ratingCategory: queryResult[0].game_ratingCategory,
         category: game[0].game_category,
         players: game.map((player) => {
           return {
@@ -195,6 +207,7 @@ export class MahjongService {
       .orderBy('record.seat')
       .select([
         'game.id',
+        'game.ratingCategory',
         'game.category',
         'player.playerName',
         'player.nickname',
@@ -204,6 +217,7 @@ export class MahjongService {
     console.log(queryResult);
     if (queryResult.length === 0) throw new Error(`ID_GAME_DOES_NOT_EXISTS`);
     return {
+      ratingCategory: queryResult[0].game_ratingCategory,
       category: queryResult[0].game_category,
       players: queryResult.map((player) => {
         return {
@@ -236,6 +250,7 @@ export class MahjongService {
           }
           const updatedPlayer = await this.updateRating(
             player,
+            game.ratingCategory,
             rollbackRating[i],
             queryRunner,
           );
