@@ -4,12 +4,16 @@ import { UserService } from 'src/user/user.service';
 import { MahjongPlayer } from './entities/player.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
+import { MahjongRatingCategory } from '../enum/mahjong.enum';
+import { MahjongRating } from './entities/rating.entity';
 
 @Injectable()
 export class MahjongPlayerService {
   constructor(
     @InjectRepository(MahjongPlayer)
     private mahjongPlayerRepository: Repository<MahjongPlayer>,
+    @InjectRepository(MahjongRating)
+    private mahjongRatingRepository: Repository<MahjongRating>,
     private readonly userService: UserService,
   ) {}
 
@@ -21,7 +25,17 @@ export class MahjongPlayerService {
       playerName,
       nickname,
     });
-    return await this.mahjongPlayerRepository.save(player);
+    await this.mahjongPlayerRepository.save(player);
+    const ratings = await Promise.all(
+      Object.values(MahjongRatingCategory).map(async (category) => {
+        const rating = this.mahjongRatingRepository.create({
+          player,
+          category,
+        });
+        await this.mahjongRatingRepository.save(rating);
+      }),
+    );
+    return player;
   }
 
   // TODO: User entity와 연동하는 메소드
@@ -43,9 +57,36 @@ export class MahjongPlayerService {
   }
 
   async getAll() {
+    // const res = await this.mahjongPlayerRepository.find({
+    //   select: ['playerName', 'nickname', 'rating'],
+    //   order: { rating: 'DESC' },
+    // });
+
+    // const queryResult = await this.dataSource
+    //   .createQueryBuilder(MahjongPlayerRecord, 'record')
+    //   .leftJoin('record.game', 'game')
+    //   .leftJoin('record.player', 'player')
+    //   .where('game.id = :id', { id })
+    //   .orderBy('record.seat')
+    //   .select([
+    //     'game.id',
+    //     'game.ratingCategory',
+    //     'game.category',
+    //     'player.playerName',
+    //     'player.nickname',
+    //     'record.score',
+    //   ])
+    //   .getRawMany();
     const res = await this.mahjongPlayerRepository.find({
-      select: ['playerName', 'nickname', 'rating'],
-      order: { rating: 'DESC' },
+      select: {
+        playerName: true,
+        nickname: true,
+        rating: {
+          category: true,
+          rating: true,
+        },
+      },
+      relations: ['rating'],
     });
     return res;
   }

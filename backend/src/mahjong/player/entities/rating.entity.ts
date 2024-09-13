@@ -7,7 +7,9 @@ export class MahjongRating {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => MahjongPlayer, (player) => player.rating)
+  @ManyToOne(() => MahjongPlayer, (player) => player.rating, {
+    onDelete: 'CASCADE',
+  })
   player: MahjongPlayer;
 
   @Column()
