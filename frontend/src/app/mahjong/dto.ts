@@ -1,3 +1,8 @@
+export enum MahjongRatingCategory {
+  fourPlayer = "4마",
+  threePlayer = "3마",
+}
+
 export class MahjongUserRecord {
   nickname!: string;
   score!: number;
@@ -13,7 +18,12 @@ export class MahjongRankingRecord {
   rating!: number;
 }
 
+export class MahjongRanking {
+  category!: MahjongRatingCategory;
+  ranking: MahjongRankingRecord[] = [];
+}
+
 export class MahjongMainPageDto {
   record: MahjongGameRecord[] = [];
-  ranking: MahjongRankingRecord[] = [];
+  ranking: MahjongRanking[] = [];
 }
