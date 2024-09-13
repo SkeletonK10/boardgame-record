@@ -27,6 +27,7 @@ export class MahjongService {
       throw new Error(`INVALID_MAHJONG_GAME`);
     }
     const rating = this.calculateRating(scores, createMahjongGameDto.category);
+    const ranks = this.calculateRank(rating);
 
     // TODO: 트랜잭션 따로 빼기
     // TODO: 로직 개선 (요청 따다닥 보내기)
@@ -63,6 +64,7 @@ export class MahjongService {
             const recordDto = queryRunner.manager.create(MahjongPlayerRecord, {
               player: updatedPlayer,
               seat,
+              rank: ranks[seat],
               score: scores[seat],
             });
             const record = await queryRunner.manager.save(
@@ -117,6 +119,17 @@ export class MahjongService {
     // console.log(sortedScores);
     // console.log(sortedRating);
     return sortedRating;
+  }
+
+  calculateRank(ratings: number[]) {
+    const sortedRatings = ratings
+      .map((r, seat) => [r, seat])
+      .sort((v1, v2) => v2[0] - v1[0]);
+    const rank = sortedRatings
+      .map((v, i) => [...v, i + 1]) // [rating, seat, rank]
+      .sort((v1, v2) => v1[1] - v2[1])
+      .map((v) => v[2]);
+    return rank;
   }
 
   async updateRating(

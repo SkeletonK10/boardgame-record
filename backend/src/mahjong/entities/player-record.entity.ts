@@ -30,6 +30,9 @@ export class MahjongPlayerRecord {
   seat: MahjongSeat;
 
   @Column()
+  rank: number;
+
+  @Column()
   score: number;
 
   @DeleteDateColumn()
