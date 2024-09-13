@@ -17,11 +17,16 @@ export class MahjongService {
 
   async create(createMahjongGameDto: CreateMahjongGameDto) {
     // console.log(createMahjongGameDto);
+    createMahjongGameDto.players = createMahjongGameDto.players.filter(
+      ({ playerName }) => typeof playerName === 'string',
+    );
     const players = createMahjongGameDto.players.map(
       ({ playerName }) => playerName,
     );
     const scores = createMahjongGameDto.players.map(({ score }) => +score);
 
+    console.log(players);
+    console.log(scores);
     if (!this.verifyGame(players, scores)) {
       throw new Error(`INVALID_MAHJONG_GAME`);
     }
@@ -32,6 +37,7 @@ export class MahjongService {
     const rating = this.calculateRating(scores, createMahjongGameDto.category);
     const ranks = this.calculateRank(rating);
 
+    console.log(rating);
     // TODO: 트랜잭션 따로 빼기
     // TODO: 로직 개선 (요청 따다닥 보내기)
     const queryRunner = this.dataSource.createQueryRunner();
@@ -59,6 +65,7 @@ export class MahjongService {
                 nickname,
               });
             }
+            console.log(seat);
             const updatedPlayer = await this.updateRating(
               player,
               ratingCategory,
@@ -143,6 +150,7 @@ export class MahjongService {
     delta: number,
     queryRunner: QueryRunner,
   ) {
+    console.log('UPDATE');
     const res = await queryRunner.manager.update(
       MahjongRating,
       { player: player, category: ratingCategory },
