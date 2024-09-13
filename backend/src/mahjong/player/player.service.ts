@@ -57,26 +57,6 @@ export class MahjongPlayerService {
   }
 
   async getAll() {
-    // const res = await this.mahjongPlayerRepository.find({
-    //   select: ['playerName', 'nickname', 'rating'],
-    //   order: { rating: 'DESC' },
-    // });
-
-    // const queryResult = await this.dataSource
-    //   .createQueryBuilder(MahjongPlayerRecord, 'record')
-    //   .leftJoin('record.game', 'game')
-    //   .leftJoin('record.player', 'player')
-    //   .where('game.id = :id', { id })
-    //   .orderBy('record.seat')
-    //   .select([
-    //     'game.id',
-    //     'game.ratingCategory',
-    //     'game.category',
-    //     'player.playerName',
-    //     'player.nickname',
-    //     'record.score',
-    //   ])
-    //   .getRawMany();
     const res = await this.mahjongPlayerRepository.find({
       select: {
         playerName: true,
@@ -88,6 +68,21 @@ export class MahjongPlayerService {
       },
       relations: ['rating'],
     });
+    return res;
+  }
+
+  async getRanking(category: MahjongRatingCategory) {
+    const res = await this.mahjongRatingRepository
+      .createQueryBuilder('rating')
+      .leftJoin('rating.player', 'player')
+      .where('rating.category = :category', { category })
+      .orderBy('rating.rating')
+      .select([
+        'player.playerName AS playerName',
+        'player.nickname AS nickname',
+        'rating.rating AS rating',
+      ])
+      .getRawMany();
     return res;
   }
 }
