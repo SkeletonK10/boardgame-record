@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { MahjongMainPageDto } from "./dto";
+import { MahjongMainPageDto, MahjongRatingCategory } from "./dto";
 import { AddButton } from "./add-button";
 
 const testRecord = [
@@ -53,26 +53,47 @@ const testRanking = [
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
     const recordResponsePromise = api.get(`/mahjong`);
-    const rankingResponsePromise = api.get(`/mahjong/player/ranking`);
+    const p3RankingResponsePromise = api.get(`/mahjong/player/ranking/3마`);
+    const p4RankingResponsePromise = api.get(`/mahjong/player/ranking/4마`);
     // console.log("VVVVVVVVVVVVVV");
-    const [recordResponse, rankingResponse] = await Promise.all([
+    const [recordResponse, p3RankingResponse, p4RankingResponse] = await Promise.all([
       recordResponsePromise,
-      rankingResponsePromise,
+      p3RankingResponsePromise,
+      p4RankingResponsePromise,
     ]);
     // console.log("AAAAAAAAAAAAA");
     const record = (recordResponse.data as any).data.slice(0, 5);
-    const ranking = (rankingResponse.data as any).data;
+    const p3Ranking = (p3RankingResponse.data as any).data;
+    const p4Ranking = (p4RankingResponse.data as any).data;
     // console.log(ranking);
     return {
-      record,
-      ranking,
+      record: record,
+      ranking: [
+        {
+          category: MahjongRatingCategory.fourPlayer,
+          ranking: p4Ranking,
+        },
+        {
+          category: MahjongRatingCategory.threePlayer,
+          ranking: p3Ranking,
+        },
+      ]
     };
   } catch (err) {
     // return test data
     return {
       record: testRecord,
-      ranking: testRanking,
-    };
+      ranking: [
+        {
+          category: MahjongRatingCategory.fourPlayer,
+          ranking: testRanking,
+        },
+        {
+          category: MahjongRatingCategory.threePlayer,
+          ranking: testRanking,
+        },
+      ]
+    }
   }
 };
 
@@ -146,39 +167,44 @@ export default async function MahjongMainPage() {
               justifyContent: "center",
             }}
           >
-            <Typography
-              variant="h6"
-              noWrap
-              component="div"
-              sx={{
-                display: { sm: "block" },
-                userSelect: "none",
-                flexGrow: 1,
-              }}
-            >
-              우마 순위
-            </Typography>
-            <List sx={{ width: "100%" }}>
-              {ranking.map((value, index) => (
-                <ListItem key={index}>
-                  <ListItemButton>
-                    <Grid container spacing={1} sx={{ width: "100%" }}>
-                      <Grid size={2}>
-                        <Box>{index + 1}</Box>
-                      </Grid>
-                      <Grid size={6}>
-                        <Typography component="div" noWrap>
-                          {value.nickname}
-                        </Typography>
-                      </Grid>
-                      <Grid size={4}>
-                        <Box>{value.rating}</Box>
-                      </Grid>
-                    </Grid>
-                  </ListItemButton>
-                </ListItem>
-              ))}
-            </List>
+            {ranking.map(({ category, ranking }) => (
+              <Box key={category}>
+                <Typography
+                  variant="h6"
+                  noWrap
+                  component="div"
+                  sx={{
+                    display: { sm: "block" },
+                    userSelect: "none",
+                    flexGrow: 1,
+                  }}
+                >
+                  {`${category} 우마 순위`}
+                </Typography>
+                <List sx={{ width: "100%" }}>
+                  {ranking.map((value, index) => (
+                    <ListItem key={value.rating}>
+                      <ListItemButton>
+                        <Grid container spacing={1} sx={{ width: "100%" }}>
+                          <Grid size={2}>
+                            <Box>{index + 1}</Box>
+                          </Grid>
+                          <Grid size={6}>
+                            <Typography component="div" noWrap>
+                              {value.nickname}
+                            </Typography>
+                          </Grid>
+                          <Grid size={4}>
+                            <Box>{value.rating}</Box>
+                          </Grid>
+                        </Grid>
+                      </ListItemButton>
+                    </ListItem>
+                  ))}
+                </List>
+              </Box>
+            ))
+            }
           </Box>
         </Grid>
       </Grid>

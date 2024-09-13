@@ -1,4 +1,4 @@
-import { MahjongCategory } from '../entities/game-record.entity';
+import { MahjongCategory } from '../enum/mahjong.enum';
 
 class MahjongPlay {
   playerName: string;
