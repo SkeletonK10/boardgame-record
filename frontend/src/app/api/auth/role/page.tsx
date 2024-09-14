@@ -34,7 +34,7 @@ export default function MahjongAddRecordPage() {
     } else if (grantState.message === text.auth.manageRole.error) {
       enqueueSnackbar(grantState.message, { variant: "error" });
     }
-  }, [grantState]);
+  }, [grantState, enqueueSnackbar, router]);
 
   useEffect(() => {
     if (depriveState.message === text.auth.manageRole.successToDeprive) {
@@ -43,7 +43,7 @@ export default function MahjongAddRecordPage() {
     } else if (depriveState.message === text.auth.manageRole.error) {
       enqueueSnackbar(depriveState.message, { variant: "error" });
     }
-  }, [depriveState]);
+  }, [depriveState, enqueueSnackbar, router]);
   return (
     <Box
       sx={{
