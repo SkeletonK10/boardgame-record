@@ -27,10 +27,30 @@ export async function grantRole(prevState: any, formData: FormData) {
       return { message: text.auth.manageRole.error };
     else {
       revalidatePath("/api/auth/role");
-      return { message: text.auth.manageRole.success };
+      return { message: text.auth.manageRole.successToGrant };
     }
   } catch (err) {
     // console.log((err as Error).message);
+    return { message: text.auth.manageRole.error };
+  }
+}
+
+export async function depriveRole(prevState: any, formData: FormData) {
+  try {
+    const body = {
+      username: formData.get("username"),
+      role: formData.get("role"),
+    };
+    const response = await api.delete(`/auth/role`, { params: body });
+    // console.log(response.data);
+    if ((response.data as any).code !== "OK")
+      return { message: text.auth.manageRole.error };
+    else {
+      revalidatePath("/api/auth/role");
+      return { message: text.auth.manageRole.successToDeprive };
+    }
+  } catch (err) {
+    console.log((err as Error).message);
     return { message: text.auth.manageRole.error };
   }
 }

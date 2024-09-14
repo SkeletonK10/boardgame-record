@@ -6,7 +6,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role, UserRole } from './entities/role.entity';
-import { GrantRoleDto } from './dto/grant-role.dto';
+import { UserRoleDto } from './dto/user-role.dto';
 
 @Injectable()
 export class UserService {
@@ -34,6 +34,14 @@ export class UserService {
 
   async createRole(user: User, role: Role) {
     const res = await this.userRoleRepository.save({
+      role,
+      user,
+    });
+    return res;
+  }
+
+  async deleteRole(user: User, role: Role) {
+    const res = await this.userRoleRepository.delete({
       role,
       user,
     });
@@ -90,12 +98,21 @@ export class UserService {
     return result;
   }
 
-  async grantRole(grantRoleDto: GrantRoleDto) {
+  async grantRole(grantRoleDto: UserRoleDto) {
     const user = await this.findOneByUsername(grantRoleDto.username);
     if (!user) throw new Error(`GRANT_ROLE_USER_NOT_FOUND`);
     if (!Object.values(Role).includes(grantRoleDto.role))
       throw new Error(`WRONG_ROLE_NAME`);
     const res = await this.createRole(user, grantRoleDto.role);
+    return res;
+  }
+
+  async depriveRole(depriveRoleDto: UserRoleDto) {
+    const user = await this.findOneByUsername(depriveRoleDto.username);
+    if (!user) throw new Error(`DEPRIVE_ROLE_USER_NOT_FOUND`);
+    if (!Object.values(Role).includes(depriveRoleDto.role))
+      throw new Error(`WRONG_ROLE_NAME`);
+    const res = await this.deleteRole(user, depriveRoleDto.role);
     return res;
   }
 

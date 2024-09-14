@@ -14,7 +14,8 @@ export const text = {
   auth: {
     manageRole: {
       title: `역할 관리하기`,
-      success: `역할 부여 성공!`,
+      successToGrant: `역할 부여 성공!`,
+      successToDeprive: `역할 제거 성공!`,
       error: `에러가 발생했습니다.`,
     },
   },

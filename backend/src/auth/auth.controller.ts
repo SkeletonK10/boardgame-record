@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Headers,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,7 +16,7 @@ import { RoleGuard, Roles } from './guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { UserService } from 'src/user/user.service';
 import { RefreshDto } from './dto/refresh.dto';
-import { GrantRoleDto } from 'src/user/dto/grant-role.dto';
+import { UserRoleDto } from 'src/user/dto/user-role.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -70,7 +72,7 @@ export class AuthController {
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.admin)
   @Post('/role')
-  async grantRole(@Body() grantRoleDto: GrantRoleDto) {
+  async grantRole(@Body() grantRoleDto: UserRoleDto) {
     try {
       const { user, role } = await this.userService.grantRole(grantRoleDto);
       return {
@@ -80,6 +82,25 @@ export class AuthController {
     } catch (err) {
       return {
         code: err instanceof Error ? err.message : `ERR_AUTH_GRANT_ROLE`,
+        msg: `알 수 없는 에러가 발생했습니다.`,
+      };
+    }
+  }
+
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.admin)
+  @Delete('/role')
+  async depriveRole(@Query() depriveRoleDto: UserRoleDto) {
+    try {
+      const res = await this.userService.depriveRole(depriveRoleDto);
+      return {
+        code: `OK`,
+        msg: `'${depriveRoleDto.username}' 유저의 ${depriveRoleDto.role} 역할 제거 완료!`,
+      };
+    } catch (err) {
+      console.log((err as any).message);
+      return {
+        code: err instanceof Error ? err.message : `ERR_AUTH_DEPRIVE_ROLE`,
         msg: `알 수 없는 에러가 발생했습니다.`,
       };
     }

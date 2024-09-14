@@ -2,7 +2,7 @@
 import { text } from "@/lib/data";
 import { Box } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { fetchUsers, grantRole } from "./actions";
+import { depriveRole, fetchUsers, grantRole } from "./actions";
 import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
@@ -15,7 +15,11 @@ const initialState = {
 export default function MahjongAddRecordPage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
-  const [formState, formAction] = useFormState(grantRole, initialState);
+  const [grantState, grantFormAction] = useFormState(grantRole, initialState);
+  const [depriveState, depriveFormAction] = useFormState(
+    depriveRole,
+    initialState
+  );
   const [users, setUsers] = useState<UserWithRolesDto[]>([]);
   const [isPending, startTransition] = useTransition();
 
@@ -24,27 +28,54 @@ export default function MahjongAddRecordPage() {
   }, []);
 
   useEffect(() => {
-    if (formState.message === text.auth.manageRole.success) {
-      enqueueSnackbar(formState.message, { variant: "success" });
+    if (grantState.message === text.auth.manageRole.successToGrant) {
+      enqueueSnackbar(grantState.message, { variant: "success" });
       router.refresh();
-    } else if (formState.message === text.auth.manageRole.error) {
-      enqueueSnackbar(formState.message, { variant: "error" });
+    } else if (grantState.message === text.auth.manageRole.error) {
+      enqueueSnackbar(grantState.message, { variant: "error" });
     }
-  }, [formState]);
+  }, [grantState]);
+
+  useEffect(() => {
+    if (depriveState.message === text.auth.manageRole.successToDeprive) {
+      enqueueSnackbar(depriveState.message, { variant: "success" });
+      router.refresh();
+    } else if (depriveState.message === text.auth.manageRole.error) {
+      enqueueSnackbar(depriveState.message, { variant: "error" });
+    }
+  }, [depriveState]);
   return (
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+      }}
+    >
       <h2>{text.auth.manageRole.title}</h2>
-      <form action={formAction}>
-        <div>
-          <label>username</label>
-          <input type="text" id="username" name="username"></input>
-        </div>
-        <div>
-          <label>role</label>
-          <input type="text" id="role" name="role"></input>
-        </div>
-        <button type="submit">추가</button>
-      </form>
+      <Box>
+        <form action={grantFormAction}>
+          <div>
+            <label>username</label>
+            <input type="text" id="username" name="username"></input>
+          </div>
+          <div>
+            <label>role</label>
+            <input type="text" id="role" name="role"></input>
+          </div>
+          <button type="submit">추가</button>
+        </form>
+        <form action={depriveFormAction}>
+          <div>
+            <label>username</label>
+            <input type="text" id="username" name="username"></input>
+          </div>
+          <div>
+            <label>role</label>
+            <input type="text" id="role" name="role"></input>
+          </div>
+          <button type="submit">제거</button>
+        </form>
+      </Box>
       <Box>
         유저 역할 목록
         {users.map(({ username, nickname, roles }) => (
