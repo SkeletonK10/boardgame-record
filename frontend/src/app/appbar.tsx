@@ -1,6 +1,6 @@
 "use client";
 
-import { text } from "@/lib/data";
+import { Role, text } from "@/lib/data";
 import { AccountCircle, ChevronLeft, Menu } from "@mui/icons-material";
 import {
   AppBar as MuiAppBar,
@@ -40,7 +40,12 @@ export default function AppBar() {
     { name: `메인 페이지`, url: `/` },
     { name: `마작 저장소`, url: `/mahjong` },
     { name: `테스트(메인 페이지)`, url: `/` },
-  ]
+  ];
+
+  // Admin only
+  if (session?.user && (session.user as any).roles.includes(Role.admin))
+    menuList.push({ name: `권한 관리 페이지`, url: `/api/auth/role` });
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <MuiAppBar position="fixed">
@@ -69,10 +74,7 @@ export default function AppBar() {
           <Box sx={{ display: { md: "flex" } }}>
             {session ? (
               <Toolbar component="div">
-                <IconButton
-                  size="large"
-                  color="inherit"
-                >
+                <IconButton size="large" color="inherit">
                   <AccountCircle />
                 </IconButton>
                 <Typography
@@ -83,12 +85,12 @@ export default function AppBar() {
                     router.refresh();
                   }}
                   sx={{
-                    padding: '0.5rem',
+                    padding: "0.5rem",
                     userSelect: "none",
                     cursor: "pointer",
                   }}
                 >
-                로그아웃
+                  로그아웃
                 </Typography>
               </Toolbar>
             ) : (
@@ -98,13 +100,13 @@ export default function AppBar() {
                   noWrap
                   component="div"
                   onClick={() => router.push("/api/auth/signin")}
-                    sx={{
-                    padding: '0.5rem',
+                  sx={{
+                    padding: "0.5rem",
                     userSelect: "none",
                     cursor: "pointer",
                   }}
                 >
-                로그인
+                  로그인
                 </Typography>
                 <Typography
                   variant="h6"
@@ -112,12 +114,12 @@ export default function AppBar() {
                   component="div"
                   onClick={() => router.push("/api/auth/register")}
                   sx={{
-                    padding: '0.5rem',
+                    padding: "0.5rem",
                     userSelect: "none",
                     cursor: "pointer",
                   }}
                 >
-                회원가입
+                  회원가입
                 </Typography>
               </Toolbar>
             )}
@@ -146,10 +148,12 @@ export default function AppBar() {
         <List>
           {menuList.map(({ name, url }, index) => (
             <ListItem key={index} disablePadding>
-              <ListItemButton onClick={() => {
-                router.push(url);
-                setOpen(false);
-              }}>
+              <ListItemButton
+                onClick={() => {
+                  router.push(url);
+                  setOpen(false);
+                }}
+              >
                 <ListItemIcon>
                   <Menu />
                 </ListItemIcon>
