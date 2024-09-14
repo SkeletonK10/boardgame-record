@@ -7,4 +7,3 @@
 // /mahjong
 
 // TODO: /mahjong/add-record 폼 입력 검증 좀더 잘하기
-// TODO: /mahjong 기록 추가 버튼(add-button) 로그인 안하고 누를때 roles가 undefined인 문제
