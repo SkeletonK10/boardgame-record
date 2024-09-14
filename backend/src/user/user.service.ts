@@ -51,6 +51,23 @@ export class UserService {
     return result;
   }
 
+  async findAllWithRoles() {
+    const result = await this.userRepository.find({
+      select: {
+        id: true,
+        username: true,
+        nickname: true,
+      },
+      relations: ['roles'],
+    });
+    return result.map((row) => {
+      return {
+        ...row,
+        roles: row.roles.map(({ role }) => role),
+      };
+    });
+  }
+
   async findOneByUsername(username: string) {
     const result = await this.userRepository.findOne({
       relations: ['roles'],
