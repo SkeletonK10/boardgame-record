@@ -1,9 +1,13 @@
-// FE
+// FE 기준
 
-// /api/auth
+// /api/auth 관련
 
 // TODO: 회원가입 시 입력 검증
 
-// /mahjong
+// /mahjong 관련
 
 // TODO: /mahjong/add-record 폼 입력 검증 좀더 잘하기
+// TODO: 게임 삭제 페이지 만들기
+// TODO: 게임 상세 페이지 만들기
+// TODO: 플레이어 상세 페이지 만들기
+// TODO: 플레이어 <-> 유저 연동하기
