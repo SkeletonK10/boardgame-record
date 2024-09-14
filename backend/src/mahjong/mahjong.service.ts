@@ -58,14 +58,14 @@ export class MahjongService {
                   await this.mahjongPlayerService.countGuestByPlayerName(
                     playerName,
                   );
-                playerName += `${guestCount + 1}`;
+                playerName += this.nthAlphabet(guestCount + 1);
               }
               player = await this.mahjongPlayerService.create({
                 playerName,
                 nickname,
               });
             }
-            console.log(seat);
+            // console.log(seat);
             const updatedPlayer = await this.updateRating(
               player,
               ratingCategory,
@@ -144,13 +144,25 @@ export class MahjongService {
     return rank;
   }
 
+  nthAlphabet(n: number) {
+    const l: number[] = [];
+    const a = 'A'.charCodeAt(0);
+    while (n) {
+      console.log(n);
+      const q = n % 26;
+      n = Math.floor(n / 26);
+      if (q) l.push(a + q - 1);
+    }
+    return String.fromCharCode(...l.reverse());
+  }
+
   async updateRating(
     player: MahjongPlayer,
     ratingCategory: MahjongRatingCategory,
     delta: number,
     queryRunner: QueryRunner,
   ) {
-    console.log('UPDATE');
+    // console.log('UPDATE');
     const res = await queryRunner.manager.update(
       MahjongRating,
       { player: player, category: ratingCategory },
