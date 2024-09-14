@@ -76,7 +76,7 @@ export class MahjongPlayerService {
       .createQueryBuilder('rating')
       .leftJoin('rating.player', 'player')
       .where('rating.category = :category', { category })
-      .orderBy('rating.rating')
+      .orderBy('rating.rating', 'DESC')
       .select([
         'player.playerName AS playerName',
         'player.nickname AS nickname',
