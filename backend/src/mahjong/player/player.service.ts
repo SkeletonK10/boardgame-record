@@ -76,11 +76,11 @@ export class MahjongPlayerService {
       .createQueryBuilder('rating')
       .leftJoin('rating.player', 'player')
       .where('rating.category = :category', { category })
-      .orderBy('rating.rating', 'DESC')
       .select([
         'player.playerName AS playerName',
         'player.nickname AS nickname',
         'rating.rating AS rating',
+        'RANK () OVER (ORDER BY "rating"."rating" DESC) AS ranking',
       ])
       .getRawMany();
     return res;

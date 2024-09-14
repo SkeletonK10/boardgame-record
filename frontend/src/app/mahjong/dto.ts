@@ -14,6 +14,8 @@ export class MahjongGameRecord {
 }
 
 export class MahjongRankingRecord {
+  ranking!: number;
+  playerName!: string;
   nickname!: string;
   rating!: number;
 }

@@ -56,11 +56,12 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
     const p3RankingResponsePromise = api.get(`/mahjong/player/ranking/3마`);
     const p4RankingResponsePromise = api.get(`/mahjong/player/ranking/4마`);
     // console.log("VVVVVVVVVVVVVV");
-    const [recordResponse, p3RankingResponse, p4RankingResponse] = await Promise.all([
-      recordResponsePromise,
-      p3RankingResponsePromise,
-      p4RankingResponsePromise,
-    ]);
+    const [recordResponse, p3RankingResponse, p4RankingResponse] =
+      await Promise.all([
+        recordResponsePromise,
+        p3RankingResponsePromise,
+        p4RankingResponsePromise,
+      ]);
     // console.log("AAAAAAAAAAAAA");
     const record = (recordResponse.data as any).data.slice(0, 5);
     const p3Ranking = (p3RankingResponse.data as any).data;
@@ -77,7 +78,7 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
           category: MahjongRatingCategory.threePlayer,
           ranking: p3Ranking,
         },
-      ]
+      ],
     };
   } catch (err) {
     // return test data
@@ -92,8 +93,8 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
           category: MahjongRatingCategory.threePlayer,
           ranking: testRanking,
         },
-      ]
-    }
+      ],
+    };
   }
 };
 
@@ -182,16 +183,16 @@ export default async function MahjongMainPage() {
                   {`${category} 우마 순위`}
                 </Typography>
                 <List sx={{ width: "100%" }}>
-                  {ranking.map((value, index) => (
-                    <ListItem key={value.rating}>
+                  {ranking.map((value) => (
+                    <ListItem key={value.playerName}>
                       <ListItemButton>
                         <Grid container spacing={1} sx={{ width: "100%" }}>
                           <Grid size={2}>
-                            <Box>{index + 1}</Box>
+                            <Box>{value.ranking}</Box>
                           </Grid>
                           <Grid size={6}>
                             <Typography component="div" noWrap>
-                              {value.nickname}
+                              {`${value.nickname}`}
                             </Typography>
                           </Grid>
                           <Grid size={4}>
@@ -203,8 +204,7 @@ export default async function MahjongMainPage() {
                   ))}
                 </List>
               </Box>
-            ))
-            }
+            ))}
           </Box>
         </Grid>
       </Grid>
