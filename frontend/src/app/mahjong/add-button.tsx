@@ -11,13 +11,13 @@ export function AddButton() {
   const { enqueueSnackbar } = useSnackbar();
   const handleClick = () => {
     const requiredRoles = [Role.mahjongRecordAdmin, Role.admin];
-    const roles = (session?.user as any).roles;
-    console.log(session);
-    console.log(roles);
-    if (!roles) {
+    
+    if (!session?.user) {
       enqueueSnackbar(text.error.noSession, { variant: "error" });
       return;
     }
+    const roles = (session?.user as any).roles;
+
     const intersect = roles.filter((role: Role) => {
       return requiredRoles.includes(role);
     });

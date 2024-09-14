@@ -1,2 +1,9 @@
-// TODO: /mahjong/add-record 페이지 접근 실패
-// TODO: 로그아웃 시 localhost:3000으로 돌아가는 문제 해결하기
+// FE
+
+// /api/auth
+
+// TODO: 회원가입 시 입력 검증
+
+// /mahjong
+
+// TODO: /mahjong/add-record 폼 입력 검증 좀더 잘하기
