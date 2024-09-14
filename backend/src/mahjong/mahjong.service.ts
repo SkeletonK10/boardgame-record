@@ -158,14 +158,24 @@ export class MahjongService {
 
   async updateRating(
     player: MahjongPlayer,
-    ratingCategory: MahjongRatingCategory,
+    category: MahjongRatingCategory,
     delta: number,
     queryRunner: QueryRunner,
   ) {
-    // console.log('UPDATE');
+    const rating = await queryRunner.manager.findOne(MahjongRating, {
+      where: {
+        player,
+        category,
+      },
+    });
+
+    if (!rating) {
+      await queryRunner.manager.insert(MahjongRating, { player, category });
+    }
+
     const res = await queryRunner.manager.update(
       MahjongRating,
-      { player: player, category: ratingCategory },
+      { player, category },
       {
         rating: () => `rating + ${delta}`,
       },

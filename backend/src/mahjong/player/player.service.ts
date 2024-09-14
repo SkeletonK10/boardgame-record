@@ -26,15 +26,6 @@ export class MahjongPlayerService {
       nickname,
     });
     await this.mahjongPlayerRepository.save(player);
-    const ratings = await Promise.all(
-      Object.values(MahjongRatingCategory).map(async (category) => {
-        const rating = this.mahjongRatingRepository.create({
-          player,
-          category,
-        });
-        await this.mahjongRatingRepository.save(rating);
-      }),
-    );
     return player;
   }
 
