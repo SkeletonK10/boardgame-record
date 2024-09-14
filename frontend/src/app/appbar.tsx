@@ -81,8 +81,7 @@ export default function AppBar() {
                   noWrap
                   component="div"
                   onClick={() => {
-                    signOut();
-                    router.refresh();
+                    signOut({ redirect: true, callbackUrl: `/` });
                   }}
                   sx={{
                     padding: "0.5rem",
