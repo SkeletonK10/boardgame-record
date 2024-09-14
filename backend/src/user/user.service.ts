@@ -93,6 +93,8 @@ export class UserService {
   async grantRole(grantRoleDto: GrantRoleDto) {
     const user = await this.findOneByUsername(grantRoleDto.username);
     if (!user) throw new Error(`GRANT_ROLE_USER_NOT_FOUND`);
+    if (!Object.values(Role).includes(grantRoleDto.role))
+      throw new Error(`WRONG_ROLE_NAME`);
     const res = await this.createRole(user, grantRoleDto.role);
     return res;
   }
