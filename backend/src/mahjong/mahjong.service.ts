@@ -214,8 +214,8 @@ export class MahjongService {
     // console.log(groupedResult);
     const result = Object.values(groupedResult).map((game: Array<any>) => {
       return {
-        id: queryResult[0].game_id,
-        ratingCategory: queryResult[0].game_ratingCategory,
+        id: game[0].game_id,
+        ratingCategory: game[0].game_ratingCategory,
         category: game[0].game_category,
         players: game.map((player) => {
           return {
