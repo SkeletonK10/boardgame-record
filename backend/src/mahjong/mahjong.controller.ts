@@ -81,4 +81,23 @@ export class MahjongController {
       };
     }
   }
+
+  @Get('/statistics/player')
+  async getAllStatistics() {
+    try {
+      const res = await this.mahjongService.getAllPlayerStatistics();
+      return {
+        code: `OK`,
+        msg: `마작 플레이어 통계`,
+        data: res,
+      };
+    } catch (err) {
+      const code =
+        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYERS_STATISTICS`;
+      return {
+        code: code,
+        msg: `알 수 없는 에러가 발생했습니다.`,
+      };
+    }
+  }
 }

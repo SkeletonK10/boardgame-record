@@ -313,4 +313,54 @@ export class MahjongService {
       throw new Error(`MAHJONG_DELETE_GAME_RECORD_FAIL`);
     }
   }
+
+  async getAllPlayerStatistics() {
+    const queryResult = await this.dataSource
+      .createQueryBuilder(MahjongRating, 'rating')
+      .leftJoin(
+        // TODO: 임시 테이블 만들기 (기능 지원하면...)
+        (qb) =>
+          qb
+            .from(MahjongPlayerRecord, 'record')
+            .leftJoin('record.game', 'game')
+            .leftJoin('record.player', 'player')
+            .select([
+              'player.id AS "playerId"',
+              'player.playerName AS "playerName"',
+              'player.nickname AS nickname',
+              'game."ratingCategory" AS category',
+              'ROUND(AVG(record.score), 2) AS "averageScore"',
+              'MAX(record.score) AS "maxScore"',
+              'MIN(record.score) AS "minScore"',
+              'COUNT(*) AS count',
+              'COUNT(CASE WHEN record.rank = 1 THEN 1 ELSE NULL END) AS first',
+              'COUNT(CASE WHEN record.rank = 2 THEN 1 ELSE NULL END) AS second',
+              'COUNT(CASE WHEN record.rank = 3 THEN 1 ELSE NULL END) AS third',
+              'COUNT(CASE WHEN record.rank = 4 THEN 1 ELSE NULL END) AS fourth',
+              'COUNT(CASE WHEN record.score < 0 THEN 1 ELSE NULL END) AS tobi',
+            ])
+            .groupBy('player.id')
+            .addGroupBy('game."ratingCategory"'),
+        'r',
+        'rating."playerId" = r."playerId"',
+      )
+      .select([
+        'r."playerName" AS "playerName"',
+        'r.nickname AS nickname',
+        'r.category AS category',
+        'rating.rating AS rating',
+        'ROUND(rating.rating / r.count, 3) AS "averageRating"',
+        'r."averageScore" AS "averageScore"',
+        'r."maxScore" AS "maxScore"',
+        'r."minScore" AS "minScore"',
+        'r.count AS count',
+        'r.first AS first',
+        'r.second AS second',
+        'r.third AS third',
+        'r.fourth AS fourth',
+        'r.tobi AS tobi',
+      ])
+      .getRawMany();
+    return queryResult;
+  }
 }
