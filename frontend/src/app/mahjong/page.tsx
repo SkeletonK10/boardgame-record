@@ -143,14 +143,20 @@ export default async function MahjongMainPage() {
                             {value.category}
                           </Typography>
                         </Grid>
-                        {value.players.map(({ nickname, score }) => (
-                          <Grid size={6} key={nickname}>
-                            <Typography component="div" noWrap>
-                              {nickname}
-                            </Typography>
-                            <Typography component="div">{score}</Typography>
-                          </Grid>
-                        ))}
+                        {value.players.map(
+                          ({ playerName, nickname, score }) => (
+                            <Grid
+                              size={6}
+                              key={playerName}
+                              sx={{ padding: "0.3rem" }}
+                            >
+                              <Typography component="div" noWrap>
+                                {nickname}
+                              </Typography>
+                              <Typography component="div">{score}</Typography>
+                            </Grid>
+                          )
+                        )}
                       </Grid>
                     </Paper>
                   </ListItemButton>
@@ -169,7 +175,16 @@ export default async function MahjongMainPage() {
             }}
           >
             {ranking.map(({ category, ranking }) => (
-              <Box key={category}>
+              <Box
+                key={category}
+                sx={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
                 <Typography
                   variant="h6"
                   noWrap
@@ -184,8 +199,8 @@ export default async function MahjongMainPage() {
                 </Typography>
                 <List sx={{ width: "100%" }}>
                   {ranking.map((value) => (
-                    <ListItem key={value.playerName}>
-                      <ListItemButton>
+                    <ListItem disableGutters key={value.playerName}>
+                      <ListItemButton disableGutters>
                         <Grid container spacing={1} sx={{ width: "100%" }}>
                           <Grid size={2}>
                             <Box>{value.ranking}</Box>

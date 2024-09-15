@@ -4,6 +4,7 @@ export enum MahjongRatingCategory {
 }
 
 export class MahjongUserRecord {
+  playerName!: string;
   nickname!: string;
   score!: number;
 }
