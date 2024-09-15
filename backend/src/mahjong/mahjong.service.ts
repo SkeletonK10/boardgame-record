@@ -164,7 +164,9 @@ export class MahjongService {
   ) {
     const rating = await queryRunner.manager.findOne(MahjongRating, {
       where: {
-        player,
+        player: {
+          id: player.id,
+        },
         category,
       },
     });
