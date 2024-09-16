@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { MahjongService } from './mahjong.service';
@@ -12,6 +13,7 @@ import { JwtAccessTokenGuard } from 'src/auth/guard/access-token.guard';
 import { CreateMahjongGameDto } from './dto/create-mahjong.dto';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
+import { MahjongRatingCategory } from './enum/mahjong.enum';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -83,9 +85,9 @@ export class MahjongController {
   }
 
   @Get('/statistics/player')
-  async getAllStatistics() {
+  async getAllStatistics(@Query('category') category?: MahjongRatingCategory) {
     try {
-      const res = await this.mahjongService.getAllPlayerStatistics();
+      const res = await this.mahjongService.getAllPlayerStatistics(category);
       return {
         code: `OK`,
         msg: `마작 플레이어 통계`,
