@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { MahjongPlayer } from './player.entity';
-import { MahjongRatingCategory } from 'src/mahjong/enum/mahjong.enum';
+import { MahjongCategory } from 'src/mahjong/enum/mahjong.enum';
 
 @Entity()
 export class MahjongRating {
@@ -13,7 +13,7 @@ export class MahjongRating {
   player: MahjongPlayer;
 
   @Column()
-  category: MahjongRatingCategory;
+  category: MahjongCategory;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   rating: number;

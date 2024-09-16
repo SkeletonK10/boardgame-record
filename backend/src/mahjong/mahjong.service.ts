@@ -6,7 +6,7 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { MahjongPlayerRecord } from './entities/player-record.entity';
 import { MahjongPlayer } from './player/entities/player.entity';
 import { MahjongRating } from './player/entities/rating.entity';
-import { MahjongCategory, MahjongRatingCategory } from './enum/mahjong.enum';
+import { MahjongCategory, MahjongSubcategory } from './enum/mahjong.enum';
 
 @Injectable()
 export class MahjongService {
@@ -30,11 +30,14 @@ export class MahjongService {
     if (!this.verifyGame(players, scores)) {
       throw new Error(`INVALID_MAHJONG_GAME`);
     }
-    const ratingCategory =
+    const category =
       players.length === 4
-        ? MahjongRatingCategory.fourPlayer
-        : MahjongRatingCategory.threePlayer;
-    const rating = this.calculateRating(scores, createMahjongGameDto.category);
+        ? MahjongCategory.fourPlayer
+        : MahjongCategory.threePlayer;
+    const rating = this.calculateRating(
+      scores,
+      createMahjongGameDto.subcategory,
+    );
     const ranks = this.calculateRank(rating);
 
     console.log(rating);
@@ -68,7 +71,7 @@ export class MahjongService {
             // console.log(seat);
             const updatedPlayer = await this.updateRating(
               player,
-              ratingCategory,
+              category,
               rating[seat],
               queryRunner,
             );
@@ -87,8 +90,8 @@ export class MahjongService {
         ),
       );
       const game = queryRunner.manager.create(MahjongGameRecord, {
-        ratingCategory: ratingCategory,
-        category: createMahjongGameDto.category,
+        category: category,
+        subcategory: createMahjongGameDto.subcategory,
         players: playerRecords,
       });
       const res = await queryRunner.manager.save(MahjongGameRecord, game);
@@ -112,8 +115,8 @@ export class MahjongService {
     return targetTotal === scoreTotal;
   }
 
-  calculateRating(scores: number[], category: MahjongCategory) {
-    const multiplier = category === '반장전' ? 1 : 0.5;
+  calculateRating(scores: number[], subcategory: MahjongSubcategory) {
+    const multiplier = subcategory === '반장전' ? 1 : 0.5;
     const playerCount = scores.length;
     const returnScore = playerCount === 4 ? 25000 : 35000;
     const sortedScores = scores
@@ -158,7 +161,7 @@ export class MahjongService {
 
   async updateRating(
     player: MahjongPlayer,
-    category: MahjongRatingCategory,
+    category: MahjongCategory,
     delta: number,
     queryRunner: QueryRunner,
   ) {
@@ -197,7 +200,7 @@ export class MahjongService {
       .leftJoin('record.player', 'player')
       .select([
         'game.id',
-        'game.ratingCategory',
+        'game.subcategory',
         'game.category',
         'player.nickname',
         'record.score',
@@ -215,7 +218,7 @@ export class MahjongService {
     const result = Object.values(groupedResult).map((game: Array<any>) => {
       return {
         id: game[0].game_id,
-        ratingCategory: game[0].game_ratingCategory,
+        subcategory: game[0].game_subcategory,
         category: game[0].game_category,
         players: game.map((player) => {
           return {
@@ -239,7 +242,7 @@ export class MahjongService {
       .orderBy('record.seat')
       .select([
         'game.id',
-        'game.ratingCategory',
+        'game.subcategory',
         'game.category',
         'player.playerName',
         'player.nickname',
@@ -249,8 +252,8 @@ export class MahjongService {
     console.log(queryResult);
     if (queryResult.length === 0) throw new Error(`ID_GAME_DOES_NOT_EXISTS`);
     return {
-      ratingCategory: queryResult[0].game_ratingCategory,
       category: queryResult[0].game_category,
+      subcategory: queryResult[0].game_subcategory,
       players: queryResult.map((player) => {
         return {
           playerName: player.player_playerName,
@@ -282,7 +285,7 @@ export class MahjongService {
           }
           const updatedPlayer = await this.updateRating(
             player,
-            game.ratingCategory,
+            game.category,
             rollbackRating[i],
             queryRunner,
           );

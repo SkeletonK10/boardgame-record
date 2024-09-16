@@ -19,7 +19,7 @@ export async function fetchPlayers() {
 export async function createRecord(prevState: any, formData: FormData) {
   try {
     const body = {
-      category: formData.get("category"),
+      subcategory: formData.get("subcategory"),
       players: ["east", "south", "west", "north"].map((val) => {
         const playerName = formData.get(`${val}-player-name`);
         const isGuest = formData.get(`${val}-is-guest`) === "on" ? true : false;

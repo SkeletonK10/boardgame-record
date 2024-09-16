@@ -8,12 +8,12 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { MahjongMainPageDto, MahjongRatingCategory } from "./dto";
+import { MahjongMainPageDto, MahjongCategory } from "./dto";
 import { AddButton } from "./add-button";
 
 const testRecord = [
   {
-    category: "반장전",
+    category: "4마 반장전",
     players: [
       { nickname: "참가자1", score: 73000 },
       { nickname: "참가자2", score: -23000 },
@@ -22,7 +22,7 @@ const testRecord = [
     ],
   },
   {
-    category: "동풍전",
+    category: "3마 동풍전",
     players: [
       { nickname: "참가자2", score: 83000 },
       { nickname: "참가자1", score: -13000 },
@@ -71,11 +71,11 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
       record: record,
       ranking: [
         {
-          category: MahjongRatingCategory.fourPlayer,
+          category: MahjongCategory.fourPlayer,
           ranking: p4Ranking,
         },
         {
-          category: MahjongRatingCategory.threePlayer,
+          category: MahjongCategory.threePlayer,
           ranking: p3Ranking,
         },
       ],
@@ -86,11 +86,11 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
       record: testRecord,
       ranking: [
         {
-          category: MahjongRatingCategory.fourPlayer,
+          category: MahjongCategory.fourPlayer,
           ranking: testRanking,
         },
         {
-          category: MahjongRatingCategory.threePlayer,
+          category: MahjongCategory.threePlayer,
           ranking: testRanking,
         },
       ],

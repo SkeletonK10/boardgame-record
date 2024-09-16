@@ -8,7 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { MahjongPlayerRecord } from './player-record.entity';
-import { MahjongCategory, MahjongRatingCategory } from '../enum/mahjong.enum';
+import { MahjongCategory, MahjongSubcategory } from '../enum/mahjong.enum';
 
 @Entity()
 export class MahjongGameRecord {
@@ -22,7 +22,7 @@ export class MahjongGameRecord {
   category: MahjongCategory;
 
   @Column()
-  ratingCategory: MahjongRatingCategory;
+  subcategory: MahjongSubcategory;
 
   @Column({ type: 'text', nullable: true })
   note?: string;

@@ -69,7 +69,7 @@ export default function MahjongAddRecordPage() {
           }}
         >
           <FormControl>
-            <RadioGroup row defaultValue="반장전" name="category">
+            <RadioGroup row defaultValue="반장전" name="subcategory">
               <FormControlLabel
                 value="동풍전"
                 control={<Radio />}
