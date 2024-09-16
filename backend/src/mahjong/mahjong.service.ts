@@ -317,7 +317,7 @@ export class MahjongService {
     }
   }
 
-  async getAllPlayerStatistics(category?: MahjongRatingCategory) {
+  async getAllPlayerStatistics(category?: MahjongCategory) {
     // QUERY
     // SELECT
     //     r."playerName" AS "playerName",
@@ -341,7 +341,7 @@ export class MahjongService {
     //         "player"."id" AS "playerId",
     //         "player"."playerName" AS "playerName",
     //         "player"."nickname" AS nickname,
-    //         game."ratingCategory" AS category,
+    //         game."category" AS category,
     //         ROUND(AVG("record"."score"), 2) AS "averageScore",
     //         MAX("record"."score") AS "maxScore",
     //         MIN("record"."score") AS "minScore",
@@ -361,11 +361,11 @@ export class MahjongService {
     //         "mahjong_player" "player"
     //     ON
     //         "player"."id"="record"."playerId"
-    //     WHERE ( game."ratingCategory"=$1 ) AND ( "record"."deletedAt" IS NULL )
-    //     GROUP BY "player"."id", game."ratingCategory"
+    //     WHERE ( game."category"=$1 ) AND ( "record"."deletedAt" IS NULL )
+    //     GROUP BY "player"."id", game."category"
     // ) "r"
     // ON rating."playerId" = r."playerId" AND rating."category" = r."category";
-    const filterString = category ? 'game."ratingCategory"=:category' : 'TRUE';
+    const filterString = category ? 'game."category"=:category' : 'TRUE';
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongRating, 'rating')
       .innerJoin(
@@ -379,7 +379,7 @@ export class MahjongService {
               'player.id AS "playerId"',
               'player.playerName AS "playerName"',
               'player.nickname AS nickname',
-              'game."ratingCategory" AS category',
+              'game."category" AS category',
               'ROUND(AVG(record.score), 2) AS "averageScore"',
               'MAX(record.score) AS "maxScore"',
               'MIN(record.score) AS "minScore"',
@@ -392,7 +392,7 @@ export class MahjongService {
             ])
             .where(filterString, { category })
             .groupBy('player.id')
-            .addGroupBy('game."ratingCategory"'),
+            .addGroupBy('game."category"'),
         'r',
         'rating."playerId" = r."playerId" AND rating."category"=r."category"',
       )

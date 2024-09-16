@@ -13,7 +13,7 @@ import { JwtAccessTokenGuard } from 'src/auth/guard/access-token.guard';
 import { CreateMahjongGameDto } from './dto/create-mahjong.dto';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
-import { MahjongRatingCategory } from './enum/mahjong.enum';
+import { MahjongCategory } from './enum/mahjong.enum';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -85,7 +85,7 @@ export class MahjongController {
   }
 
   @Get('/statistics/player')
-  async getAllStatistics(@Query('category') category?: MahjongRatingCategory) {
+  async getAllStatistics(@Query('category') category?: MahjongCategory) {
     try {
       const res = await this.mahjongService.getAllPlayerStatistics(category);
       return {
