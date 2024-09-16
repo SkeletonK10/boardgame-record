@@ -4,7 +4,7 @@ import { UserService } from 'src/user/user.service';
 import { MahjongPlayer } from './entities/player.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
-import { MahjongRatingCategory } from '../enum/mahjong.enum';
+import { MahjongCategory } from '../enum/mahjong.enum';
 import { MahjongRating } from './entities/rating.entity';
 
 @Injectable()
@@ -62,7 +62,7 @@ export class MahjongPlayerService {
     return res;
   }
 
-  async getRanking(category: MahjongRatingCategory) {
+  async getRanking(category: MahjongCategory) {
     const res = await this.mahjongRatingRepository
       .createQueryBuilder('rating')
       .leftJoin('rating.player', 'player')

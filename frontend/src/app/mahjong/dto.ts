@@ -1,4 +1,4 @@
-export enum MahjongRatingCategory {
+export enum MahjongCategory {
   fourPlayer = "4마",
   threePlayer = "3마",
 }
@@ -22,7 +22,7 @@ export class MahjongRankingRecord {
 }
 
 export class MahjongRanking {
-  category!: MahjongRatingCategory;
+  category!: MahjongCategory;
   ranking: MahjongRankingRecord[] = [];
 }
 

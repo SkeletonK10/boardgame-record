@@ -1,4 +1,4 @@
-import { MahjongCategory } from '../enum/mahjong.enum';
+import { MahjongSubcategory } from '../enum/mahjong.enum';
 
 class MahjongPlay {
   playerName: string;
@@ -6,6 +6,6 @@ class MahjongPlay {
   score: number;
 }
 export class CreateMahjongGameDto {
-  category: MahjongCategory;
+  subcategory: MahjongSubcategory;
   players: MahjongPlay[];
 }
