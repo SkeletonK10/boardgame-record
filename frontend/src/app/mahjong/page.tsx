@@ -10,6 +10,7 @@ import {
 } from "@mui/material";
 import { MahjongMainPageDto, MahjongCategory } from "./dto";
 import { AddButton } from "./add-button";
+import { StatisticsButton } from "./statistics-button";
 
 const testRecord = [
   {
@@ -106,6 +107,11 @@ export default async function MahjongMainPage() {
         <Grid size={2} />
         <Grid size={8}>
           <AddButton />
+        </Grid>
+        <Grid size={2} />
+        <Grid size={2} />
+        <Grid size={8}>
+          <StatisticsButton />
         </Grid>
         <Grid size={2} />
         <Grid size={{ xs: 12, sm: 6 }}>
