@@ -34,6 +34,13 @@ export const text = {
       error: `기록 추가 중 문제가 발생했습니다.`,
       success: `기록 추가 완료!`,
     },
+
+    statistics: {
+      player: {
+        title: `마작 통계`,
+        subtitle: `(PC버전에 최적화되어 있습니다.)`,
+      },
+    },
   },
 };
 

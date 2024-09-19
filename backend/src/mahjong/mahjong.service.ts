@@ -397,6 +397,7 @@ export class MahjongService {
         'rating."playerId" = r."playerId" AND rating."category"=r."category"',
       )
       .select([
+        'r."playerId" AS id',
         'r."playerName" AS "playerName"',
         'r.nickname AS nickname',
         'r.category AS category',
