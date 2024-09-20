@@ -19,24 +19,36 @@ import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
 import { MahjongPlayersDto } from "./dto";
+import { MahjongCategory } from "../dto";
 
 const initialState = {
   message: "",
 };
+
+const playerLabelArr = {
+  '3마': [
+    ["east", "동"],
+    ["south", "남"],
+    ["west", "서"],
+  ],
+  
+  '4마': [
+    ["east", "동"],
+    ["south", "남"],
+    ["west", "서"],
+    ["north", "북"],
+  ],
+}
 
 export default function MahjongAddRecordPage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [formState, formAction] = useFormState(createRecord, initialState);
   const [players, setPlayers] = useState<MahjongPlayersDto[]>([]);
+  const [playerLabel, setPlayerLabel] = useState(playerLabelArr['4마']);
   const [isPending, startTransition] = useTransition();
 
-  const playerLabel = [
-    ["east", "동"],
-    ["south", "남"],
-    ["west", "서"],
-    ["north", "북"],
-  ];
+  
 
   useEffect(() => {
     startTransition(async () => await setPlayers(await fetchPlayers()));
@@ -69,13 +81,22 @@ export default function MahjongAddRecordPage() {
           }}
         >
           <FormControl>
+            <RadioGroup
+              row
+              onChange={(e, v) => {setPlayerLabel(playerLabelArr[(v as MahjongCategory)])} } //TODO: CHANGE
+              defaultValue="4마">
+              <FormControlLabel key="3마" value="3마" control={<Radio />} label="3마" />
+              <FormControlLabel key="4마" value="4마" control={<Radio />} label="4마" />
+            </RadioGroup>
             <RadioGroup row defaultValue="반장전" name="subcategory">
               <FormControlLabel
+                key="동풍전"
                 value="동풍전"
                 control={<Radio />}
                 label="동풍전"
               />
               <FormControlLabel
+                key="반장전"
                 value="반장전"
                 control={<Radio />}
                 label="반장전"
