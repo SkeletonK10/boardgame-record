@@ -90,6 +90,7 @@ export default function MahjongPlayerStatisticsPage() {
                 },
               }}
               disableColumnMenu
+              disableColumnResize
               columnHeaderHeight={90}
             />
           )
