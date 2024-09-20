@@ -62,6 +62,8 @@ export class MahjongService {
                     playerName,
                   );
                 playerName += this.nthAlphabet(guestCount + 1);
+              } else {
+                throw new Error(`MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS`);
               }
               player = await this.mahjongPlayerService.create({
                 playerName,
@@ -268,7 +270,7 @@ export class MahjongService {
     const game = await this.findById(id);
     console.log(game);
     const scores = game.players.map(({ score }) => +score);
-    const rating = this.calculateRating(scores, game.category);
+    const rating = this.calculateRating(scores, game.subcategory);
     const rollbackRating = rating.map((r) => -r);
     console.log(rollbackRating);
     const queryRunner = this.dataSource.createQueryRunner();
