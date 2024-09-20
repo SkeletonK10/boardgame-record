@@ -20,7 +20,11 @@ export default function RootLayout({
           <AppBar />
           <Box
             component="main"
-            sx={{ flexGrow: 1, padding: { xs: "4rem", sm: "6rem" } }}
+            sx={{
+              flexGrow: 1,
+              padding: { xs: "2rem", sm: "5rem" },
+              paddingTop: { xs: "4.5rem", sm: "6rem" },
+            }}
           >
             {children}
           </Box>
