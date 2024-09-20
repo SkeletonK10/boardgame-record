@@ -34,7 +34,7 @@ export default function MahjongPlayerStatisticsPage() {
   
   useEffect(() => {
     startTransition(async () => await setStats(await fetchPlayerStatistics(category)));
-    console.log(category);
+    // console.log(category);
   }, [category]);
   
   return (
@@ -65,7 +65,10 @@ export default function MahjongPlayerStatisticsPage() {
       }}>
         {text.mahjong.statistics.player.subtitle}
       </Typography>
-      <RadioGroup row onChange={(e, v) => setCategory(v)}>
+      <RadioGroup
+        row
+        onChange={(e, v) => setCategory(v)}
+        defaultValue="4마">
         <FormControlLabel value="3마" control={<Radio />} label="3마" />
         <FormControlLabel value="4마" control={<Radio />} label="4마" />
       </RadioGroup>
