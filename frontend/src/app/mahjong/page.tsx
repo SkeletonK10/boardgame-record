@@ -146,7 +146,7 @@ export default async function MahjongMainPage() {
                             noWrap
                             sx={{ fontSize: "0.8rem" }}
                           >
-                            {value.category}
+                            {`${value.category} ${value.subcategory}`}
                           </Typography>
                         </Grid>
                         {value.players.map(
