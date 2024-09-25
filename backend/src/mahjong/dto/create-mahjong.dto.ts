@@ -8,4 +8,5 @@ class MahjongPlay {
 export class CreateMahjongGameDto {
   subcategory: MahjongSubcategory;
   players: MahjongPlay[];
+  note?: string;
 }

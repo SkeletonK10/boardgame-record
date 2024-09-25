@@ -19,6 +19,7 @@ export async function fetchPlayers() {
 export async function createRecord(prevState: any, formData: FormData) {
   try {
     const body = {
+      category: formData.get("category"),
       subcategory: formData.get("subcategory"),
       players: ["east", "south", "west", "north"].map((val) => {
         const playerName = formData.get(`${val}-player-name`);
@@ -30,6 +31,7 @@ export async function createRecord(prevState: any, formData: FormData) {
           score: score ? score : undefined,
         };
       }),
+      note: formData.get("note"),
     };
     const response = await api.post(`/mahjong`, body);
     // console.log(response.data);

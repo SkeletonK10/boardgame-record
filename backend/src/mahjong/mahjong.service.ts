@@ -25,8 +25,8 @@ export class MahjongService {
     );
     const scores = createMahjongGameDto.players.map(({ score }) => +score);
 
-    console.log(players);
-    console.log(scores);
+    // console.log(players);
+    // console.log(scores);
     if (!this.verifyGame(players, scores)) {
       throw new Error(`INVALID_MAHJONG_GAME`);
     }
@@ -39,6 +39,7 @@ export class MahjongService {
       createMahjongGameDto.subcategory,
     );
     const ranks = this.calculateRank(rating);
+    const note = createMahjongGameDto.note || null;
 
     console.log(rating);
     // TODO: 트랜잭션 따로 빼기
@@ -95,6 +96,7 @@ export class MahjongService {
         category: category,
         subcategory: createMahjongGameDto.subcategory,
         players: playerRecords,
+        note: note,
       });
       const res = await queryRunner.manager.save(MahjongGameRecord, game);
       await queryRunner.commitTransaction();
@@ -206,6 +208,7 @@ export class MahjongService {
         'game.category',
         'player.nickname',
         'record.score',
+        'game.note',
       ])
       .getRawMany();
     // console.log(queryResult);
@@ -228,6 +231,7 @@ export class MahjongService {
             score: player.record_score,
           };
         }),
+        note: game[0].game_note,
       };
     });
     result.reverse();
@@ -249,6 +253,7 @@ export class MahjongService {
         'player.playerName',
         'player.nickname',
         'record.score',
+        'game.note',
       ])
       .getRawMany();
     console.log(queryResult);
@@ -263,6 +268,7 @@ export class MahjongService {
           score: player.record_score,
         };
       }),
+      note: queryResult[0].game_note,
     };
   }
 

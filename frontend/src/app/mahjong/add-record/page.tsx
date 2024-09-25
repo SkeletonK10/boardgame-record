@@ -26,29 +26,27 @@ const initialState = {
 };
 
 const playerLabelArr = {
-  '3마': [
+  "3마": [
     ["east", "동"],
     ["south", "남"],
     ["west", "서"],
   ],
-  
-  '4마': [
+
+  "4마": [
     ["east", "동"],
     ["south", "남"],
     ["west", "서"],
     ["north", "북"],
   ],
-}
+};
 
 export default function MahjongAddRecordPage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [formState, formAction] = useFormState(createRecord, initialState);
   const [players, setPlayers] = useState<MahjongPlayersDto[]>([]);
-  const [playerLabel, setPlayerLabel] = useState(playerLabelArr['4마']);
+  const [playerLabel, setPlayerLabel] = useState(playerLabelArr["4마"]);
   const [isPending, startTransition] = useTransition();
-
-  
 
   useEffect(() => {
     startTransition(async () => await setPlayers(await fetchPlayers()));
@@ -83,10 +81,23 @@ export default function MahjongAddRecordPage() {
           <FormControl>
             <RadioGroup
               row
-              onChange={(e, v) => {setPlayerLabel(playerLabelArr[(v as MahjongCategory)])} } //TODO: CHANGE
-              defaultValue="4마">
-              <FormControlLabel key="3마" value="3마" control={<Radio />} label="3마" />
-              <FormControlLabel key="4마" value="4마" control={<Radio />} label="4마" />
+              onChange={(e, v) => {
+                setPlayerLabel(playerLabelArr[v as MahjongCategory]);
+              }}
+              defaultValue="4마"
+            >
+              <FormControlLabel
+                key="3마"
+                value="3마"
+                control={<Radio />}
+                label="3마"
+              />
+              <FormControlLabel
+                key="4마"
+                value="4마"
+                control={<Radio />}
+                label="4마"
+              />
             </RadioGroup>
             <RadioGroup row defaultValue="반장전" name="subcategory">
               <FormControlLabel
@@ -147,6 +158,16 @@ export default function MahjongAddRecordPage() {
               </Grid>
             </Grid>
           ))}
+          <FormControl sx={{ width: "80%" }}>
+            <TextField
+              type="text"
+              name="note"
+              label="추가 기록 사항 (선택)"
+              placeholder="역만 등 추가적으로 경기에서 기록할 만한 사항을 적어주세요."
+              multiline
+              rows={4}
+            ></TextField>
+          </FormControl>
         </Box>
         <Button
           variant="contained"
