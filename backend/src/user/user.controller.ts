@@ -25,7 +25,7 @@ export class UserController {
       };
     } catch (err) {
       return {
-        code: `ERR_USER_CREATE`,
+        code: `ERROR_USER_CREATE`,
         msg: `알 수 없는 에러가 발생했습니다.`,
       };
     }
@@ -42,7 +42,7 @@ export class UserController {
       };
     } catch (err) {
       return {
-        code: `ERR_USER_FINDALL`,
+        code: `ERROR_USER_FINDALL`,
         msg: `알 수 없는 에러가 발생했습니다.`,
       };
     }
@@ -61,7 +61,7 @@ export class UserController {
   //     };
   //   } catch (err) {
   //     return {
-  //       code: `ERR_USER_FINDONE`,
+  //       code: `ERROR_USER_FINDONE`,
   //       msg: `알 수 없는 에러가 발생했습니다.`,
   //     };
   //   }

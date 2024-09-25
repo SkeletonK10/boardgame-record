@@ -51,7 +51,7 @@ export class MahjongController {
       };
     } catch (err) {
       const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_CREATE`;
+        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_FINDALL`;
       return {
         code: code,
         msg: `알 수 없는 에러가 발생했습니다.`,
@@ -95,7 +95,7 @@ export class MahjongController {
       };
     } catch (err) {
       const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_CREATE`;
+        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_DELETE`;
       return {
         code: code,
         msg: `알 수 없는 에러가 발생했습니다.`,

@@ -37,7 +37,7 @@ export class MahjongPlayerController {
       };
     } catch (err) {
       const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_RANKING`;
+        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_FINDALL`;
       return {
         code: code,
         msg: `알 수 없는 에러가 발생했습니다.`,
