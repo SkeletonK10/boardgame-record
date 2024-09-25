@@ -138,7 +138,13 @@ export default async function MahjongMainPage() {
               {record.map((value, index) => (
                 <ListItem key={index}>
                   <ListItemButton>
-                    <Paper elevation={2} sx={{ width: "100%" }}>
+                    <Paper
+                      elevation={2}
+                      sx={{
+                        width: "100%",
+                        backgroundColor: value.note ? "#BBFFBB" : "#FFFFFF",
+                      }}
+                    >
                       <Grid container spacing={1} sx={{ width: "100%" }}>
                         <Grid size={12}>
                           <Typography

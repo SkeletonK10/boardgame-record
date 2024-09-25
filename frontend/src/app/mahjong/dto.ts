@@ -13,6 +13,7 @@ export class MahjongGameRecord {
   category!: string;
   subcategory!: string;
   players!: MahjongUserRecord[];
+  note?: string;
 }
 
 export class MahjongRankingRecord {
