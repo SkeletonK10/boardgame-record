@@ -62,6 +62,31 @@ export class MahjongPlayerService {
     return res;
   }
 
+  async getRecord(playerName?: string, category?: MahjongCategory) {
+    const playerNameWhere = playerName
+      ? `player.playerName = :playerName`
+      : `TRUE`;
+    const categoryWhere = category ? `game.category = :category` : `TRUE`;
+    const recordResult = await this.mahjongPlayerRepository
+      .createQueryBuilder('player')
+      .leftJoin('player.games', 'record')
+      .leftJoin('record.game', 'game')
+      .where(playerNameWhere, { playerName })
+      .andWhere(categoryWhere, { category })
+      .orderBy('game.id', 'DESC')
+      .select([
+        'game.id AS id',
+        'game.category AS category',
+        'game.subcategory AS subcategory',
+        'record.seat AS seat',
+        'record.rank AS rank',
+      ])
+      //.limit(10)
+      .getRawMany();
+    const record = recordResult.reverse();
+    return record;
+  }
+
   async getRanking(category: MahjongCategory) {
     const res = await this.mahjongRatingRepository
       .createQueryBuilder('rating')

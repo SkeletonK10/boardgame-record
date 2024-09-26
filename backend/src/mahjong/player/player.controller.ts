@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { MahjongPlayerService } from './player.service';
 import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
 import { JwtAccessTokenGuard } from 'src/auth/guard/access-token.guard';
@@ -38,6 +46,31 @@ export class MahjongPlayerController {
     } catch (err) {
       const code =
         err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_FINDALL`;
+      return {
+        code: code,
+        msg: `알 수 없는 에러가 발생했습니다.`,
+      };
+    }
+  }
+
+  @Get('record')
+  async getRecord(
+    @Query('playername') playerName: string,
+    @Query('category') category: MahjongCategory,
+  ) {
+    try {
+      const res = await this.MahjongplayerService.getRecord(
+        playerName,
+        category,
+      );
+      return {
+        code: `OK`,
+        msg: `${playerName} 마작 기록`,
+        data: res,
+      };
+    } catch (err) {
+      const code =
+        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_RECORD`;
       return {
         code: code,
         msg: `알 수 없는 에러가 발생했습니다.`,
