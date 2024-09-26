@@ -75,7 +75,7 @@ export class MahjongPlayerService {
       .andWhere(categoryWhere, { category })
       .orderBy('game.id', 'DESC')
       .select([
-        'game.id AS id',
+        'game.id AS "gameId"',
         'game.category AS category',
         'game.subcategory AS subcategory',
         'record.seat AS seat',
@@ -83,7 +83,13 @@ export class MahjongPlayerService {
       ])
       //.limit(10)
       .getRawMany();
-    const record = recordResult.reverse();
+    const seatDictionary = ['동', '남', '서', '북'];
+    const record = recordResult.reverse().map((value) => {
+      return {
+        ...value,
+        seat: seatDictionary[value.seat],
+      };
+    });
     return record;
   }
 
