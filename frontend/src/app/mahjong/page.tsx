@@ -9,8 +9,8 @@ import {
   Typography,
 } from "@mui/material";
 import { MahjongMainPageDto, MahjongCategory } from "./dto";
-import { AddButton } from "./add-button";
-import { StatisticsButton } from "./statistics-button";
+import { AddButton } from "./_components/add-button";
+import { StatisticsButton } from "./_components/statistics-button";
 
 const testRecord = [
   {

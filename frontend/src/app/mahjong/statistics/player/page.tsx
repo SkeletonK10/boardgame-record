@@ -5,6 +5,8 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState, useTransition } from "react";
 import { fetchPlayerStatistics } from "./actions";
 import { text } from "@/lib/data";
+import { CategoryRadio } from "../../_components/category-radio";
+import { MahjongCategory } from "../../dto";
 
 const columns: GridColDef[] = [
     // { field: 'playerName', headerName: '아이디' },       // 필요 없을듯?
@@ -26,7 +28,7 @@ const columns: GridColDef[] = [
 
 
 export default function MahjongPlayerStatisticsPage() {
-  const [category, setCategory] = useState('4마');
+  const [category, setCategory] = useState<MahjongCategory>(MahjongCategory.fourPlayer);
   // TODO: 구분하기
   // const [subcategory, setSubcategory] = useState('반장전'); 
   const [stats, setStats] = useState<MahjongPlayerStatistics[]>([]);
@@ -65,13 +67,7 @@ export default function MahjongPlayerStatisticsPage() {
       }}>
         {text.mahjong.statistics.player.subtitle}
       </Typography>
-      <RadioGroup
-        row
-        onChange={(e, v) => setCategory(v)}
-        defaultValue="4마">
-        <FormControlLabel value="3마" control={<Radio />} label="3마" />
-        <FormControlLabel value="4마" control={<Radio />} label="4마" />
-      </RadioGroup>
+      <CategoryRadio setCategory={setCategory}/>
       {
         isPending ?
           (<CircularProgress />)

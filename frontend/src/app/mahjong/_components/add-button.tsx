@@ -2,7 +2,7 @@
 import { Button } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Role, text } from "../../lib/data";
+import { Role, text } from "@/lib/data";
 import { useSnackbar } from "notistack";
 
 export function AddButton() {
