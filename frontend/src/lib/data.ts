@@ -35,6 +35,10 @@ export const text = {
       success: `기록 추가 완료!`,
     },
 
+    player: {
+      title: (playerName: string) => playerName,
+    },
+
     statistics: {
       player: {
         title: `마작 통계`,

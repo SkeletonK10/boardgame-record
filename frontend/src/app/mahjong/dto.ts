@@ -3,6 +3,11 @@ export enum MahjongCategory {
   threePlayer = "3마",
 }
 
+export enum MahjongSubcategory {
+  half = "반장전",
+  east = "동풍전",
+}
+
 export class MahjongUserRecord {
   playerName!: string;
   nickname!: string;
