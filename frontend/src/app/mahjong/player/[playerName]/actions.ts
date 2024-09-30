@@ -21,7 +21,7 @@ export async function fetchPlayer(playerName: string) {
     const records = responses.reduce(
       (acc, response, idx) => {
         const category = categories[idx];
-        const data = ((response.data as any).data || []).slice(0, 10);
+        const data = ((response.data as any).data || []).slice(-10);
         return {
           ...acc,
           [category]: data,
