@@ -325,7 +325,7 @@ export class MahjongService {
     }
   }
 
-  async getAllPlayerStatistics(category?: MahjongCategory) {
+  async getPlayerStatistics(category?: MahjongCategory, playerName?: string) {
     // QUERY
     // SELECT
     //     r."playerName" AS "playerName",
@@ -373,7 +373,10 @@ export class MahjongService {
     //     GROUP BY "player"."id", game."category"
     // ) "r"
     // ON rating."playerId" = r."playerId" AND rating."category" = r."category";
-    const filterString = category ? 'game."category"=:category' : 'TRUE';
+    const categoryWhere = category ? 'game."category"=:category' : 'TRUE';
+    const playerNameWhere = playerName
+      ? 'player."playerName"=:playerName'
+      : 'TRUE';
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongRating, 'rating')
       .innerJoin(
@@ -398,7 +401,8 @@ export class MahjongService {
               'COUNT(CASE WHEN record.rank = 4 THEN 1 ELSE NULL END) AS fourth',
               'COUNT(CASE WHEN record.score < 0 THEN 1 ELSE NULL END) AS tobi',
             ])
-            .where(filterString, { category })
+            .where(categoryWhere, { category })
+            .andWhere(playerNameWhere, { playerName })
             .groupBy('player.id')
             .addGroupBy('game."category"'),
         'r',

@@ -104,9 +104,15 @@ export class MahjongController {
   }
 
   @Get('/statistics/player')
-  async getAllStatistics(@Query('category') category?: MahjongCategory) {
+  async getAllStatistics(
+    @Query('category') category?: MahjongCategory,
+    @Query('playername') playerName?: string,
+  ) {
     try {
-      const res = await this.mahjongService.getAllPlayerStatistics(category);
+      const res = await this.mahjongService.getPlayerStatistics(
+        category,
+        playerName,
+      );
       return {
         code: `OK`,
         msg: `마작 플레이어 통계`,
