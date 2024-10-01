@@ -67,6 +67,7 @@ const ratioLabel = [
   ["토비", "tobi"],
 ];
 
+// BUG: 존재하지 않는 playerName 입력 시 페이지가 터짐!! 에러 페이지로 가게 해줘
 export default function MahjongPlayerPage({ params }: Props) {
   const playerName: string = params.playerName
     ? decodeURI(params.playerName)
