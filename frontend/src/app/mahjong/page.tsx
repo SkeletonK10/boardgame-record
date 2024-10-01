@@ -11,6 +11,7 @@ import {
 import { MahjongMainPageDto, MahjongCategory } from "./dto";
 import { AddButton } from "./_components/add-button";
 import { StatisticsButton } from "./_components/statistics-button";
+import { RankingEntry } from "./_components/ranking-entry";
 
 const testRecord = [
   {
@@ -211,23 +212,7 @@ export default async function MahjongMainPage() {
                 </Typography>
                 <List sx={{ width: "100%" }}>
                   {ranking.map((value) => (
-                    <ListItem disableGutters key={value.playerName}>
-                      <ListItemButton disableGutters>
-                        <Grid container spacing={1} sx={{ width: "100%" }}>
-                          <Grid size={2}>
-                            <Box>{value.ranking}</Box>
-                          </Grid>
-                          <Grid size={6}>
-                            <Typography component="div" noWrap>
-                              {`${value.nickname}`}
-                            </Typography>
-                          </Grid>
-                          <Grid size={4}>
-                            <Box>{value.rating}</Box>
-                          </Grid>
-                        </Grid>
-                      </ListItemButton>
-                    </ListItem>
+                    <RankingEntry key={value.playerName} {...value} />
                   ))}
                 </List>
               </Box>
