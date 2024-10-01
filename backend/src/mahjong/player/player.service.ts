@@ -99,7 +99,7 @@ export class MahjongPlayerService {
       .leftJoin('rating.player', 'player')
       .where('rating.category = :category', { category })
       .select([
-        'player.playerName AS playerName',
+        'player.playerName AS "playerName"',
         'player.nickname AS nickname',
         'rating.rating AS rating',
         'RANK () OVER (ORDER BY "rating"."rating" DESC) AS ranking',
