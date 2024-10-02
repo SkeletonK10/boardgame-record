@@ -1,6 +1,6 @@
 {
   "name": "boardgame-record",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "`@-###: [brief explanation]`",
   "main": "index.js",
   "scripts": {
