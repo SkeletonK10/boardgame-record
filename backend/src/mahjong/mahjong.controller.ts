@@ -41,12 +41,15 @@ export class MahjongController {
   }
 
   @Get()
-  async findAll() {
+  async findAll(
+    @Query('playername') playerName?: string,
+    @Query('category') category?: MahjongCategory,
+  ) {
     try {
-      const res = await this.mahjongService.findAll();
+      const res = await this.mahjongService.findAll(playerName, category);
       return {
         code: `OK`,
-        msg: `모든 마작 경기`,
+        msg: `마작 경기 일람 - 플레이어: ${playerName || '전체'}, 카테고리: ${category || '전체'}`,
         data: res,
       };
     } catch (err) {

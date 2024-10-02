@@ -195,13 +195,34 @@ export class MahjongService {
     return p;
   }
 
-  async findAll() {
+  async findAll(playerName?: string, category?: MahjongCategory) {
+    const categoryWhere = category ? 'game."category"=:category' : 'TRUE';
+    const playerNameWhere = playerName
+      ? 'player."playerName"=:playerName'
+      : 'TRUE';
+    const filterQueryBuilder = this.dataSource
+      .createQueryBuilder(MahjongPlayerRecord, 'record')
+      .leftJoin('record.game', 'game')
+      .leftJoin('record.player', 'player')
+      .where(categoryWhere, { category })
+      .andWhere(playerNameWhere, { playerName })
+      .select('game.id AS id')
+      .distinct(true);
+
+    const gameIdFilterWhere =
+      category || playerName ? 'game.id IN (:...ids)' : 'TRUE';
+    const gameIdFilterArray =
+      category || playerName
+        ? (await filterQueryBuilder.getRawMany()).map(({ id }) => +id)
+        : [];
+
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongPlayerRecord, 'record')
       .leftJoin('record.game', 'game')
       .orderBy('game.id')
       .addOrderBy('record.seat')
       .leftJoin('record.player', 'player')
+      .where(gameIdFilterWhere, { ids: gameIdFilterArray })
       .select([
         'game.id',
         'game.subcategory',
