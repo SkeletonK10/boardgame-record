@@ -1,16 +1,16 @@
-import { MahjongCategory, MahjongSubcategory } from "../../dto";
+import {
+  MahjongCategory,
+  MahjongGameRecord,
+  MahjongSubcategory,
+} from "../../dto";
 import { MahjongPlayerStatistics } from "../../statistics/player/dto";
 
-class MahjongPlayerRecord {
-  gameId!: number;
-  category!: MahjongCategory;
-  subcategory!: MahjongSubcategory;
-  seat!: string;
-  rank!: number;
-}
+export type MahjongPlayerRankingDict = {
+  [key in MahjongCategory]: number[];
+};
 
 export type MahjongPlayerRecordDict = {
-  [key in MahjongCategory]: MahjongPlayerRecord[];
+  [key in MahjongCategory]: MahjongGameRecord[];
 };
 
 export type MahjongPlayerstatisticsDict = {
@@ -20,6 +20,7 @@ export type MahjongPlayerstatisticsDict = {
 export class MahjongPlayerPageDto {
   playerName!: string;
   nickname!: string;
+  rankings!: MahjongPlayerRankingDict;
   records!: MahjongPlayerRecordDict;
   statistics!: MahjongPlayerstatisticsDict;
 }

@@ -1,5 +1,5 @@
 "use client";
-import { Box, Grid2 as Grid, Typography } from "@mui/material";
+import { Box, Grid2 as Grid, List, Typography } from "@mui/material";
 import { text } from "@/lib/data";
 import { LineChart } from "@mui/x-charts";
 import React, { useEffect, useState, useTransition } from "react";
@@ -8,6 +8,7 @@ import { fetchPlayer } from "./actions";
 import { MahjongCategory } from "../../dto";
 import { CategoryRadio } from "../../_components/category-radio";
 import { MahjongPlayerStatistics } from "../../statistics/player/dto";
+import { RecordEntry } from "../../_components/record-entry";
 
 type Props = {
   params: {
@@ -41,6 +42,10 @@ const chartOptions = {
 const testPlayer: MahjongPlayerPageDto = {
   playerName: "testA",
   nickname: "테스트",
+  rankings: {
+    [MahjongCategory.fourPlayer]: [],
+    [MahjongCategory.threePlayer]: [],
+  },
   records: {
     [MahjongCategory.fourPlayer]: [],
     [MahjongCategory.threePlayer]: [],
@@ -114,7 +119,7 @@ export default function MahjongPlayerPage({ params }: Props) {
               curve: "linear",
               color: "#33AAEE",
               label: "최근 순위",
-              data: player.records[category].map(({ rank }) => +rank),
+              data: player.rankings[category],
             },
           ]}
           margin={{ left: 20, right: 20, top: 20 }}
@@ -172,6 +177,11 @@ export default function MahjongPlayerPage({ params }: Props) {
           );
         })}
       </Grid>
+      <List sx={{ width: "100%" }}>
+        {player.records[category].map((value) => (
+          <RecordEntry key={value.id} {...value} />
+        ))}
+      </List>
     </Box>
   );
 }

@@ -11,6 +11,8 @@ export enum MahjongSubcategory {
 export class MahjongUserRecord {
   playerName!: string;
   nickname!: string;
+  rank!: number;
+  seat!: number;
   score!: number;
 }
 
