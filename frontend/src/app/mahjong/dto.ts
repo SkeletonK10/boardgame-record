@@ -15,6 +15,7 @@ export class MahjongUserRecord {
 }
 
 export class MahjongGameRecord {
+  id!: number;
   category!: string;
   subcategory!: string;
   players!: MahjongUserRecord[];
