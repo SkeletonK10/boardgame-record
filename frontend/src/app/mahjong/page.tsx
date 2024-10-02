@@ -177,7 +177,11 @@ export default async function MahjongMainPage() {
                 </Typography>
                 <List sx={{ width: "100%" }}>
                   {ranking.map((value) => (
-                    <RankingEntry key={value.playerName} {...value} />
+                    <RankingEntry
+                      key={value.playerName}
+                      category={category}
+                      {...value}
+                    />
                   ))}
                 </List>
               </Box>

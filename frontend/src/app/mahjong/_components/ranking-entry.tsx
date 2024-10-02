@@ -7,23 +7,27 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { MahjongRankingRecord } from "../dto";
+import { MahjongCategory, MahjongRankingRecord } from "../dto";
+import { format } from "url";
 
-class MahjongRankingEntryProps extends MahjongRankingRecord {}
+class MahjongRankingEntryProps extends MahjongRankingRecord {
+  category?: MahjongCategory;
+}
 
 export function RankingEntry({
+  category,
   playerName,
   nickname,
   rating,
   ranking,
 }: MahjongRankingEntryProps) {
+  const pathname = `/mahjong/player/${playerName}`;
+  category = category || MahjongCategory.fourPlayer;
+  const url = format({ pathname, query: { category } });
   const router = useRouter();
   return (
     <ListItem disableGutters>
-      <ListItemButton
-        disableGutters
-        onClick={() => router.push(`/mahjong/player/${playerName}`)}
-      >
+      <ListItemButton disableGutters onClick={() => router.push(url)}>
         <Grid container spacing={1} sx={{ width: "100%" }}>
           <Grid size={2}>
             <Box>{ranking}</Box>
