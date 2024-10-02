@@ -227,9 +227,12 @@ export class MahjongService {
         'game.id',
         'game.subcategory',
         'game.category',
-        'player.nickname',
-        'record.score',
         'game.note',
+        'player."playerName" AS "playerName"',
+        'player.nickname',
+        'record.seat',
+        'record.rank',
+        'record.score',
       ])
       .getRawMany();
     // console.log(queryResult);
@@ -248,7 +251,10 @@ export class MahjongService {
         category: game[0].game_category,
         players: game.map((player) => {
           return {
+            playerName: player.playerName,
             nickname: player.player_nickname,
+            seat: player.record_seat,
+            rank: player.record_rank,
             score: player.record_score,
           };
         }),
