@@ -9,6 +9,7 @@ import { MahjongCategory } from "../../dto";
 import { CategoryRadio } from "../../_components/category-radio";
 import { MahjongPlayerStatistics } from "../../statistics/player/dto";
 import { RecordEntry } from "../../_components/record-entry";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
   params: {
@@ -74,13 +75,19 @@ const ratioLabel = [
 
 // BUG: 존재하지 않는 playerName 입력 시 페이지가 터짐!! 에러 페이지로 가게 해줘
 export default function MahjongPlayerPage({ params }: Props) {
+  const searchParams = useSearchParams();
+  const initialCategory: MahjongCategory =
+    searchParams.has("category") &&
+    Object.values(MahjongCategory).includes(
+      searchParams.get("category") as MahjongCategory
+    )
+      ? (searchParams.get("category") as MahjongCategory)
+      : MahjongCategory.fourPlayer;
   const playerName: string = params.playerName
     ? decodeURI(params.playerName)
     : "ERROR";
   const [player, setPlayer] = useState<MahjongPlayerPageDto>(testPlayer);
-  const [category, setCategory] = useState<MahjongCategory>(
-    MahjongCategory.fourPlayer
-  );
+  const [category, setCategory] = useState<MahjongCategory>(initialCategory);
   const [isPending, startTransition] = useTransition();
   const stat: any = {
     ...player.statistics[category],
@@ -88,7 +95,6 @@ export default function MahjongPlayerPage({ params }: Props) {
 
   useEffect(() => {
     startTransition(async () => await setPlayer(await fetchPlayer(playerName)));
-    // console.log(category);
   }, []);
   return (
     <Box
@@ -111,7 +117,7 @@ export default function MahjongPlayerPage({ params }: Props) {
       >
         {text.mahjong.player.title(player.nickname)}
       </Typography>
-      <CategoryRadio setCategory={setCategory} />
+      <CategoryRadio defaultValue={category} setCategory={setCategory} />
       <Box sx={{ width: "100%", height: "30vh" }}>
         <LineChart
           series={[

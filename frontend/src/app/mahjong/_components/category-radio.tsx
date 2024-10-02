@@ -4,15 +4,17 @@ import { Dispatch, SetStateAction } from "react";
 import { MahjongCategory } from "../dto";
 
 class Props {
+  defaultValue?: MahjongCategory;
   setCategory!: Dispatch<SetStateAction<MahjongCategory>>;
 }
 
-export function CategoryRadio({ setCategory }: Props) {
+export function CategoryRadio({ defaultValue, setCategory }: Props) {
   return (
-  <RadioGroup
+    <RadioGroup
       row
-      onChange={(e, v) => setCategory(v as MahjongCategory)}  // FIXME: DO NOT USE as STATEMENT
-      defaultValue={MahjongCategory.fourPlayer}>
+      onChange={(e, v) => setCategory(v as MahjongCategory)} // FIXME: DO NOT USE as STATEMENT
+      defaultValue={defaultValue || MahjongCategory.fourPlayer}
+    >
       {Object.values(MahjongCategory).map((category) => (
         <FormControlLabel
           key={category}
@@ -21,6 +23,6 @@ export function CategoryRadio({ setCategory }: Props) {
           label={category}
         />
       ))}
-  </RadioGroup>
+    </RadioGroup>
   );
 }
