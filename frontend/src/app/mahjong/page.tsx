@@ -12,6 +12,7 @@ import { MahjongMainPageDto, MahjongCategory } from "./dto";
 import { AddButton } from "./_components/add-button";
 import { StatisticsButton } from "./_components/statistics-button";
 import { RankingEntry } from "./_components/ranking-entry";
+import { RecordEntry } from "./_components/record-entry";
 
 const testRecord = [
   {
@@ -136,44 +137,8 @@ export default async function MahjongMainPage() {
               최근 기록
             </Typography>
             <List sx={{ width: "100%" }}>
-              {record.map((value, index) => (
-                <ListItem key={index}>
-                  <ListItemButton>
-                    <Paper
-                      elevation={2}
-                      sx={{
-                        width: "100%",
-                        backgroundColor: value.note ? "#BBFFBB" : "#FFFFFF",
-                      }}
-                    >
-                      <Grid container spacing={1} sx={{ width: "100%" }}>
-                        <Grid size={12}>
-                          <Typography
-                            component="div"
-                            noWrap
-                            sx={{ fontSize: "0.8rem" }}
-                          >
-                            {`${value.category} ${value.subcategory}`}
-                          </Typography>
-                        </Grid>
-                        {value.players.map(
-                          ({ playerName, nickname, score }) => (
-                            <Grid
-                              size={6}
-                              key={playerName}
-                              sx={{ padding: "0.3rem" }}
-                            >
-                              <Typography component="div" noWrap>
-                                {nickname}
-                              </Typography>
-                              <Typography component="div">{score}</Typography>
-                            </Grid>
-                          )
-                        )}
-                      </Grid>
-                    </Paper>
-                  </ListItemButton>
-                </ListItem>
+              {record.map((value) => (
+                <RecordEntry key={value.id} {...value} />
               ))}
             </List>
           </Box>
