@@ -47,9 +47,3 @@ export const text = {
     },
   },
 };
-
-export enum Role {
-  admin = "ADMIN",
-  mahjongRecordAdmin = "MAHJONG_RECORD_ADMIN",
-  user = "USER",
-}
