@@ -1,9 +1,12 @@
 "use server";
 
 import { api } from "@/lib/axiosInterceptor";
-import { MahjongCategoryValues, MahjongGameRecord } from "../../dto";
-import { MahjongPlayerPageDto } from "./dto";
-import { MahjongPlayerStatistics } from "../../statistics/player/dto";
+import {
+  MahjongCategoryValues,
+  MahjongGameRecord,
+  MahjongPlayerStatistics,
+  MahjongPlayerPageDto,
+} from "@/dto/mahjong";
 
 const categories = MahjongCategoryValues;
 

@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { MahjongCategory, MahjongRankingRecord } from "../dto";
+import { MahjongCategory, MahjongRankingRecord } from "@/dto/mahjong";
 import { format } from "url";
 
 class MahjongRankingEntryProps extends MahjongRankingRecord {

@@ -8,7 +8,7 @@ import {
   Paper,
   Typography,
 } from "@mui/material";
-import { MahjongMainPageDto, MahjongCategory } from "./dto";
+import { MahjongMainPageDto } from "@/dto/mahjong";
 import { AddButton } from "./_components/add-button";
 import { StatisticsButton } from "./_components/statistics-button";
 import { RankingEntry } from "./_components/ranking-entry";

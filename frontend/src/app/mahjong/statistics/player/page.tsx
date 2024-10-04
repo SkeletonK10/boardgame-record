@@ -7,13 +7,12 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import { MahjongPlayerStatistics } from "./dto";
+import { MahjongCategory, MahjongPlayerStatistics } from "@/dto/mahjong";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState, useTransition } from "react";
 import { fetchPlayerStatistics } from "./actions";
 import { text } from "@/lib/data";
 import { CategoryRadio } from "../../_components/category-radio";
-import { MahjongCategory } from "../../dto";
 
 const columns: GridColDef[] = [
   // { field: 'playerName', headerName: '아이디' },       // 필요 없을듯?

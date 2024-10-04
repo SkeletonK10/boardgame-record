@@ -18,8 +18,7 @@ import { createRecord, fetchPlayers } from "./actions";
 import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
-import { MahjongPlayersDto } from "./dto";
-import { MahjongCategory } from "../dto";
+import { MahjongCategory, MahjongPlayersDto } from "@/dto/mahjong";
 
 const initialState = {
   message: "",

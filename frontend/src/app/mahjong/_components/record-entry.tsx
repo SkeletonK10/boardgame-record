@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { MahjongGameRecord } from "../dto";
+import { MahjongGameRecord } from "@/dto/mahjong";
 
 class MahjongRecordEntryProps extends MahjongGameRecord {}
 

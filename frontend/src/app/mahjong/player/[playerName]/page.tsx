@@ -1,13 +1,16 @@
 "use client";
 import { Box, Grid2 as Grid, List, Typography } from "@mui/material";
 import { text } from "@/lib/data";
-import { ChartContainerProps, LineChart } from "@mui/x-charts";
+import { LineChart } from "@mui/x-charts";
 import React, { useEffect, useState, useTransition } from "react";
-import { MahjongPlayerPageDto } from "./dto";
 import { fetchPlayer } from "./actions";
-import { MahjongCategory, MahjongCategoryValues } from "../../dto";
+import {
+  MahjongCategoryValues,
+  MahjongCategory,
+  MahjongPlayerStatistics,
+  MahjongPlayerPageDto,
+} from "@/dto/mahjong";
 import { CategoryRadio } from "../../_components/category-radio";
-import { MahjongPlayerStatistics } from "../../statistics/player/dto";
 import { RecordEntry } from "../../_components/record-entry";
 import { useSearchParams } from "next/navigation";
 
