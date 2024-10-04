@@ -11,7 +11,7 @@ export function AddButton() {
   const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
   const handleClick = () => {
-    const requiredRoles = [Role.mahjongRecordAdmin, Role.admin];
+    const requiredRoles = ["MAHJONG_RECORD_ADMIN", "ADMIN"];
 
     if (!session?.user) {
       enqueueSnackbar(text.error.noSession, { variant: "error" });
