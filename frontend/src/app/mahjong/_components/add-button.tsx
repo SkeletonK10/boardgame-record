@@ -4,14 +4,14 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { text } from "@/lib/data";
 import { useSnackbar } from "notistack";
-import { Role } from "@/types/auth";
+import { Role, RoleType } from "@/types/auth";
 
 export function AddButton() {
   const router = useRouter();
   const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
   const handleClick = () => {
-    const requiredRoles = ["MAHJONG_RECORD_ADMIN", "ADMIN"];
+    const requiredRoles: RoleType[] = [Role.ADMIN, Role.MAHJONG_RECORD_ADMIN];
 
     if (!session?.user) {
       enqueueSnackbar(text.error.noSession, { variant: "error" });
@@ -19,7 +19,7 @@ export function AddButton() {
     }
     const roles = (session?.user as any).roles;
 
-    const intersect = roles.filter((role: Role) => {
+    const intersect = roles.filter((role: RoleType) => {
       return requiredRoles.includes(role);
     });
     if (intersect.length === 0) {

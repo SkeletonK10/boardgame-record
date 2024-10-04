@@ -1,5 +1,5 @@
 import { api } from "@/lib/axiosInterceptor";
-import { Role } from "@/types/auth";
+import { RoleType } from "@/types/auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { cookies } from "next/headers";
@@ -29,7 +29,9 @@ const handler = NextAuth({
             id: username!,
             name: nickname || username!,
             token: data.access,
-            roles: roles.map(({ role }: { id: number; role: Role }) => role),
+            roles: roles.map(
+              ({ role }: { id: number; role: RoleType }) => role
+            ),
           };
         } else {
           return null;

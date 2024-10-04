@@ -1,6 +1,7 @@
 "use client";
 
-import { Role, text } from "@/lib/data";
+import { text } from "@/lib/data";
+import { Role } from "@/types/auth";
 import { AccountCircle, ChevronLeft, Menu } from "@mui/icons-material";
 import {
   AppBar as MuiAppBar,
@@ -43,7 +44,7 @@ export default function AppBar() {
   ];
 
   // Admin only
-  if (session?.user && (session.user as any).roles.includes(Role.admin))
+  if (session?.user && (session.user as any).roles.includes(Role.ADMIN))
     menuList.push({ name: `권한 관리 페이지`, url: `/api/auth/role` });
 
   return (
