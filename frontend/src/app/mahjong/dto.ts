@@ -2,10 +2,9 @@ export const MahjongCategoryValues = ["4마", "3마"];
 
 export type MahjongCategory = (typeof MahjongCategoryValues)[number];
 
-export enum MahjongSubcategory {
-  half = "반장전",
-  east = "동풍전",
-}
+export const MahjongSubcategoryValues = ["반장전", "동풍전"];
+
+export type MahjongSubcategory = (typeof MahjongSubcategoryValues)[number];
 
 export class MahjongUserRecord {
   playerName!: string;
