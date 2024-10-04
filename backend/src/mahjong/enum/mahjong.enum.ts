@@ -5,12 +5,12 @@ export enum MahjongSeat {
   north,
 }
 
-export enum MahjongSubcategory {
-  east = `동풍전`,
-  south = `반장전`,
-}
+// Basic Enumerations /////////////////////////////////////////////////////////
 
-export enum MahjongCategory {
-  fourPlayer = '4마',
-  threePlayer = '3마',
-}
+export const MahjongCategoryValues = ['4마', '3마'];
+
+export type MahjongCategory = (typeof MahjongCategoryValues)[number];
+
+export const MahjongSubcategoryValues = ['반장전', '동풍전'];
+
+export type MahjongSubcategory = (typeof MahjongSubcategoryValues)[number];

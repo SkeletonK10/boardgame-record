@@ -30,10 +30,7 @@ export class MahjongService {
     if (!this.verifyGame(players, scores)) {
       throw new Error(`INVALID_MAHJONG_GAME`);
     }
-    const category =
-      players.length === 4
-        ? MahjongCategory.fourPlayer
-        : MahjongCategory.threePlayer;
+    const category = players.length === 4 ? '4마' : '3마';
     const rating = this.calculateRating(
       scores,
       createMahjongGameDto.subcategory,
