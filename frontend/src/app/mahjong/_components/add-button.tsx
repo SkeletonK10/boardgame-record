@@ -2,8 +2,9 @@
 import { Button } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Role, text } from "@/lib/data";
+import { text } from "@/lib/data";
 import { useSnackbar } from "notistack";
+import { Role } from "@/types/auth";
 
 export function AddButton() {
   const router = useRouter();
@@ -11,7 +12,7 @@ export function AddButton() {
   const { enqueueSnackbar } = useSnackbar();
   const handleClick = () => {
     const requiredRoles = [Role.mahjongRecordAdmin, Role.admin];
-    
+
     if (!session?.user) {
       enqueueSnackbar(text.error.noSession, { variant: "error" });
       return;

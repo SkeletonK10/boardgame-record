@@ -1,5 +1,5 @@
 import { api } from "@/lib/axiosInterceptor";
-import { Role } from "@/lib/data";
+import { Role } from "@/types/auth";
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { cookies } from "next/headers";

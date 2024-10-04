@@ -6,7 +6,7 @@ import { depriveRole, fetchUsers, grantRole } from "./actions";
 import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
-import { UserWithRolesDto } from "../../../../dto/auth";
+import { UserWithRolesDto } from "@/types/auth";
 
 const initialState = {
   message: "",

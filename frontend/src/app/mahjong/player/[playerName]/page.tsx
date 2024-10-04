@@ -9,7 +9,7 @@ import {
   MahjongCategory,
   MahjongPlayerStatistics,
   MahjongPlayerPageDto,
-} from "@/dto/mahjong";
+} from "@/types/mahjong";
 import { CategoryRadio } from "../../_components/category-radio";
 import { RecordEntry } from "../../_components/record-entry";
 import { useSearchParams } from "next/navigation";

@@ -7,7 +7,7 @@ import {
   RadioGroup,
   Typography,
 } from "@mui/material";
-import { MahjongCategory, MahjongPlayerStatistics } from "@/dto/mahjong";
+import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useEffect, useState, useTransition } from "react";
 import { fetchPlayerStatistics } from "./actions";

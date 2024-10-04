@@ -6,7 +6,7 @@ import {
   MahjongGameRecord,
   MahjongPlayerStatistics,
   MahjongPlayerPageDto,
-} from "@/dto/mahjong";
+} from "@/types/mahjong";
 
 const categories = MahjongCategoryValues;
 
