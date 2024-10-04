@@ -19,14 +19,14 @@ export class MahjongPlayerController {
   constructor(private readonly MahjongplayerService: MahjongPlayerService) {}
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Post()
   async create(@Body() createMahjongPlayerDto: CreateMahjongPlayerDto) {
     return await this.MahjongplayerService.create(createMahjongPlayerDto);
   }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Post('guest-count')
   async countGuestCount(@Body() body: any) {
     return await this.MahjongplayerService.countGuestByPlayerName(

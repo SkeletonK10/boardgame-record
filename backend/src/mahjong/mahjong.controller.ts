@@ -20,7 +20,7 @@ export class MahjongController {
   constructor(private readonly mahjongService: MahjongService) {}
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.mahjongRecordAdmin, Role.admin)
+  @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post()
   async createGame(@Body() createMahjongGameDto: CreateMahjongGameDto) {
     try {
@@ -87,7 +87,7 @@ export class MahjongController {
   // 우마는 cascade 필요 없으므로 그냥 계산하면 됨
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.mahjongRecordAdmin, Role.admin)
+  @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Delete('/:id')
   async deleteGame(@Param('id') id: number) {
     try {

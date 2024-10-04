@@ -1,6 +1,6 @@
-import { Role } from 'src/user/entities/role.entity';
+import { RoleType } from 'src/user/entities/role.entity';
 
 export class UserRoleDto {
-  role: Role;
+  role: RoleType;
   username: string;
 }

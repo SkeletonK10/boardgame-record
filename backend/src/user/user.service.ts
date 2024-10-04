@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { Role, UserRole } from './entities/role.entity';
+import { Role, RoleType, UserRole } from './entities/role.entity';
 import { UserRoleDto } from './dto/user-role.dto';
 
 @Injectable()
@@ -28,11 +28,11 @@ export class UserService {
     };
     const user = this.userRepository.create(userInfo);
     const res = await this.userRepository.save(user);
-    const userRole = await this.createRole(user, Role.user);
+    const userRole = await this.createRole(user, Role.USER);
     return res;
   }
 
-  async createRole(user: User, role: Role) {
+  async createRole(user: User, role: RoleType) {
     const res = await this.userRoleRepository.save({
       role,
       user,
@@ -40,7 +40,7 @@ export class UserService {
     return res;
   }
 
-  async deleteRole(user: User, role: Role) {
+  async deleteRole(user: User, role: RoleType) {
     const res = await this.userRoleRepository.delete({
       role,
       user,

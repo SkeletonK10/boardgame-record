@@ -51,7 +51,7 @@ export class AuthController {
   // }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Get('/role')
   async getAllWithRoles() {
     try {
@@ -70,7 +70,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Post('/role')
   async grantRole(@Body() grantRoleDto: UserRoleDto) {
     try {
@@ -88,7 +88,7 @@ export class AuthController {
   }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.admin)
+  @Roles(Role.ADMIN)
   @Delete('/role')
   async depriveRole(@Query() depriveRoleDto: UserRoleDto) {
     try {
