@@ -74,11 +74,11 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
       record: record,
       ranking: [
         {
-          category: MahjongCategory.fourPlayer,
+          category: "4마",
           ranking: p4Ranking,
         },
         {
-          category: MahjongCategory.threePlayer,
+          category: "3마",
           ranking: p3Ranking,
         },
       ],
@@ -89,11 +89,11 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
       record: testRecord,
       ranking: [
         {
-          category: MahjongCategory.fourPlayer,
+          category: "4마",
           ranking: testRanking,
         },
         {
-          category: MahjongCategory.threePlayer,
+          category: "3마",
           ranking: testRanking,
         },
       ],

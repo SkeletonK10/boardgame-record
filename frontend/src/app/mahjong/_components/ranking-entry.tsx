@@ -22,7 +22,7 @@ export function RankingEntry({
   ranking,
 }: MahjongRankingEntryProps) {
   const pathname = `/mahjong/player/${playerName}`;
-  category = category || MahjongCategory.fourPlayer;
+  category = category || "4마";
   const url = format({ pathname, query: { category } });
   const router = useRouter();
   return (

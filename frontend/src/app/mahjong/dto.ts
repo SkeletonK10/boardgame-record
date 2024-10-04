@@ -1,7 +1,6 @@
-export enum MahjongCategory {
-  fourPlayer = "4마",
-  threePlayer = "3마",
-}
+export const MahjongCategoryValues = ["4마", "3마"];
+
+export type MahjongCategory = (typeof MahjongCategoryValues)[number];
 
 export enum MahjongSubcategory {
   half = "반장전",

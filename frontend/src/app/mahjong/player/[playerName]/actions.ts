@@ -1,11 +1,11 @@
 "use server";
 
 import { api } from "@/lib/axiosInterceptor";
-import { MahjongCategory, MahjongGameRecord } from "../../dto";
+import { MahjongCategoryValues, MahjongGameRecord } from "../../dto";
 import { MahjongPlayerPageDto } from "./dto";
 import { MahjongPlayerStatistics } from "../../statistics/player/dto";
 
-const categories = Object.values(MahjongCategory);
+const categories = MahjongCategoryValues;
 
 function buildRankings(
   response: Axios.AxiosXHR<unknown>[],
@@ -29,8 +29,8 @@ function buildRankings(
       };
     },
     {
-      [MahjongCategory.fourPlayer]: [],
-      [MahjongCategory.threePlayer]: [],
+      "4마": [],
+      "3마": [],
     }
   );
 }
@@ -46,8 +46,8 @@ function buildRecords(response: Axios.AxiosXHR<unknown>[]) {
       };
     },
     {
-      [MahjongCategory.fourPlayer]: [],
-      [MahjongCategory.threePlayer]: [],
+      "4마": [],
+      "3마": [],
     }
   );
 }
@@ -63,8 +63,8 @@ function buildStatistics(response: Axios.AxiosXHR<unknown>[]) {
       };
     },
     {
-      [MahjongCategory.fourPlayer]: new MahjongPlayerStatistics(),
-      [MahjongCategory.threePlayer]: new MahjongPlayerStatistics(),
+      "4마": new MahjongPlayerStatistics(),
+      "3마": new MahjongPlayerStatistics(),
     }
   );
 }
@@ -99,8 +99,8 @@ export async function fetchPlayer(playerName: string) {
     const statistics = buildStatistics(statisticsResponse);
 
     return {
-      playerName: statistics[MahjongCategory.fourPlayer].playerName,
-      nickname: statistics[MahjongCategory.fourPlayer].nickname,
+      playerName: statistics["4마"].playerName,
+      nickname: statistics["4마"].nickname,
       rankings,
       records,
       statistics,

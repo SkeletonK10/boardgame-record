@@ -1,7 +1,7 @@
 "use client";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
-import { MahjongCategory } from "../dto";
+import { MahjongCategory, MahjongCategoryValues } from "../dto";
 
 class Props {
   defaultValue?: MahjongCategory;
@@ -13,9 +13,9 @@ export function CategoryRadio({ defaultValue, setCategory }: Props) {
     <RadioGroup
       row
       onChange={(e, v) => setCategory(v as MahjongCategory)} // FIXME: DO NOT USE as STATEMENT
-      defaultValue={defaultValue || MahjongCategory.fourPlayer}
+      defaultValue={defaultValue || "4마"}
     >
-      {Object.values(MahjongCategory).map((category) => (
+      {MahjongCategoryValues.map((category) => (
         <FormControlLabel
           key={category}
           value={category}

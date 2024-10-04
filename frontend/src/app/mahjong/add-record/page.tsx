@@ -25,7 +25,7 @@ const initialState = {
   message: "",
 };
 
-const playerLabelArr = {
+const playerLabelArr: Record<MahjongCategory, string[][]> = {
   "3마": [
     ["east", "동"],
     ["south", "남"],

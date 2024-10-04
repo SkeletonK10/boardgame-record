@@ -1,11 +1,11 @@
 "use client";
 import { Box, Grid2 as Grid, List, Typography } from "@mui/material";
 import { text } from "@/lib/data";
-import { LineChart } from "@mui/x-charts";
+import { ChartContainerProps, LineChart } from "@mui/x-charts";
 import React, { useEffect, useState, useTransition } from "react";
 import { MahjongPlayerPageDto } from "./dto";
 import { fetchPlayer } from "./actions";
-import { MahjongCategory } from "../../dto";
+import { MahjongCategory, MahjongCategoryValues } from "../../dto";
 import { CategoryRadio } from "../../_components/category-radio";
 import { MahjongPlayerStatistics } from "../../statistics/player/dto";
 import { RecordEntry } from "../../_components/record-entry";
@@ -17,8 +17,8 @@ type Props = {
   };
 };
 
-const chartOptions = {
-  [MahjongCategory.fourPlayer]: {
+const chartOptions: Record<MahjongCategory, Object> = {
+  "4마": {
     yAxis: [
       {
         max: 5,
@@ -28,7 +28,7 @@ const chartOptions = {
       },
     ],
   },
-  [MahjongCategory.threePlayer]: {
+  "3마": {
     yAxis: [
       {
         max: 4,
@@ -44,16 +44,16 @@ const testPlayer: MahjongPlayerPageDto = {
   playerName: "testA",
   nickname: "테스트",
   rankings: {
-    [MahjongCategory.fourPlayer]: [],
-    [MahjongCategory.threePlayer]: [],
+    "4마": [],
+    "3마": [],
   },
   records: {
-    [MahjongCategory.fourPlayer]: [],
-    [MahjongCategory.threePlayer]: [],
+    "4마": [],
+    "3마": [],
   },
   statistics: {
-    [MahjongCategory.fourPlayer]: new MahjongPlayerStatistics(),
-    [MahjongCategory.threePlayer]: new MahjongPlayerStatistics(),
+    "4마": new MahjongPlayerStatistics(),
+    "3마": new MahjongPlayerStatistics(),
   },
 };
 
@@ -78,11 +78,11 @@ export default function MahjongPlayerPage({ params }: Props) {
   const searchParams = useSearchParams();
   const initialCategory: MahjongCategory =
     searchParams.has("category") &&
-    Object.values(MahjongCategory).includes(
+    MahjongCategoryValues.includes(
       searchParams.get("category") as MahjongCategory
     )
       ? (searchParams.get("category") as MahjongCategory)
-      : MahjongCategory.fourPlayer;
+      : "4마";
   const playerName: string = params.playerName
     ? decodeURI(params.playerName)
     : "ERROR";
