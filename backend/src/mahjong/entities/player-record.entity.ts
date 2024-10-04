@@ -7,7 +7,7 @@ import {
 } from 'typeorm';
 import { MahjongPlayer } from '../player/entities/player.entity';
 import { MahjongGameRecord } from './game-record.entity';
-import { MahjongSeat } from '../enum/mahjong.enum';
+import { MahjongSeat } from '../constants/mahjong.constant';
 
 @Entity()
 export class MahjongPlayerRecord {

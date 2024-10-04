@@ -4,7 +4,7 @@ import { UserService } from 'src/user/user.service';
 import { MahjongPlayer } from './entities/player.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
-import { MahjongCategory } from '../enum/mahjong.enum';
+import { MahjongCategory } from '../constants/mahjong.constant';
 import { MahjongRating } from './entities/rating.entity';
 
 @Injectable()

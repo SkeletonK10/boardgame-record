@@ -6,7 +6,10 @@ import { DataSource, QueryRunner } from 'typeorm';
 import { MahjongPlayerRecord } from './entities/player-record.entity';
 import { MahjongPlayer } from './player/entities/player.entity';
 import { MahjongRating } from './player/entities/rating.entity';
-import { MahjongCategory, MahjongSubcategory } from './enum/mahjong.enum';
+import {
+  MahjongCategory,
+  MahjongSubcategory,
+} from './constants/mahjong.constant';
 
 @Injectable()
 export class MahjongService {

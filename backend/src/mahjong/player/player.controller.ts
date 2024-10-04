@@ -12,7 +12,7 @@ import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
 import { JwtAccessTokenGuard } from 'src/auth/guard/access-token.guard';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
-import { MahjongCategory } from '../enum/mahjong.enum';
+import { MahjongCategory } from '../constants/mahjong.constant';
 
 @Controller('mahjong/player')
 export class MahjongPlayerController {

@@ -1,6 +1,6 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { MahjongPlayer } from './player.entity';
-import { MahjongCategory } from 'src/mahjong/enum/mahjong.enum';
+import { MahjongCategory } from '../../constants/mahjong.constant';
 
 @Entity()
 export class MahjongRating {

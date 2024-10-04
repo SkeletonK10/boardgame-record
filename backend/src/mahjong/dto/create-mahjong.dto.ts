@@ -1,4 +1,4 @@
-import { MahjongSubcategory } from '../enum/mahjong.enum';
+import { MahjongSubcategory } from '../constants/mahjong.constant';
 
 class MahjongPlay {
   playerName: string;
