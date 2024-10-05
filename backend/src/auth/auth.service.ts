@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from 'src/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
@@ -27,11 +27,11 @@ export class AuthService {
     const user = await this.userService.findOneByUsername(signInDto.username);
 
     if (!user) {
-      throw new Error(`AUTH_ID_DOES_NOT_EXIST`);
+      throw new UnauthorizedException(`AUTH_ID_DOES_NOT_EXIST`);
     }
 
     if (!(await bcrypt.compare(signInDto.password, user.password))) {
-      throw new Error(`AUTH_PASSWORD_DOES_NOT_MATCH`);
+      throw new UnauthorizedException(`AUTH_PASSWORD_DOES_NOT_MATCH`);
     }
 
     return user;
@@ -89,7 +89,7 @@ export class AuthService {
       decodedRefreshToken.username,
       refreshToken,
     );
-    if (!comp) throw new Error(`AUTH_WRONG_REFRESH_TOKEN`);
+    if (!comp) throw new UnauthorizedException(`AUTH_WRONG_REFRESH_TOKEN`);
     const user = await this.userService.findOneByUsername(
       decodedRefreshToken.username,
     );
