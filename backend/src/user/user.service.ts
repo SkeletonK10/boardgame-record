@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -21,7 +21,7 @@ export class UserService {
     // TODO: 아이디/비밀번호 검증
 
     const existingUser = await this.findOneByUsername(createUserDto.username);
-    if (existingUser) throw new Error(`USER_ALREADY_EXISTS`);
+    if (existingUser) throw new BadRequestException(`USER_ALREADY_EXISTS`);
     const userInfo = {
       ...createUserDto,
       password: await bcrypt.hash(createUserDto.password, 10),
@@ -100,18 +100,18 @@ export class UserService {
 
   async grantRole(grantRoleDto: UserRoleDto) {
     const user = await this.findOneByUsername(grantRoleDto.username);
-    if (!user) throw new Error(`GRANT_ROLE_USER_NOT_FOUND`);
+    if (!user) throw new BadRequestException(`GRANT_ROLE_USER_NOT_FOUND`);
     if (!Object.values(Role).includes(grantRoleDto.role))
-      throw new Error(`WRONG_ROLE_NAME`);
+      throw new BadRequestException(`WRONG_ROLE_NAME`);
     const res = await this.createRole(user, grantRoleDto.role);
     return res;
   }
 
   async depriveRole(depriveRoleDto: UserRoleDto) {
     const user = await this.findOneByUsername(depriveRoleDto.username);
-    if (!user) throw new Error(`DEPRIVE_ROLE_USER_NOT_FOUND`);
+    if (!user) throw new BadRequestException(`DEPRIVE_ROLE_USER_NOT_FOUND`);
     if (!Object.values(Role).includes(depriveRoleDto.role))
-      throw new Error(`WRONG_ROLE_NAME`);
+      throw new BadRequestException(`WRONG_ROLE_NAME`);
     const res = await this.deleteRole(user, depriveRoleDto.role);
     return res;
   }
