@@ -39,7 +39,7 @@ api.interceptors.response.use(
       config.sent = true;
       const refresh = cookies().get("refresh")?.value;
       const secondaryResponse = await api.post(REFRESH_URL, { refresh });
-      const { access } = (secondaryResponse.data as any).data;
+      const { access } = secondaryResponse.data as any;
       if (access) {
         cookies().set("access", access);
         config.headers = {
