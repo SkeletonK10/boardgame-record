@@ -7,8 +7,8 @@ export async function fetchUsers() {
   try {
     const response = await api.get(`/auth/role`);
     // console.log(response.data);
-    if (!(response.data as any).data) return [];
-    else return (response.data as any).data;
+    if (!response.data) return [];
+    else return response.data;
   } catch (err) {
     console.log((err as Error).message);
     return [];
@@ -22,9 +22,7 @@ export async function grantRole(prevState: any, formData: FormData) {
       role: formData.get("role"),
     };
     const response = await api.post(`/auth/role`, body);
-    // console.log(response.data);
-    if ((response.data as any).code !== "OK")
-      return { message: text.auth.manageRole.error };
+    if (response.status !== 201) return { message: text.auth.manageRole.error };
     else {
       revalidatePath("/api/auth/role");
       return { message: text.auth.manageRole.successToGrant };
@@ -42,9 +40,7 @@ export async function depriveRole(prevState: any, formData: FormData) {
       role: formData.get("role"),
     };
     const response = await api.delete(`/auth/role`, { params: body });
-    // console.log(response.data);
-    if ((response.data as any).code !== "OK")
-      return { message: text.auth.manageRole.error };
+    if (response.status !== 200) return { message: text.auth.manageRole.error };
     else {
       revalidatePath("/api/auth/role");
       return { message: text.auth.manageRole.successToDeprive };
