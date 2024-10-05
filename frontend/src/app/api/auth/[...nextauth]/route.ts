@@ -14,13 +14,12 @@ const handler = NextAuth({
       async authorize(credentials) {
         const username = credentials?.username;
         const password = credentials?.password;
-        console.log("POST /auth/signin");
         const response = await api.post(`/auth/signin`, {
           username,
           password,
         });
-        const data = (response.data as any).data;
-        if (data) {
+        if (response.status === 200) {
+          const data = response.data as any;
           cookies().set("access", data.access);
           cookies().set("refresh", data.refresh);
           const authResponse = await api.get(`/auth`);
