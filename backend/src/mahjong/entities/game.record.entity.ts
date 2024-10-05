@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MahjongPlayerRecord } from './player-record.entity';
+import { MahjongPlayerRecord } from './player.record.entity';
 import {
   MahjongCategory,
   MahjongSubcategory,

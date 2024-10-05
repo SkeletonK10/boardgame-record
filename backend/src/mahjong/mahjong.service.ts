@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMahjongGameDto } from './dto/create-mahjong.dto';
+import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
 import { MahjongPlayerService } from './player/player.service';
-import { MahjongGameRecord } from './entities/game-record.entity';
+import { MahjongGameRecord } from './entities/game.record.entity';
 import { DataSource, QueryRunner } from 'typeorm';
-import { MahjongPlayerRecord } from './entities/player-record.entity';
+import { MahjongPlayerRecord } from './entities/player.record.entity';
 import { MahjongPlayer } from './player/entities/player.entity';
 import { MahjongRating } from './player/entities/rating.entity';
 import {

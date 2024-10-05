@@ -1,4 +1,4 @@
-import { MahjongPlayerRecord } from 'src/mahjong/entities/player-record.entity';
+import { MahjongPlayerRecord } from 'src/mahjong/entities/player.record.entity';
 import { User } from 'src/user/entities/user.entity';
 import {
   Column,

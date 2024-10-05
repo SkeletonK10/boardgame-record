@@ -6,7 +6,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { MahjongPlayer } from '../player/entities/player.entity';
-import { MahjongGameRecord } from './game-record.entity';
+import { MahjongGameRecord } from './game.record.entity';
 import { MahjongSeat } from '../constants/mahjong.constant';
 
 @Entity()

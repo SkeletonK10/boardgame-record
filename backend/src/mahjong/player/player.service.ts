@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { MahjongPlayer } from './entities/player.entity';
 import { Like, Repository } from 'typeorm';
-import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
+import { CreateMahjongPlayerDto } from './dto/create.player.dto';
 import { MahjongCategory } from '../constants/mahjong.constant';
 import { MahjongRating } from './entities/rating.entity';
 

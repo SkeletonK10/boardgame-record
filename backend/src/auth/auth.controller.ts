@@ -10,13 +10,13 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { SignInDto } from './dto/signin-dto';
-import { JwtAccessTokenGuard } from './guard/access-token.guard';
+import { SignInDto } from './dto/signin.dto';
+import { JwtAccessTokenGuard } from './guard/accesstoken.guard';
 import { RoleGuard, Roles } from './guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { UserService } from 'src/user/user.service';
 import { RefreshDto } from './dto/refresh.dto';
-import { UserRoleDto } from 'src/user/dto/user-role.dto';
+import { UserRoleDto } from 'src/user/dto/user.role.dto';
 
 @Controller('auth')
 export class AuthController {

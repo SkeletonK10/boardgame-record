@@ -8,8 +8,8 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { MahjongPlayerService } from './player.service';
-import { CreateMahjongPlayerDto } from './dto/create-mahjong.dto';
-import { JwtAccessTokenGuard } from 'src/auth/guard/access-token.guard';
+import { CreateMahjongPlayerDto } from './dto/create.player.dto';
+import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from '../constants/mahjong.constant';

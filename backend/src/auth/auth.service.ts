@@ -4,7 +4,7 @@ import { User } from 'src/user/entities/user.entity';
 import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
-import { SignInDto } from './dto/signin-dto';
+import { SignInDto } from './dto/signin.dto';
 
 @Injectable()
 export class AuthService {

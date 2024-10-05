@@ -3,8 +3,8 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
-import { JwtAccessTokenStrategy } from './strategy/accessToken.strategy';
-import { JwtAccessTokenGuard } from './guard/access-token.guard';
+import { JwtAccessTokenStrategy } from './strategy/accesstoken.strategy';
+import { JwtAccessTokenGuard } from './guard/accesstoken.guard';
 import { UserModule } from 'src/user/user.module';
 
 @Module({
