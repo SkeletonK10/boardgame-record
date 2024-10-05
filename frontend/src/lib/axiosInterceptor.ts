@@ -1,6 +1,7 @@
 import axios from "axios";
 import { cookies } from "next/headers";
 
+const SIGNIN_URL = `/auth/signin`;
 const REFRESH_URL = `/auth/refresh`;
 
 export const api = axios.create({
@@ -26,19 +27,27 @@ api.interceptors.response.use(
       response: { status },
     } = err;
 
-    if (config.url === REFRESH_URL || status !== 401 || config.sent) {
+    if (
+      config.url === REFRESH_URL ||
+      (500 <= status && status <= 599) ||
+      config.sent
+    ) {
       return Promise.reject(err);
     }
-    config.sent = true;
-    const refresh = cookies().get("refresh")?.value;
-    const secondaryResponse = await api.post(REFRESH_URL, { refresh });
-    const { access } = (secondaryResponse.data as any).data;
-    if (access) {
-      cookies().set("access", access);
-      config.headers = {
-        authorization: access,
-      };
+
+    if (status === 401 && config.url !== SIGNIN_URL) {
+      config.sent = true;
+      const refresh = cookies().get("refresh")?.value;
+      const secondaryResponse = await api.post(REFRESH_URL, { refresh });
+      const { access } = (secondaryResponse.data as any).data;
+      if (access) {
+        cookies().set("access", access);
+        config.headers = {
+          authorization: access,
+        };
+      }
+      return api(config);
     }
-    return api(config);
+    return Promise.resolve(err);
   }
 );
