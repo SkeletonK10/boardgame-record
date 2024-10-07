@@ -17,6 +17,7 @@ import { Role } from 'src/user/entities/role.entity';
 import { UserService } from 'src/user/user.service';
 import { RefreshDto } from './dto/refresh.dto';
 import { UserRoleDto } from 'src/user/dto/user.role.dto';
+import { JwtRefreshTokenGuard } from './guard/refreshtoken.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -83,6 +84,7 @@ export class AuthController {
     };
   }
 
+  @UseGuards(JwtRefreshTokenGuard)
   @Post('refresh')
   async refresh(@Body() { refresh }: RefreshDto) {
     const newAccessToken = await this.authService.refresh(refresh);
