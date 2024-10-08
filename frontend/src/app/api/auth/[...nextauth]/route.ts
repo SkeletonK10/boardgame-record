@@ -22,10 +22,15 @@ const handler = NextAuth({
           const data = response.data as any;
           cookies().set("access", data.access);
           cookies().set("refresh", data.refresh);
+          const authResponse = await api.get(`/auth`);
+          const { roles } = authResponse.data as any;
           return {
             id: username!,
             name: username!,
             token: data.access,
+            roles: roles.map(
+              ({ role }: { id: number; role: RoleType }) => role
+            ),
           };
         } else {
           return null;
@@ -35,12 +40,9 @@ const handler = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user }) {
-      const authResponse = await api.get(`/auth`);
-      const { nickname, roles } = authResponse.data as any;
       return {
         ...token,
         ...user,
-        roles: roles.map(({ role }: { id: number; role: RoleType }) => role),
       };
     },
     async session({ session, token }) {
