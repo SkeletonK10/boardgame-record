@@ -209,6 +209,7 @@ export class MahjongService {
       .select('game.id AS id')
       .distinct(true);
 
+    // BUG: should handle empty array
     const gameIdFilterWhere =
       category || playerName ? 'game.id IN (:...ids)' : 'TRUE';
     const gameIdFilterArray =
