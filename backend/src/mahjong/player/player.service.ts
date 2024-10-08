@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { MahjongPlayer } from './entities/player.entity';
@@ -20,7 +20,8 @@ export class MahjongPlayerService {
   async create(createMahjongPlayerDto: CreateMahjongPlayerDto) {
     const { playerName, nickname } = createMahjongPlayerDto;
     const existingPlayer = await this.findOneByPlayerName(playerName);
-    if (existingPlayer) throw new Error(`MAHJONG_PLAYER_ALREADY_EXIST`);
+    if (existingPlayer)
+      throw new BadRequestException(`MAHJONG_PLAYER_ALREADY_EXIST`);
     const player = this.mahjongPlayerRepository.create({
       playerName,
       nickname,
@@ -60,37 +61,6 @@ export class MahjongPlayerService {
       relations: ['rating'],
     });
     return res;
-  }
-
-  async getRecord(playerName?: string, category?: MahjongCategory) {
-    const playerNameWhere = playerName
-      ? `player.playerName = :playerName`
-      : `TRUE`;
-    const categoryWhere = category ? `game.category = :category` : `TRUE`;
-    const recordResult = await this.mahjongPlayerRepository
-      .createQueryBuilder('player')
-      .leftJoin('player.games', 'record')
-      .leftJoin('record.game', 'game')
-      .where(playerNameWhere, { playerName })
-      .andWhere(categoryWhere, { category })
-      .orderBy('game.id', 'DESC')
-      .select([
-        'game.id AS "gameId"',
-        'game.category AS category',
-        'game.subcategory AS subcategory',
-        'record.seat AS seat',
-        'record.rank AS rank',
-      ])
-      //.limit(10)
-      .getRawMany();
-    const seatDictionary = ['동', '남', '서', '북'];
-    const record = recordResult.reverse().map((value) => {
-      return {
-        ...value,
-        seat: seatDictionary[value.seat],
-      };
-    });
-    return record;
   }
 
   async getRanking(category: MahjongCategory) {
