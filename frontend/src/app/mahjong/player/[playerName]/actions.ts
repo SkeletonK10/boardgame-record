@@ -17,7 +17,9 @@ function buildRankings(
   return response.reduce(
     (acc, response, idx) => {
       const category = categories[idx];
-      const data: MahjongGameRecord[] = ((response.data as any).data || [])
+      const data: MahjongGameRecord[] = (
+        (response.data as MahjongGameRecord[]) || []
+      )
         .reverse()
         .slice(-10);
       const ranking = data.map(({ id, players }) => {
@@ -42,7 +44,7 @@ function buildRecords(response: Axios.AxiosXHR<unknown>[]) {
   return response.reduce(
     (acc, response, idx) => {
       const category = categories[idx];
-      const data = (response.data as any).data || [];
+      const data = response.data || [];
       return {
         ...acc,
         [category]: data,
@@ -59,7 +61,8 @@ function buildStatistics(response: Axios.AxiosXHR<unknown>[]) {
   return response.reduce(
     (acc, response, idx) => {
       const category = categories[idx];
-      const data = (response.data as any).data || [];
+      const data: MahjongPlayerStatistics[] =
+        (response.data as MahjongPlayerStatistics[]) || [];
       return {
         ...acc,
         [category]: data[0],
