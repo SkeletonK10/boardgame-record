@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
 import { MahjongPlayerService } from './player/player.service';
 import { MahjongGameRecord } from './entities/game.record.entity';
@@ -14,6 +10,7 @@ import {
   MahjongCategory,
   MahjongSubcategory,
 } from './constants/mahjong.constant';
+import { ServiceException } from 'src/common/exception/exception';
 
 @Injectable()
 export class MahjongService {
@@ -35,7 +32,7 @@ export class MahjongService {
     // console.log(players);
     // console.log(scores);
     if (!this.verifyGame(players, scores)) {
-      throw new BadRequestException(`INVALID_MAHJONG_GAME`);
+      throw new ServiceException('INVALID_MAHJONG_GAME');
     }
     const category = players.length === 4 ? '4마' : '3마';
     const rating = this.calculateRating(
@@ -68,8 +65,8 @@ export class MahjongService {
                   );
                 playerName += this.nthAlphabet(guestCount + 1);
               } else {
-                throw new BadRequestException(
-                  `MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS`,
+                throw new ServiceException(
+                  'MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS',
                 );
               }
               player = await this.mahjongPlayerService.create({
@@ -112,10 +109,10 @@ export class MahjongService {
       // console.error(err);
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
-      if (err instanceof BadRequestException) {
+      if (err instanceof ServiceException) {
         throw err;
       } else {
-        throw new InternalServerErrorException(`MAHJONG_GAME_RECORD_FAIL`);
+        throw new ServiceException('MAHJONG_CREATE_GAME_RECORD_FAIL');
       }
     }
   }
@@ -295,7 +292,7 @@ export class MahjongService {
       .getRawMany();
     console.log(queryResult);
     if (queryResult.length === 0)
-      throw new BadRequestException(`ID_GAME_DOES_NOT_EXISTS`);
+      throw new ServiceException('MAHJONG_GAME_ID_DOES_NOT_EXISTS');
     return {
       category: queryResult[0].game_category,
       subcategory: queryResult[0].game_subcategory,
@@ -359,7 +356,7 @@ export class MahjongService {
       // console.error(err);
       await queryRunner.rollbackTransaction();
       await queryRunner.release();
-      throw new InternalServerErrorException(`MAHJONG_DELETE_GAME_RECORD_FAIL`);
+      throw new ServiceException(`MAHJONG_DELETE_GAME_RECORD_FAIL`);
     }
   }
 

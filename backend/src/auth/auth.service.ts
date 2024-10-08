@@ -5,6 +5,7 @@ import { ConfigService } from '@nestjs/config';
 import { UserService } from 'src/user/user.service';
 import * as bcrypt from 'bcrypt';
 import { SignInDto } from './dto/signin.dto';
+import { ServiceException } from 'src/common/exception/exception';
 
 @Injectable()
 export class AuthService {
@@ -27,11 +28,11 @@ export class AuthService {
     const user = await this.userService.findOneByUsername(signInDto.username);
 
     if (!user) {
-      throw new UnauthorizedException(`AUTH_ID_DOES_NOT_EXIST`);
+      throw new ServiceException('AUTH_ID_DOES_NOT_EXIST');
     }
 
     if (!(await bcrypt.compare(signInDto.password, user.password))) {
-      throw new UnauthorizedException(`AUTH_PASSWORD_DOES_NOT_MATCH`);
+      throw new ServiceException('AUTH_PASSWORD_DOES_NOT_MATCH');
     }
 
     return user;
@@ -82,14 +83,19 @@ export class AuthService {
   }
 
   async refresh(refreshToken: string) {
-    const decodedRefreshToken = this.jwtService.verify(refreshToken, {
-      secret: this.configService.get(`JWT_REFRESH_TOKEN_SECRET_KEY`),
-    });
+    let decodedRefreshToken;
+    try {
+      decodedRefreshToken = this.jwtService.verify(refreshToken, {
+        secret: this.configService.get(`JWT_REFRESH_TOKEN_SECRET_KEY`),
+      });
+    } catch {
+      throw new ServiceException('AUTH_WRONG_REFRESH_TOKEN');
+    }
     const comp = await this.compareUserRefreshToken(
       decodedRefreshToken.username,
       refreshToken,
     );
-    if (!comp) throw new UnauthorizedException(`AUTH_WRONG_REFRESH_TOKEN`);
+    if (!comp) throw new ServiceException('AUTH_EXPIRED_REFRESH_TOKEN');
     const user = await this.userService.findOneByUsername(
       decodedRefreshToken.username,
     );

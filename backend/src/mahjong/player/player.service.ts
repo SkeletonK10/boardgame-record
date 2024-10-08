@@ -6,6 +6,7 @@ import { Like, Repository } from 'typeorm';
 import { CreateMahjongPlayerDto } from './dto/create.player.dto';
 import { MahjongCategory } from '../constants/mahjong.constant';
 import { MahjongRating } from './entities/rating.entity';
+import { ServiceException } from 'src/common/exception/exception';
 
 @Injectable()
 export class MahjongPlayerService {
@@ -21,7 +22,7 @@ export class MahjongPlayerService {
     const { playerName, nickname } = createMahjongPlayerDto;
     const existingPlayer = await this.findOneByPlayerName(playerName);
     if (existingPlayer)
-      throw new BadRequestException(`MAHJONG_PLAYER_ALREADY_EXIST`);
+      throw new ServiceException(`MAHJONG_PLAYER_ALREADY_EXIST`);
     const player = this.mahjongPlayerRepository.create({
       playerName,
       nickname,
