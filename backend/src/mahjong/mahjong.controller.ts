@@ -23,21 +23,8 @@ export class MahjongController {
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post()
   async createGame(@Body() createMahjongGameDto: CreateMahjongGameDto) {
-    try {
-      const res = await this.mahjongService.create(createMahjongGameDto);
-      return {
-        code: `OK`,
-        msg: `마작 경기 기록 완료!`,
-        data: res,
-      };
-    } catch (err) {
-      const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_CREATE`;
-      return {
-        code: code,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const res = await this.mahjongService.create(createMahjongGameDto);
+    return res;
   }
 
   @Get()
@@ -45,21 +32,8 @@ export class MahjongController {
     @Query('playername') playerName?: string,
     @Query('category') category?: MahjongCategory,
   ) {
-    try {
-      const res = await this.mahjongService.findAll(playerName, category);
-      return {
-        code: `OK`,
-        msg: `마작 경기 일람 - 플레이어: ${playerName || '전체'}, 카테고리: ${category || '전체'}`,
-        data: res,
-      };
-    } catch (err) {
-      const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_FINDALL`;
-      return {
-        code: code,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const res = await this.mahjongService.findAll(playerName, category);
+    return res;
   }
 
   // @Get('/:id')
@@ -90,20 +64,8 @@ export class MahjongController {
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Delete('/:id')
   async deleteGame(@Param('id') id: number) {
-    try {
-      const res = await this.mahjongService.delete(id);
-      return {
-        code: `OK`,
-        msg: `마작 경기 삭제 완료!`,
-      };
-    } catch (err) {
-      const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_GAME_DELETE`;
-      return {
-        code: code,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const res = await this.mahjongService.delete(id);
+    return res;
   }
 
   @Get('/statistics/player')
@@ -111,23 +73,10 @@ export class MahjongController {
     @Query('category') category?: MahjongCategory,
     @Query('playername') playerName?: string,
   ) {
-    try {
-      const res = await this.mahjongService.getPlayerStatistics(
-        category,
-        playerName,
-      );
-      return {
-        code: `OK`,
-        msg: `마작 플레이어 통계`,
-        data: res,
-      };
-    } catch (err) {
-      const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYERS_STATISTICS`;
-      return {
-        code: code,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const res = await this.mahjongService.getPlayerStatistics(
+      category,
+      playerName,
+    );
+    return res;
   }
 }
