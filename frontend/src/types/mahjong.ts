@@ -14,7 +14,7 @@ export class MahjongUserRecord {
   playerName!: string;
   nickname!: string;
   rank!: number;
-  seat!: number;
+  seat!: string;
   score!: number;
 }
 

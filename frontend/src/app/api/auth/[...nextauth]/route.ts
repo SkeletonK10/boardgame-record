@@ -14,20 +14,19 @@ const handler = NextAuth({
       async authorize(credentials) {
         const username = credentials?.username;
         const password = credentials?.password;
-        console.log("POST /auth/signin");
         const response = await api.post(`/auth/signin`, {
           username,
           password,
         });
-        const data = (response.data as any).data;
-        if (data) {
+        if (response.status === 200) {
+          const data = response.data as any;
           cookies().set("access", data.access);
           cookies().set("refresh", data.refresh);
           const authResponse = await api.get(`/auth`);
-          const { nickname, roles } = authResponse.data as any;
+          const { roles } = authResponse.data as any;
           return {
             id: username!,
-            name: nickname || username!,
+            name: username!,
             token: data.access,
             roles: roles.map(
               ({ role }: { id: number; role: RoleType }) => role
@@ -40,8 +39,11 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    jwt({ token, user }) {
-      return { ...token, ...user };
+    async jwt({ token, user }) {
+      return {
+        ...token,
+        ...user,
+      };
     },
     async session({ session, token }) {
       // 세션에 토큰 정보를 추가합니다.

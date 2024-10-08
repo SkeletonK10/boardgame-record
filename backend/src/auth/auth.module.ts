@@ -6,6 +6,8 @@ import { PassportModule } from '@nestjs/passport';
 import { JwtAccessTokenStrategy } from './strategy/accesstoken.strategy';
 import { JwtAccessTokenGuard } from './guard/accesstoken.guard';
 import { UserModule } from 'src/user/user.module';
+import { JwtRefreshTokenStrategy } from './strategy/refreshtoken.strategy';
+import { JwtRefreshTokenGuard } from './guard/refreshtoken.guard';
 
 @Module({
   imports: [
@@ -14,6 +16,12 @@ import { UserModule } from 'src/user/user.module';
     UserModule,
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtAccessTokenStrategy, JwtAccessTokenGuard],
+  providers: [
+    AuthService,
+    JwtAccessTokenStrategy,
+    JwtAccessTokenGuard,
+    JwtRefreshTokenStrategy,
+    JwtRefreshTokenGuard,
+  ],
 })
 export class AuthModule {}

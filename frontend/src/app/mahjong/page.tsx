@@ -1,14 +1,10 @@
 import { api } from "@/lib/axiosInterceptor";
+import { Box, Grid2 as Grid, List, Typography } from "@mui/material";
 import {
-  Box,
-  Grid2 as Grid,
-  List,
-  ListItem,
-  ListItemButton,
-  Paper,
-  Typography,
-} from "@mui/material";
-import { MahjongMainPageDto } from "@/types/mahjong";
+  MahjongGameRecord,
+  MahjongMainPageDto,
+  MahjongRankingRecord,
+} from "@/types/mahjong";
 import { AddButton } from "./_components/add-button";
 import { StatisticsButton } from "./_components/statistics-button";
 import { RankingEntry } from "./_components/ranking-entry";
@@ -16,49 +12,110 @@ import { RecordEntry } from "./_components/record-entry";
 
 const testRecord = [
   {
-    category: "4마 반장전",
+    id: 2,
+    category: "4마",
+    subcategory: "반장전",
     players: [
-      { nickname: "참가자1", score: 73000 },
-      { nickname: "참가자2", score: -23000 },
-      { nickname: "참가자3", score: 25000 },
-      { nickname: "참가자4", score: 25000 },
+      {
+        playerName: "p1",
+        nickname: "참가자1",
+        rank: 1,
+        seat: "동",
+        score: 73000,
+      },
+      {
+        playerName: "p2",
+        nickname: "참가자2",
+        rank: 4,
+        seat: "남",
+        score: -23000,
+      },
+      {
+        playerName: "p3",
+        nickname: "참가자3",
+        rank: 2,
+        seat: "서",
+        score: 25000,
+      },
+      {
+        playerName: "p4",
+        nickname: "참가자4",
+        rank: 3,
+        seat: "북",
+        score: 25000,
+      },
     ],
   },
   {
-    category: "3마 동풍전",
+    id: 1,
+    category: "3마",
+    subcategory: "동풍전",
     players: [
-      { nickname: "참가자2", score: 83000 },
-      { nickname: "참가자1", score: -13000 },
-      { nickname: "참가자3", score: 35000 },
+      {
+        playerName: "p1",
+        nickname: "참가자1",
+        rank: 1,
+        seat: "동",
+        score: 83000,
+      },
+      {
+        playerName: "p2",
+        nickname: "참가자2",
+        rank: 4,
+        seat: "남",
+        score: -13000,
+      },
+      {
+        playerName: "p3",
+        nickname: "참가자3",
+        rank: 2,
+        seat: "서",
+        score: 35000,
+      },
     ],
   },
 ];
 
 const testRanking = [
   {
+    playerName: "p1",
     nickname: "참가자1",
     rating: 102.3,
+    ranking: 1,
   },
   {
     nickname: "참가자2",
     rating: 12.3,
+    playerName: "p2",
+    ranking: 2,
   },
   {
-    nickname: "참가자1",
+    nickname: "참가자3",
     rating: -2.3,
+    playerName: "p3",
+    ranking: 3,
   },
   {
-    nickname: "참가자1",
+    nickname: "참가자4",
     rating: -60.3,
+    playerName: "p4",
+    ranking: 4,
   },
 ];
 
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
     const recordResponsePromise = api.get(`/mahjong`);
-    const p3RankingResponsePromise = api.get(`/mahjong/player/ranking/3마`);
-    const p4RankingResponsePromise = api.get(`/mahjong/player/ranking/4마`);
-    // console.log("VVVVVVVVVVVVVV");
+    const p3RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
+      params: {
+        category: "3마",
+      },
+    });
+    const p4RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
+      params: {
+        category: "4마",
+      },
+    });
     const [recordResponse, p3RankingResponse, p4RankingResponse] =
       await Promise.all([
         recordResponsePromise,
@@ -66,9 +123,14 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
         p4RankingResponsePromise,
       ]);
     // console.log("AAAAAAAAAAAAA");
-    const record = (recordResponse.data as any).data.slice(0, 5);
-    const p3Ranking = (p3RankingResponse.data as any).data;
-    const p4Ranking = (p4RankingResponse.data as any).data;
+
+    // BUG: recordResponse has old response type
+    // need to refactor /backend/mahjong
+    const record = (recordResponse.data as MahjongGameRecord[]).slice(0, 5);
+    const p3Ranking: MahjongRankingRecord[] =
+      p3RankingResponse.data as MahjongRankingRecord[];
+    const p4Ranking: MahjongRankingRecord[] =
+      p4RankingResponse.data as MahjongRankingRecord[];
     // console.log(ranking);
     return {
       record: record,

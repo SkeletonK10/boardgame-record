@@ -3,7 +3,7 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
+  HttpCode,
   Post,
   Query,
   Req,
@@ -17,6 +17,7 @@ import { Role } from 'src/user/entities/role.entity';
 import { UserService } from 'src/user/user.service';
 import { RefreshDto } from './dto/refresh.dto';
 import { UserRoleDto } from 'src/user/dto/user.role.dto';
+import { JwtRefreshTokenGuard } from './guard/refreshtoken.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -54,95 +55,39 @@ export class AuthController {
   @Roles(Role.ADMIN)
   @Get('/role')
   async getAllWithRoles() {
-    try {
-      const res = await this.userService.findAllWithRoles();
-      return {
-        code: `OK`,
-        msg: `모든 유저 역할`,
-        data: res,
-      };
-    } catch (err) {
-      return {
-        code: err instanceof Error ? err.message : `ERR_AUTH_GRANT_ROLE`,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const res = await this.userService.findAllWithRoles();
+    return res;
   }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.ADMIN)
   @Post('/role')
   async grantRole(@Body() grantRoleDto: UserRoleDto) {
-    try {
-      const { user, role } = await this.userService.grantRole(grantRoleDto);
-      return {
-        code: `OK`,
-        msg: `'${user.username}' 유저에게 ${role} 역할 부여 완료!`,
-      };
-    } catch (err) {
-      return {
-        code: err instanceof Error ? err.message : `ERR_AUTH_GRANT_ROLE`,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const { user, role } = await this.userService.grantRole(grantRoleDto);
   }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.ADMIN)
   @Delete('/role')
   async depriveRole(@Query() depriveRoleDto: UserRoleDto) {
-    try {
-      const res = await this.userService.depriveRole(depriveRoleDto);
-      return {
-        code: `OK`,
-        msg: `'${depriveRoleDto.username}' 유저의 ${depriveRoleDto.role} 역할 제거 완료!`,
-      };
-    } catch (err) {
-      console.log((err as any).message);
-      return {
-        code: err instanceof Error ? err.message : `ERR_AUTH_DEPRIVE_ROLE`,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const res = await this.userService.depriveRole(depriveRoleDto);
   }
 
+  @HttpCode(200)
   @Post('signin')
   async signIn(@Body() signInDto: SignInDto) {
-    try {
-      const { access_token, refresh_token } =
-        await this.authService.signIn(signInDto);
-      return {
-        code: `OK`,
-        msg: `로그인 완료!`,
-        data: {
-          access: access_token,
-          refresh: refresh_token,
-        },
-      };
-    } catch (err) {
-      return {
-        code: err instanceof Error ? err.message : `ERR_AUTH_SIGNIN`,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const { access_token, refresh_token } =
+      await this.authService.signIn(signInDto);
+    return {
+      access: access_token,
+      refresh: refresh_token,
+    };
   }
 
+  @UseGuards(JwtRefreshTokenGuard)
   @Post('refresh')
   async refresh(@Body() { refresh }: RefreshDto) {
-    try {
-      const newAccessToken = await this.authService.refresh(refresh);
-      return {
-        code: `OK`,
-        msg: `토큰 갱신 완료!`,
-        data: {
-          access: newAccessToken,
-        },
-      };
-    } catch (err) {
-      return {
-        code: err instanceof Error ? err.message : `ERR_AUTH_REFRESH`,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const newAccessToken = await this.authService.refresh(refresh);
+    return { access: newAccessToken };
   }
 }

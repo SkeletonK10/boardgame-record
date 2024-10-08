@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
   Param,
   Post,
   Query,
@@ -27,73 +28,21 @@ export class MahjongPlayerController {
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.ADMIN)
+  @HttpCode(200)
   @Post('guest-count')
-  async countGuestCount(@Body() body: any) {
-    return await this.MahjongplayerService.countGuestByPlayerName(
-      body.playerName,
-    );
+  async countGuestCount(@Body('playerName') playerName: string) {
+    return await this.MahjongplayerService.countGuestByPlayerName(playerName);
   }
 
   @Get()
   async getAll() {
-    try {
-      const res = await this.MahjongplayerService.getAll();
-      return {
-        code: `OK`,
-        msg: `모든 마작 플레이어`,
-        data: res,
-      };
-    } catch (err) {
-      const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_FINDALL`;
-      return {
-        code: code,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+    const res = await this.MahjongplayerService.getAll();
+    return res;
   }
 
-  // @Get('record')
-  // async getRecord(
-  //   @Query('playername') playerName: string,
-  //   @Query('category') category: MahjongCategory,
-  // ) {
-  //   try {
-  //     const res = await this.MahjongplayerService.getRecord(
-  //       playerName,
-  //       category,
-  //     );
-  //     return {
-  //       code: `OK`,
-  //       msg: `${playerName} 마작 기록`,
-  //       data: res,
-  //     };
-  //   } catch (err) {
-  //     const code =
-  //       err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_RECORD`;
-  //     return {
-  //       code: code,
-  //       msg: `알 수 없는 에러가 발생했습니다.`,
-  //     };
-  //   }
-  // }
-
-  @Get('ranking/:category')
-  async getRanking(@Param('category') category: MahjongCategory) {
-    try {
-      const res = await this.MahjongplayerService.getRanking(category);
-      return {
-        code: `OK`,
-        msg: `마작 ${category} 우마 랭킹`,
-        data: res,
-      };
-    } catch (err) {
-      const code =
-        err instanceof Error ? err.message : `ERROR_MAHJONG_PLAYER_RANKING`;
-      return {
-        code: code,
-        msg: `알 수 없는 에러가 발생했습니다.`,
-      };
-    }
+  @Get('ranking')
+  async getRanking(@Query('category') category: MahjongCategory) {
+    const res = await this.MahjongplayerService.getRanking(category);
+    return res;
   }
 }

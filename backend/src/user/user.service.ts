@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role, RoleType, UserRole } from './entities/role.entity';
 import { UserRoleDto } from './dto/user.role.dto';
+import { ServiceException } from 'src/common/exception/exception';
 
 @Injectable()
 export class UserService {
@@ -21,7 +22,7 @@ export class UserService {
     // TODO: 아이디/비밀번호 검증
 
     const existingUser = await this.findOneByUsername(createUserDto.username);
-    if (existingUser) throw new Error(`USER_ALREADY_EXISTS`);
+    if (existingUser) throw new ServiceException('USER_ALREADY_EXISTS');
     const userInfo = {
       ...createUserDto,
       password: await bcrypt.hash(createUserDto.password, 10),
@@ -100,18 +101,18 @@ export class UserService {
 
   async grantRole(grantRoleDto: UserRoleDto) {
     const user = await this.findOneByUsername(grantRoleDto.username);
-    if (!user) throw new Error(`GRANT_ROLE_USER_NOT_FOUND`);
+    if (!user) throw new ServiceException('GRANT_ROLE_USER_NOT_FOUND');
     if (!Object.values(Role).includes(grantRoleDto.role))
-      throw new Error(`WRONG_ROLE_NAME`);
+      throw new ServiceException('WRONG_ROLE_NAME');
     const res = await this.createRole(user, grantRoleDto.role);
     return res;
   }
 
   async depriveRole(depriveRoleDto: UserRoleDto) {
     const user = await this.findOneByUsername(depriveRoleDto.username);
-    if (!user) throw new Error(`DEPRIVE_ROLE_USER_NOT_FOUND`);
+    if (!user) throw new ServiceException('DEPRIVE_ROLE_USER_NOT_FOUND');
     if (!Object.values(Role).includes(depriveRoleDto.role))
-      throw new Error(`WRONG_ROLE_NAME`);
+      throw new ServiceException('WRONG_ROLE_NAME');
     const res = await this.deleteRole(user, depriveRoleDto.role);
     return res;
   }
