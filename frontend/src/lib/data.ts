@@ -1,4 +1,10 @@
 export const text = {
+  common: {
+    cancel: "취소",
+    confirm: "확인",
+    delete: "삭제",
+  },
+
   error: {
     noSession: `로그인이 필요합니다.`,
     noRole: `페이지에 접근할 권한이 없습니다.`,
@@ -33,6 +39,14 @@ export const text = {
       title: `기록 추가`,
       error: `기록 추가 중 문제가 발생했습니다.`,
       success: `기록 추가 완료!`,
+    },
+
+    deleteRecord: {
+      title: `기록 삭제`,
+      confirmTitle: `기록을 삭제할까요?`,
+      confirmText: `기록을 삭제하면 되돌릴 수 없습니다! 신중히 결정해 주세요.`,
+      error: `기록 삭제 중 문제가 발생했습니다.`,
+      success: `기록 삭제 완료!`,
     },
 
     player: {
