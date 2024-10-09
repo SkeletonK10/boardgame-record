@@ -85,7 +85,6 @@ export function RecordEntry({
       enqueueSnackbar(text.mahjong.deleteRecord.success, {
         variant: "success",
       });
-      router.refresh();
     } else {
       enqueueSnackbar(text.mahjong.deleteRecord.error, { variant: "error" });
     }

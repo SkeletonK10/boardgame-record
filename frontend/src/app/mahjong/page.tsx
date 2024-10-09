@@ -9,6 +9,7 @@ import { AddButton } from "./_components/add-button";
 import { StatisticsButton } from "./_components/statistics-button";
 import { RankingEntry } from "./_components/ranking-entry";
 import { RecordEntry } from "./_components/record-entry";
+import { MahjongGameList } from "./_components/game-list";
 
 const testRecord = [
   {
@@ -126,7 +127,7 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
 
     // BUG: recordResponse has old response type
     // need to refactor /backend/mahjong
-    const record = (recordResponse.data as MahjongGameRecord[]).slice(0, 5);
+    const record = recordResponse.data as MahjongGameRecord[];
     const p3Ranking: MahjongRankingRecord[] =
       p3RankingResponse.data as MahjongRankingRecord[];
     const p4Ranking: MahjongRankingRecord[] =
@@ -198,11 +199,7 @@ export default async function MahjongMainPage() {
             >
               최근 기록
             </Typography>
-            <List sx={{ width: "100%" }}>
-              {record.map((value) => (
-                <RecordEntry key={value.id} {...value} />
-              ))}
-            </List>
+            <MahjongGameList record={record} />
           </Box>
         </Grid>
         <Grid size={{ xs: 12, sm: 6 }}>
