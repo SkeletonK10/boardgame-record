@@ -78,7 +78,7 @@ function buildStatistics(response: Axios.AxiosXHR<unknown>[]) {
 export async function fetchPlayer(playerName: string) {
   try {
     const gameResponsePromise = categories.map(async (category) => {
-      return await api.get(`/mahjong`, {
+      return await api.get(`/mahjong/game`, {
         params: {
           playername: playerName,
           category,

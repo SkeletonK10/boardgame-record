@@ -27,7 +27,7 @@ export class MahjongController {
     return res;
   }
 
-  @Get()
+  @Get('game')
   async findAll(
     @Query('playername') playerName?: string,
     @Query('category') category?: MahjongCategory,
@@ -36,7 +36,7 @@ export class MahjongController {
     return res;
   }
 
-  // @Get('/:id')
+  // @Get('game/:id')
   // async findOneById(@Param('id') id: number) {
   //   try {
   //     const res = await this.mahjongService.findById(+id);
@@ -62,7 +62,7 @@ export class MahjongController {
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
-  @Delete('/:id')
+  @Delete('game/:id')
   async deleteGame(@Param('id') id: number) {
     const res = await this.mahjongService.delete(id);
     return res;
