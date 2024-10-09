@@ -21,7 +21,7 @@ export class MahjongController {
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
-  @Post()
+  @Post('game')
   async createGame(@Body() createMahjongGameDto: CreateMahjongGameDto) {
     const res = await this.mahjongService.create(createMahjongGameDto);
     return res;
