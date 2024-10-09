@@ -1,14 +1,15 @@
 "use server";
 import { api } from "@/lib/axiosInterceptor";
 import { text } from "@/lib/data";
+import { UserWithRolesDto } from "@/types/auth";
 import { revalidatePath } from "next/cache";
 
-export async function fetchUsers() {
+export async function fetchUsers(): Promise<UserWithRolesDto[]> {
   try {
     const response = await api.get(`/auth/role`);
     // console.log(response.data);
     if (!response.data) return [];
-    else return response.data;
+    else return response.data as UserWithRolesDto[];
   } catch (err) {
     console.log((err as Error).message);
     return [];
