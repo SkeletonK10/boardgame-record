@@ -16,7 +16,7 @@ export class MahjongYakumanRecord {
   @ManyToOne(() => MahjongPlayerRecord, (record) => record.yakumans)
   record: MahjongPlayerRecord;
 
-  @Column({ array: true })
+  @Column('varchar', { array: true })
   yakuman: MahjongYakuman[];
 
   @DeleteDateColumn()
