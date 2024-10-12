@@ -3,7 +3,6 @@ import { text } from "@/lib/data";
 import {
   Box,
   FormControl,
-  FormLabel,
   TextField,
   Grid2 as Grid,
   Checkbox,
@@ -12,6 +11,7 @@ import {
   RadioGroup,
   Radio,
   Autocomplete,
+  Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { createRecord, fetchPlayers } from "./actions";
@@ -19,6 +19,8 @@ import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
 import { MahjongCategory, MahjongPlayersDto } from "@/types/mahjong";
+import { Add } from "@mui/icons-material";
+import { YakumanEntry } from "./_components/yakuman-entry";
 
 const initialState = {
   message: "",
@@ -45,7 +47,10 @@ export default function MahjongAddRecordPage() {
   const [formState, formAction] = useFormState(createRecord, initialState);
   const [players, setPlayers] = useState<MahjongPlayersDto[]>([]);
   const [playerLabel, setPlayerLabel] = useState(playerLabelArr["4마"]);
+  const [yakumanNumber, setYakumanNumber] = useState(0);
   const [isPending, startTransition] = useTransition();
+
+  const yakumanRange = [...Array(yakumanNumber)];
 
   useEffect(() => {
     startTransition(async () => await setPlayers(await fetchPlayers()));
@@ -75,6 +80,7 @@ export default function MahjongAddRecordPage() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            rowGap: "0.5rem",
           }}
         >
           <FormControl>
@@ -157,6 +163,23 @@ export default function MahjongAddRecordPage() {
               </Grid>
             </Grid>
           ))}
+          <FormControl sx={{ display: "none" }}>
+            <TextField
+              type="text"
+              name="yakuman-number"
+              defaultValue={yakumanNumber}
+            ></TextField>
+          </FormControl>
+          {yakumanRange.map((_, i) => (
+            <YakumanEntry key={`yakuman-${i}`} players={players} idx={i} />
+          ))}
+          <Button
+            variant="outlined"
+            onClick={() => setYakumanNumber(yakumanNumber + 1)}
+          >
+            <Add />
+            <Typography>역만 추가하기</Typography>
+          </Button>
           <FormControl sx={{ width: "80%" }}>
             <TextField
               type="text"
