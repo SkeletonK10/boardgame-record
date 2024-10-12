@@ -19,6 +19,7 @@ export async function fetchPlayers(): Promise<MahjongPlayersDto[]> {
 
 export async function createRecord(prevState: any, formData: FormData) {
   try {
+    const yakumanRange = [...Array(formData.get("yakuman-number"))];
     const body = {
       category: formData.get("category"),
       subcategory: formData.get("subcategory"),
@@ -30,6 +31,15 @@ export async function createRecord(prevState: any, formData: FormData) {
           playerName: playerName ? playerName : undefined,
           isGuest: isGuest,
           score: score ? score : undefined,
+        };
+      }),
+      yakumans: yakumanRange.map((_, idx) => {
+        return {
+          yakuman: formData.get(`yakuman-${idx}-yakuman`),
+          winner: formData.get(`yakuman-${idx}-winner`),
+          opponent: formData.get(`yakuman-${idx}-opponent`) || null,
+          tsumo: formData.get(`yakuman-${idx}-tsumo`) === "쯔모",
+          round: formData.get(`yakuman-${idx}-round`),
         };
       }),
       note: formData.get("note"),
