@@ -13,8 +13,6 @@ class YakumanRecordDto {
   winner: string;
   // 방총자 (쯔모 시엔 null)
   opponent: string | null;
-  // 쯔모했나요?
-  tsumo: boolean;
   // 동 n국 m본장 (모르면 null)
   round: string | null;
 }
