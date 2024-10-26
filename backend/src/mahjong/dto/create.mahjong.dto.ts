@@ -1,12 +1,12 @@
 import { MahjongSubcategory } from '../constants/mahjong.constant';
 
-class PlayerRecordDto {
+export class PlayerRecordDto {
   playerName: string;
   isGuest: boolean;
   score: number;
 }
 
-class YakumanRecordDto {
+export class YakumanRecordDto {
   // 역만 종류
   yakuman: string[];
   // 화료자
