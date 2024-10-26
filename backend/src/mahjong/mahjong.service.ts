@@ -97,6 +97,8 @@ export class MahjongService {
           },
         ),
       );
+
+      // TODO: 역만 기록 집어넣기!!!!!
       const game = queryRunner.manager.create(MahjongGameRecord, {
         category: category,
         subcategory: createMahjongGameDto.subcategory,
