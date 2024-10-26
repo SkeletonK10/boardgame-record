@@ -39,7 +39,7 @@ export async function createRecord(prevState: any, formData: FormData) {
           winner: formData.get(`yakuman-${idx}-winner`),
           opponent: formData.get(`yakuman-${idx}-opponent`) || null,
           tsumo: formData.get(`yakuman-${idx}-tsumo`) === "쯔모",
-          round: formData.get(`yakuman-${idx}-round`),
+          round: formData.get(`yakuman-${idx}-round`) || null,
         };
       }),
       note: formData.get("note"),
