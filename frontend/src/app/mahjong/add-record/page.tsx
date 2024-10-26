@@ -23,6 +23,7 @@ import { Add } from "@mui/icons-material";
 import { YakumanEntry } from "./_components/yakuman-entry";
 
 const initialState = {
+  state: "initial",
   message: "",
 };
 
@@ -56,11 +57,12 @@ export default function MahjongAddRecordPage() {
     startTransition(async () => await setPlayers(await fetchPlayers()));
   }, []);
   useEffect(() => {
-    if (formState.message === text.mahjong.addRecord.success) {
+    if (formState.state === "success") {
       enqueueSnackbar(formState.message, { variant: "success" });
       router.push(`/mahjong`);
-    } else if (formState.message === text.mahjong.addRecord.error)
+    } else if (formState.state === "error") {
       enqueueSnackbar(formState.message, { variant: "error" });
+    }
   }, [formState, enqueueSnackbar, router]);
   return (
     <Box
@@ -163,9 +165,9 @@ export default function MahjongAddRecordPage() {
               </Grid>
             </Grid>
           ))}
-          <FormControl sx={{ display: "none" }}>
+          <FormControl>
             <TextField
-              type="text"
+              type="hidden"
               name="yakuman-number"
               defaultValue={yakumanNumber}
             ></TextField>
