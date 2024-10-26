@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { MahjongPlayersDto } from "@/types/mahjong";
-import { yakumans } from "@/lib/constants/mahjong";
+import { MahjongYakumanValues } from "@/lib/constants/mahjong";
 
 class YakumanEntryProps {
   players!: MahjongPlayersDto[];
@@ -21,6 +21,7 @@ class YakumanEntryProps {
 
 export function YakumanEntry({ players, idx }: YakumanEntryProps) {
   const [isTsumo, setIsTsumo] = useState(true);
+  const [wonYakuman, setWonYakuman] = useState<string[]>([]);
   return (
     <Paper variant="outlined" sx={{ padding: "0.5rem", width: "80%" }}>
       <Grid container spacing={1}>
@@ -110,25 +111,23 @@ export function YakumanEntry({ players, idx }: YakumanEntryProps) {
           <FormControl fullWidth>
             <Autocomplete
               multiple
-              freeSolo
               autoHighlight
               autoComplete
-              options={yakumans.map((value) => {
-                return {
-                  label: value,
-                  value: value,
-                };
-              })}
+              onChange={(e, v) => setWonYakuman(v)}
+              options={MahjongYakumanValues}
               renderInput={(params) => (
-                <TextField
-                  {...params}
-                  name={`yakuman-${idx}-yakuman`}
-                  label="화료한 역만"
-                />
+                <TextField {...params} label="화료한 역만" />
               )}
             />
           </FormControl>
         </Grid>
+        <FormControl>
+          <input
+            type="hidden"
+            name={`yakuman-${idx}-yakuman`}
+            value={wonYakuman}
+          />
+        </FormControl>
       </Grid>
     </Paper>
   );
