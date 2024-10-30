@@ -305,13 +305,16 @@ export class MahjongService {
       .select('game.id AS id')
       .distinct(true);
 
-    // BUG: should handle empty array
-    const gameIdFilterWhere =
-      category || playerName ? 'game.id IN (:...ids)' : 'TRUE';
     const gameIdFilterArray =
       category || playerName
         ? (await filterQueryBuilder.getRawMany()).map(({ id }) => +id)
         : [];
+    const gameIdFilterWhere =
+      category || playerName
+        ? gameIdFilterArray.length > 0
+          ? 'game.id IN (:...ids)'
+          : 'FALSE'
+        : 'TRUE';
 
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongPlayerRecord, 'record')
