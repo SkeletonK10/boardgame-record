@@ -14,6 +14,7 @@ import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from '../constants/mahjong.constant';
+import { ServiceException } from 'src/common/exception/exception';
 
 @Controller('mahjong/player')
 export class MahjongPlayerController {
@@ -37,6 +38,13 @@ export class MahjongPlayerController {
   @Get()
   async getAll() {
     const res = await this.MahjongplayerService.getAll();
+    return res;
+  }
+
+  @Get('/:playername/info')
+  async findOne(@Param('playername') playerName: string) {
+    const res = await this.MahjongplayerService.findOneByPlayerName(playerName);
+    if (!res) throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
     return res;
   }
 
