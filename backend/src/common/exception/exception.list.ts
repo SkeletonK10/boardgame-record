@@ -104,6 +104,12 @@ export const ExceptionValues = {
     message: '경기 기록 문제: 유효하지 않은 점수 기록입니다.',
   },
 
+  YAKUMAN_WRONG_YAKUMAN_NAME: {
+    statusCode: HttpStatus.BAD_REQUEST,
+    errorCode: 30107,
+    message: '역만 기록 문제: 올바르지 않은 역만 이름입니다.',
+  },
+
   MAHJONG_GAME_ID_DOES_NOT_EXISTS: {
     statusCode: HttpStatus.NOT_FOUND,
     errorCode: 30200,
