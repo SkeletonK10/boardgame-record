@@ -1,8 +1,8 @@
 "use server";
 
 import { api } from "@/lib/axiosInterceptor";
+import { MahjongCategoryValues } from "@/lib/constants/mahjong";
 import {
-  MahjongCategoryValues,
   MahjongGameRecord,
   MahjongPlayerStatistics,
   MahjongPlayerPageDto,
