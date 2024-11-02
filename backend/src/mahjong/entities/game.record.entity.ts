@@ -12,6 +12,7 @@ import {
   MahjongCategory,
   MahjongSubcategory,
 } from '../constants/mahjong.constant';
+import { MahjongYakumanRecord } from './yakuman.record.entity';
 
 @Entity()
 export class MahjongGameRecord {
@@ -26,6 +27,9 @@ export class MahjongGameRecord {
 
   @Column()
   subcategory: MahjongSubcategory;
+
+  @OneToMany(() => MahjongYakumanRecord, (yakuman) => yakuman.game)
+  yakumans: MahjongYakumanRecord;
 
   @Column({ type: 'text', nullable: true })
   note?: string;
