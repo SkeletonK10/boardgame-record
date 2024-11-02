@@ -21,7 +21,7 @@ export class MahjongPlayerController {
   constructor(private readonly MahjongplayerService: MahjongPlayerService) {}
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  @Roles(Role.ADMIN, Role.MAHJONG_RECORD_ADMIN)
+  @Roles(Role.ADMIN)
   @Post()
   async create(@Body() createMahjongPlayerDto: CreateMahjongPlayerDto) {
     return await this.MahjongplayerService.create(createMahjongPlayerDto);

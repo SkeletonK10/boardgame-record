@@ -5,6 +5,7 @@ import { LineChart } from "@mui/x-charts";
 import React, { useEffect, useState, useTransition } from "react";
 import { fetchPlayer } from "./actions";
 import {
+  MahjongCategoryValues,
   MahjongCategory,
   MahjongPlayerStatistics,
   MahjongPlayerPageDto,
@@ -12,7 +13,6 @@ import {
 import { CategoryRadio } from "../../_components/category-radio";
 import { RecordEntry } from "../../_components/record-entry";
 import { useSearchParams } from "next/navigation";
-import { MahjongCategoryValues } from "@/lib/constants/mahjong";
 
 type Props = {
   params: {

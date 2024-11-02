@@ -1,8 +1,7 @@
 "use client";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import { Dispatch, SetStateAction } from "react";
-import { MahjongCategory } from "@/types/mahjong";
-import { MahjongCategoryValues } from "@/lib/constants/mahjong";
+import { MahjongCategory, MahjongCategoryValues } from "@/types/mahjong";
 
 class Props {
   defaultValue?: MahjongCategory;

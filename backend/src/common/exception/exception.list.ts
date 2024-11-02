@@ -68,48 +68,6 @@ export const ExceptionValues = {
     message: '유효하지 않은 마작 경기입니다.',
   },
 
-  YAKUMAN_DUPLICATED_PLAYER: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    errorCode: 30101,
-    message: '역만 기록 문제: 화료자와 방총자가 같은 플레이어입니다.',
-  },
-
-  YAKUMAN_TOO_MANY_OVERLAPPING_YAKUMAN: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    errorCode: 30102,
-    message: '역만 기록 문제: 너무 많은 역만이 중첩됩니다.',
-  },
-
-  YAKUMAN_WRONG_COMBINATION: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    errorCode: 30103,
-    message: '역만 기록 문제: 허용되지 않는 역만 조합이 포함되어 있습니다.',
-  },
-
-  MAHJONG_GAME_DUPLICATE_PLAYER: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    errorCode: 30104,
-    message: '경기 기록 문제: 플레이어가 중복됩니다.',
-  },
-
-  MAHJONG_GAME_INVALID_PLAYER_NUMBER: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    errorCode: 30105,
-    message: '경기 기록 문제: 플레이어 수는 3인 또는 4인이어야 합니다.',
-  },
-
-  MAHJONG_GAME_INVALID_SCORE: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    errorCode: 30106,
-    message: '경기 기록 문제: 유효하지 않은 점수 기록입니다.',
-  },
-
-  YAKUMAN_WRONG_YAKUMAN_NAME: {
-    statusCode: HttpStatus.BAD_REQUEST,
-    errorCode: 30107,
-    message: '역만 기록 문제: 올바르지 않은 역만 이름입니다.',
-  },
-
   MAHJONG_GAME_ID_DOES_NOT_EXISTS: {
     statusCode: HttpStatus.NOT_FOUND,
     errorCode: 30200,
