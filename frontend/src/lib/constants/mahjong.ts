@@ -1,6 +1,6 @@
-export const MahjongCategoryValues = ["4마", "3마"];
+export const MahjongCategoryValues = ["4마", "3마"] as const;
 
-export const MahjongSubcategoryValues = ["반장전", "동풍전"];
+export const MahjongSubcategoryValues = ["반장전", "동풍전"] as const;
 
 export const MahjongYakumanValues = [
   "헤아림 역만",
