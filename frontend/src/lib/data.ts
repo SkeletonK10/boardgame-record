@@ -41,6 +41,13 @@ export const text = {
       success: `기록 추가 완료!`,
     },
 
+    addPlayer: {
+      title: `플레이어 등록`,
+      subTitle: `'A' 등을 제외하고 이름만 기입해 주세요!`,
+      error: `플레이어 등록 중 문제가 발생했습니다. 관리자에게 연락해 주세요.`,
+      success: `플레이어 추가 완료!`,
+    },
+
     deleteRecord: {
       title: `기록 삭제`,
       confirmTitle: `기록을 삭제할까요?`,
