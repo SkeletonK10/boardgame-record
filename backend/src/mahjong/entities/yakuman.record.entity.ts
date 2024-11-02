@@ -20,7 +20,9 @@ export class MahjongYakumanRecord {
   @Column('varchar', { array: true })
   yakuman: MahjongYakuman[];
 
-  @ManyToOne(() => MahjongGameRecord, (game) => game.yakumans)
+  @ManyToOne(() => MahjongGameRecord, (game) => game.yakumans, {
+    onDelete: 'CASCADE',
+  })
   game: MahjongGameRecord;
 
   @Column({ nullable: true })
