@@ -12,6 +12,7 @@ import {
   Radio,
   Autocomplete,
   Typography,
+  ButtonGroup,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { createRecord, fetchPlayers } from "./actions";
@@ -19,7 +20,7 @@ import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
 import { MahjongCategory, MahjongPlayersDto } from "@/types/mahjong";
-import { Add } from "@mui/icons-material";
+import { Add, Remove } from "@mui/icons-material";
 import { YakumanEntry } from "./_components/yakuman-entry";
 
 const initialState = {
@@ -175,13 +176,25 @@ export default function MahjongAddRecordPage() {
           {yakumanRange.map((_, i) => (
             <YakumanEntry key={`yakuman-${i}`} players={players} idx={i} />
           ))}
-          <Button
-            variant="outlined"
-            onClick={() => setYakumanNumber(yakumanNumber + 1)}
-          >
-            <Add />
-            <Typography>역만 추가하기</Typography>
-          </Button>
+          <ButtonGroup>
+            <Button
+              variant="outlined"
+              onClick={() => setYakumanNumber(yakumanNumber + 1)}
+            >
+              <Add />
+              <Typography>역만 추가하기</Typography>
+            </Button>
+            {yakumanNumber !== 0 && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setYakumanNumber(Math.max(yakumanNumber - 1, 0))}
+              >
+                <Remove />
+              </Button>
+            )}
+          </ButtonGroup>
+
           <FormControl sx={{ width: "80%" }}>
             <TextField
               type="text"
