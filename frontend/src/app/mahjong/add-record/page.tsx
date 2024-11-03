@@ -124,7 +124,7 @@ export default function MahjongAddRecordPage() {
           </FormControl>
           {playerLabel.map(([enVal, krVal]) => (
             <Grid container key={enVal} sx={{ width: "80%" }}>
-              <Grid size={5}>
+              <Grid size={6}>
                 <FormControl sx={{ width: "100%" }}>
                   {/* TODO: 플레이어 로딩 보이게 하기? */}
                   <Autocomplete
@@ -147,7 +147,7 @@ export default function MahjongAddRecordPage() {
                   />
                 </FormControl>
               </Grid>
-              <Grid size={5}>
+              <Grid size={6}>
                 <FormControl sx={{ width: "100%" }}>
                   <TextField
                     type="text"
@@ -155,14 +155,6 @@ export default function MahjongAddRecordPage() {
                     label={`${krVal} 점수`}
                   ></TextField>
                 </FormControl>
-              </Grid>
-              <Grid size={2}>
-                <FormControlLabel
-                  name={`${enVal}-is-guest`}
-                  control={<Checkbox />}
-                  label="신규"
-                  labelPlacement="top"
-                />
               </Grid>
             </Grid>
           ))}
