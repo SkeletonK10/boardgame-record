@@ -18,7 +18,7 @@ import {
   OverlappableYakuman,
 } from './constants/mahjong.constant';
 import { ServiceException } from 'src/common/exception/exception';
-import { combination } from 'src/common/utils';
+import { combination, nthAlphabet } from 'src/common/utils';
 import { MahjongYakumanRecord } from './entities/yakuman.record.entity';
 
 @Injectable()
@@ -66,7 +66,7 @@ export class MahjongService {
                 await this.mahjongPlayerService.countGuestByPlayerName(
                   playerName,
                 );
-              playerName += this.nthAlphabet(guestCount + 1);
+              playerName += nthAlphabet(guestCount);
             } else {
               throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
             }
@@ -245,18 +245,6 @@ export class MahjongService {
       .sort((v1, v2) => v1[1] - v2[1])
       .map((v) => v[2]);
     return rank;
-  }
-
-  nthAlphabet(n: number) {
-    const l: number[] = [];
-    const a = 'A'.charCodeAt(0);
-    while (n) {
-      console.log(n);
-      const q = n % 26;
-      n = Math.floor(n / 26);
-      if (q) l.push(a + q - 1);
-    }
-    return String.fromCharCode(...l.reverse());
   }
 
   async updateRating(
