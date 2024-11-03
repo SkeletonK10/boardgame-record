@@ -64,9 +64,9 @@ export function YakumanEntry({ players, idx }: YakumanEntryProps) {
         <Grid size={6}>
           <FormControl fullWidth>
             <Autocomplete
-              freeSolo
               autoHighlight
               autoComplete
+              forcePopupIcon={false}
               options={players.map(({ playerName }) => {
                 return {
                   label: playerName,
@@ -86,9 +86,9 @@ export function YakumanEntry({ players, idx }: YakumanEntryProps) {
         <Grid size={6}>
           <FormControl fullWidth>
             <Autocomplete
-              freeSolo
               autoHighlight
               autoComplete
+              forcePopupIcon={false}
               disabled={isTsumo}
               key={isTsumo.toString()} // to re-render when isTsumo changes
               options={players.map(({ playerName }) => {
