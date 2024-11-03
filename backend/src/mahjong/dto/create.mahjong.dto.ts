@@ -2,7 +2,6 @@ import { MahjongSubcategory } from '../constants/mahjong.constant';
 
 export class PlayerRecordDto {
   playerName: string;
-  isGuest: boolean;
   score: number;
 }
 
