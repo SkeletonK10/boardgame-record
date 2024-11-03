@@ -74,7 +74,17 @@ export default function MahjongAddRecordPage() {
         justifyContent: "center",
       }}
     >
-      <h2>{text.mahjong.addRecord.title}</h2>
+      <Typography
+        variant="h5"
+        noWrap
+        component="div"
+        sx={{
+          display: { sm: "block" },
+          userSelect: "none",
+        }}
+      >
+        {text.mahjong.addRecord.title}
+      </Typography>
       <form action={formAction}>
         <Box
           sx={{
@@ -86,6 +96,13 @@ export default function MahjongAddRecordPage() {
             rowGap: "0.5rem",
           }}
         >
+          <FormControl>
+            <TextField
+              type="hidden"
+              name="yakuman-number"
+              defaultValue={yakumanNumber}
+            />
+          </FormControl>
           <FormControl>
             <RadioGroup
               row
@@ -158,13 +175,6 @@ export default function MahjongAddRecordPage() {
               </Grid>
             </Grid>
           ))}
-          <FormControl>
-            <TextField
-              type="hidden"
-              name="yakuman-number"
-              defaultValue={yakumanNumber}
-            ></TextField>
-          </FormControl>
           {yakumanRange.map((_, i) => (
             <YakumanEntry key={`yakuman-${i}`} players={players} idx={i} />
           ))}
