@@ -11,3 +11,18 @@ export const combination = (arr: Array<any>, r: number) => {
   });
   return res;
 };
+
+/**
+ * n번째 알파벳 (0부터 시작)
+ */
+export const nthAlphabet = (n: number) => {
+  n += 1;
+  const l: number[] = [];
+  const a = 'A'.charCodeAt(0);
+  while (n) {
+    const q = n % 26;
+    n = Math.floor(n / 26);
+    if (q) l.push(a + q - 1);
+  }
+  return String.fromCharCode(...l.reverse());
+};
