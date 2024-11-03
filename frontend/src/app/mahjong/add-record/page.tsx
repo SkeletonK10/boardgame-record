@@ -5,7 +5,6 @@ import {
   FormControl,
   TextField,
   Grid2 as Grid,
-  Checkbox,
   FormControlLabel,
   Button,
   RadioGroup,
@@ -142,12 +141,12 @@ export default function MahjongAddRecordPage() {
           {playerLabel.map(([enVal, krVal]) => (
             <Grid container key={enVal} sx={{ width: "80%" }}>
               <Grid size={6}>
-                <FormControl sx={{ width: "100%" }}>
+                <FormControl fullWidth>
                   {/* TODO: 플레이어 로딩 보이게 하기? */}
                   <Autocomplete
-                    freeSolo
                     autoHighlight
                     autoComplete
+                    forcePopupIcon={false}
                     options={players.map(({ playerName }) => {
                       return {
                         label: playerName,
