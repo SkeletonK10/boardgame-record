@@ -5,10 +5,10 @@ import { text } from "@/lib/data";
 
 export async function createPlayer(prevState: any, formData: FormData) {
   try {
-    const playerName = formData.get("playername");
+    const nickname = formData.get("nickname");
     // TODO: POST /mahjong/player에 nickname이 있어야 함
     const response = await api.post(`/mahjong/player`, {
-      playerName,
+      nickname,
     });
     if (response.status !== 201)
       return {

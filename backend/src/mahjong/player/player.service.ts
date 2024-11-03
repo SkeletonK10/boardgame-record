@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
 import { MahjongPlayer } from './entities/player.entity';
@@ -7,6 +7,7 @@ import { CreateMahjongPlayerDto } from './dto/create.player.dto';
 import { MahjongCategory } from '../constants/mahjong.constant';
 import { MahjongRating } from './entities/rating.entity';
 import { ServiceException } from 'src/common/exception/exception';
+import { nthAlphabet } from 'src/common/utils';
 
 @Injectable()
 export class MahjongPlayerService {
@@ -19,6 +20,17 @@ export class MahjongPlayerService {
   ) {}
 
   async create(createMahjongPlayerDto: CreateMahjongPlayerDto) {
+    if (!createMahjongPlayerDto.playerName) {
+      const guestCount = await this.countGuestByPlayerName(
+        createMahjongPlayerDto.nickname,
+      );
+      const nickname = createMahjongPlayerDto.nickname;
+      const playerName = nickname + nthAlphabet(guestCount);
+      createMahjongPlayerDto = {
+        playerName,
+        nickname,
+      };
+    }
     const { playerName, nickname } = createMahjongPlayerDto;
     const existingPlayer = await this.findOneByPlayerName(playerName);
     if (existingPlayer)

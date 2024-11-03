@@ -68,7 +68,7 @@ export default function MahjongAddPlayerPage() {
           }}
         >
           <FormControl>
-            <TextField type="text" name="playername" label="이름"></TextField>
+            <TextField type="text" name="nickname" label="이름"></TextField>
           </FormControl>
           <Button variant="contained" type="submit">
             기록
