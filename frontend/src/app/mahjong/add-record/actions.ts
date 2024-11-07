@@ -26,11 +26,9 @@ export async function createRecord(prevState: any, formData: FormData) {
       subcategory: formData.get("subcategory"),
       players: ["east", "south", "west", "north"].map((val) => {
         const playerName = formData.get(`${val}-player-name`);
-        const isGuest = formData.get(`${val}-is-guest`) === "on" ? true : false;
         const score = formData.get(`${val}-score`);
         return {
           playerName: playerName ? playerName : undefined,
-          isGuest: isGuest,
           score: score ? score : undefined,
         };
       }),

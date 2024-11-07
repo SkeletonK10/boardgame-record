@@ -54,26 +54,11 @@ export class MahjongService {
     await queryRunner.startTransaction();
     try {
       const players = await Promise.all(
-        // 각 player마다
-        createMahjongGameDto.players.map(async ({ playerName, isGuest }) => {
+        createMahjongGameDto.players.map(async ({ playerName }) => {
           let player =
             await this.mahjongPlayerService.findOneByPlayerName(playerName);
-          // 없으면 새로 생성
           if (!player) {
-            const nickname = playerName;
-            if (isGuest) {
-              const guestCount =
-                await this.mahjongPlayerService.countGuestByPlayerName(
-                  playerName,
-                );
-              playerName += nthAlphabet(guestCount);
-            } else {
-              throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
-            }
-            player = await this.mahjongPlayerService.create({
-              playerName,
-              nickname,
-            });
+            throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
           }
           return player;
         }),

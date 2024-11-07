@@ -5,7 +5,6 @@ import {
   FormControl,
   TextField,
   Grid2 as Grid,
-  Checkbox,
   FormControlLabel,
   Button,
   RadioGroup,
@@ -13,6 +12,7 @@ import {
   Autocomplete,
   Typography,
   ButtonGroup,
+  Link,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { createRecord, fetchPlayers } from "./actions";
@@ -74,7 +74,17 @@ export default function MahjongAddRecordPage() {
         justifyContent: "center",
       }}
     >
-      <h2>{text.mahjong.addRecord.title}</h2>
+      <Typography
+        variant="h5"
+        noWrap
+        component="div"
+        sx={{
+          display: { sm: "block" },
+          userSelect: "none",
+        }}
+      >
+        {text.mahjong.addRecord.title}
+      </Typography>
       <form action={formAction}>
         <Box
           sx={{
@@ -86,6 +96,13 @@ export default function MahjongAddRecordPage() {
             rowGap: "0.5rem",
           }}
         >
+          <FormControl>
+            <TextField
+              type="hidden"
+              name="yakuman-number"
+              defaultValue={yakumanNumber}
+            />
+          </FormControl>
           <FormControl>
             <RadioGroup
               row
@@ -122,15 +139,30 @@ export default function MahjongAddRecordPage() {
               />
             </RadioGroup>
           </FormControl>
+          <Grid container sx={{ width: "80%" }}>
+            <Grid size={4}>
+              <Typography>플레이어</Typography>
+            </Grid>
+            <Grid size={8}>
+              <Link
+                href="/mahjong/add-player"
+                variant="caption"
+                underline="none"
+                sx={{ textAlign: "right" }}
+              >
+                처음 기록하는 플레이어인가요?
+              </Link>
+            </Grid>
+          </Grid>
           {playerLabel.map(([enVal, krVal]) => (
             <Grid container key={enVal} sx={{ width: "80%" }}>
-              <Grid size={5}>
-                <FormControl sx={{ width: "100%" }}>
+              <Grid size={6}>
+                <FormControl fullWidth>
                   {/* TODO: 플레이어 로딩 보이게 하기? */}
                   <Autocomplete
-                    freeSolo
                     autoHighlight
                     autoComplete
+                    forcePopupIcon={false}
                     options={players.map(({ playerName }) => {
                       return {
                         label: playerName,
@@ -147,7 +179,7 @@ export default function MahjongAddRecordPage() {
                   />
                 </FormControl>
               </Grid>
-              <Grid size={5}>
+              <Grid size={6}>
                 <FormControl sx={{ width: "100%" }}>
                   <TextField
                     type="text"
@@ -156,23 +188,8 @@ export default function MahjongAddRecordPage() {
                   ></TextField>
                 </FormControl>
               </Grid>
-              <Grid size={2}>
-                <FormControlLabel
-                  name={`${enVal}-is-guest`}
-                  control={<Checkbox />}
-                  label="신규"
-                  labelPlacement="top"
-                />
-              </Grid>
             </Grid>
           ))}
-          <FormControl>
-            <TextField
-              type="hidden"
-              name="yakuman-number"
-              defaultValue={yakumanNumber}
-            ></TextField>
-          </FormControl>
           {yakumanRange.map((_, i) => (
             <YakumanEntry key={`yakuman-${i}`} players={players} idx={i} />
           ))}

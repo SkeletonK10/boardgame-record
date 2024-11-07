@@ -20,7 +20,7 @@ export default function MahjongAddPlayerPage() {
   useEffect(() => {
     if (formState.state === "success") {
       enqueueSnackbar(formState.message, { variant: "success" });
-      router.push(`/mahjong`);
+      router.push("/mahjong/add-record");
     } else if (formState.state === "error") {
       enqueueSnackbar(formState.message, { variant: "error" });
     }
