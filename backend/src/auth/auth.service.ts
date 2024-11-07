@@ -18,7 +18,7 @@ export class AuthService {
   async signIn(signInDto: SignInDto) {
     const user = await this.compareSignInDto(signInDto);
     const access_token = this.getAccessToken(user);
-    const refresh_token = this.getRefreshToken(user);
+    const refresh_token = await this.getRefreshToken(user);
     return { access_token, refresh_token };
   }
 
