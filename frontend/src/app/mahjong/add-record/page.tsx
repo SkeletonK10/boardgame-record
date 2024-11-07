@@ -145,11 +145,12 @@ export default function MahjongAddRecordPage() {
             </Grid>
             <Grid size={8}>
               <Link
+                href="/mahjong/add-player"
                 variant="caption"
                 underline="none"
-                sx={{ marginLeft: "auto" }}
+                sx={{ textAlign: "right" }}
               >
-                신규 플레이어 추가하기
+                처음 기록하는 플레이어인가요?
               </Link>
             </Grid>
           </Grid>
