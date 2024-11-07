@@ -45,7 +45,8 @@ export const text = {
       title: `플레이어 등록`,
       subTitle: `'A' 등을 제외하고 이름만 기입해 주세요!`,
       error: `플레이어 등록 중 문제가 발생했습니다. 관리자에게 연락해 주세요.`,
-      success: `플레이어 추가 완료!`,
+      success: (playerName: string) =>
+        `플레이어 추가 완료! 아이디는 ${playerName} 입니다.`,
     },
 
     deleteRecord: {
