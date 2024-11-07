@@ -18,9 +18,10 @@ export async function createPlayer(prevState: any, formData: FormData) {
           text.mahjong.addPlayer.error,
       };
     else {
+      const playerName = (response.data as any).playerName;
       return {
         state: "success",
-        message: text.mahjong.addPlayer.success,
+        message: text.mahjong.addPlayer.success(playerName),
       };
     }
   } catch (err) {
