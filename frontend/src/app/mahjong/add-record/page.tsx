@@ -12,6 +12,7 @@ import {
   Autocomplete,
   Typography,
   ButtonGroup,
+  Link,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { createRecord, fetchPlayers } from "./actions";
@@ -138,6 +139,20 @@ export default function MahjongAddRecordPage() {
               />
             </RadioGroup>
           </FormControl>
+          <Grid container sx={{ width: "80%" }}>
+            <Grid size={4}>
+              <Typography>플레이어</Typography>
+            </Grid>
+            <Grid size={8}>
+              <Link
+                variant="caption"
+                underline="none"
+                sx={{ marginLeft: "auto" }}
+              >
+                신규 플레이어 추가하기
+              </Link>
+            </Grid>
+          </Grid>
           {playerLabel.map(([enVal, krVal]) => (
             <Grid container key={enVal} sx={{ width: "80%" }}>
               <Grid size={6}>
