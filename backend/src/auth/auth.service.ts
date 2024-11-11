@@ -18,9 +18,7 @@ export class AuthService {
   async signIn(signInDto: SignInDto) {
     const user = await this.compareSignInDto(signInDto);
     const access_token = this.getAccessToken(user);
-    const refresh_token = this.getRefreshToken(user);
-
-    this.updateUserRefreshToken(user, refresh_token);
+    const refresh_token = await this.getRefreshToken(user);
     return { access_token, refresh_token };
   }
 
@@ -51,8 +49,8 @@ export class AuthService {
     );
   }
 
-  getRefreshToken(user: User) {
-    return this.jwtService.sign(
+  async getRefreshToken(user: User) {
+    const refresh = this.jwtService.sign(
       {
         username: user.username,
         nickname: user.nickname,
@@ -62,11 +60,13 @@ export class AuthService {
         expiresIn: this.configService.get(`JWT_REFRESH_TOKEN_DURATION`),
       },
     );
+    await this.updateUserRefreshToken(user, refresh);
+    return refresh;
   }
 
-  updateUserRefreshToken(user: User, refresh_token: string) {
+  async updateUserRefreshToken(user: User, refresh_token: string) {
     const hashed_token = bcrypt.hashSync(refresh_token, 10);
-    this.userService.update(user.username, {
+    return await this.userService.update(user.username, {
       currentRefreshToken: hashed_token,
     });
   }
@@ -76,10 +76,9 @@ export class AuthService {
     if (!user.currentRefreshToken) {
       return false;
     }
-    if (!bcrypt.compare(token, user.currentRefreshToken)) {
-      return false;
-    }
-    return true;
+    const res = await bcrypt.compare(token, user.currentRefreshToken);
+    console.log(res);
+    return res;
   }
 
   async refresh(refreshToken: string) {

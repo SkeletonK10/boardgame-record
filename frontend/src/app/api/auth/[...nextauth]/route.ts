@@ -20,8 +20,12 @@ const handler = NextAuth({
         });
         if (response.status === 200) {
           const data = response.data as any;
-          cookies().set("access", data.access);
-          cookies().set("refresh", data.refresh);
+          cookies().set("access", data.access, {
+            maxAge: +(process.env.NEXT_PUBLIC_REFRESH_DURATION ?? 300),
+          });
+          cookies().set("refresh", data.refresh, {
+            maxAge: +(process.env.NEXT_PUBLIC_REFRESH_DURATION ?? 300),
+          });
           const authResponse = await api.get(`/auth`);
           const { roles } = authResponse.data as any;
           return {

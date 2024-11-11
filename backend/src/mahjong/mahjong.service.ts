@@ -1,5 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
+import {
+  CreateMahjongGameDto,
+  YakumanRecordDto,
+} from './dto/create.mahjong.dto';
 import { MahjongPlayerService } from './player/player.service';
 import { MahjongGameRecord } from './entities/game.record.entity';
 import { DataSource, QueryRunner } from 'typeorm';
@@ -9,8 +12,14 @@ import { MahjongRating } from './player/entities/rating.entity';
 import {
   MahjongCategory,
   MahjongSubcategory,
+  MahjongYakuman,
+  MahjongYakumanValues,
+  MAX_YAKUMAN_COUNT,
+  OverlappableYakuman,
 } from './constants/mahjong.constant';
 import { ServiceException } from 'src/common/exception/exception';
+import { combination, nthAlphabet } from 'src/common/utils';
+import { MahjongYakumanRecord } from './entities/yakuman.record.entity';
 
 @Injectable()
 export class MahjongService {
@@ -24,17 +33,12 @@ export class MahjongService {
     createMahjongGameDto.players = createMahjongGameDto.players.filter(
       ({ playerName }) => typeof playerName === 'string',
     );
-    const players = createMahjongGameDto.players.map(
-      ({ playerName }) => playerName,
-    );
     const scores = createMahjongGameDto.players.map(({ score }) => +score);
 
-    // console.log(players);
-    // console.log(scores);
-    if (!this.verifyGame(players, scores)) {
+    if (!(await this.verifyGame(createMahjongGameDto))) {
       throw new ServiceException('INVALID_MAHJONG_GAME');
     }
-    const category = players.length === 4 ? '4마' : '3마';
+    const category = createMahjongGameDto.players.length === 4 ? '4마' : '3마';
     const rating = this.calculateRating(
       scores,
       createMahjongGameDto.subcategory,
@@ -49,62 +53,80 @@ export class MahjongService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const playerRecords = await Promise.all(
-        // 각 player마다
-        createMahjongGameDto.players.map(
-          async ({ playerName, isGuest }, seat) => {
-            let player =
-              await this.mahjongPlayerService.findOneByPlayerName(playerName);
-            // 없으면 새로 생성
-            if (!player) {
-              const nickname = playerName;
-              if (isGuest) {
-                const guestCount =
-                  await this.mahjongPlayerService.countGuestByPlayerName(
-                    playerName,
-                  );
-                playerName += this.nthAlphabet(guestCount + 1);
-              } else {
-                throw new ServiceException(
-                  'MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS',
-                );
-              }
-              player = await this.mahjongPlayerService.create({
-                playerName,
-                nickname,
-              });
-            }
-            // console.log(seat);
-            const updatedPlayer = await this.updateRating(
-              player,
-              category,
-              rating[seat],
-              queryRunner,
-            );
-            const recordDto = queryRunner.manager.create(MahjongPlayerRecord, {
-              player: updatedPlayer,
-              seat,
-              rank: ranks[seat],
-              score: scores[seat],
-            });
-            const record = await queryRunner.manager.save(
-              MahjongPlayerRecord,
-              recordDto,
-            );
-            return record;
-          },
-        ),
+      const players = await Promise.all(
+        createMahjongGameDto.players.map(async ({ playerName }) => {
+          let player =
+            await this.mahjongPlayerService.findOneByPlayerName(playerName);
+          if (!player) {
+            throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
+          }
+          return player;
+        }),
       );
-      const game = queryRunner.manager.create(MahjongGameRecord, {
+
+      const playerRecords = await Promise.all(
+        players.map(async (player, seat) => {
+          const updatedPlayer = await this.updateRating(
+            player,
+            category,
+            rating[seat],
+            queryRunner,
+          );
+          const recordDto = queryRunner.manager.create(MahjongPlayerRecord, {
+            player: updatedPlayer,
+            seat,
+            rank: ranks[seat],
+            score: scores[seat],
+          });
+          const record = await queryRunner.manager.save(
+            MahjongPlayerRecord,
+            recordDto,
+          );
+          return record;
+        }),
+      );
+
+      // TODO: PlayerRecord도 Yakuman같이 이후에 저장하도록 (UPDATE 쿼리 줄이기)
+      const gameRecord = queryRunner.manager.create(MahjongGameRecord, {
         category: category,
         subcategory: createMahjongGameDto.subcategory,
         players: playerRecords,
         note: note,
       });
-      const res = await queryRunner.manager.save(MahjongGameRecord, game);
+
+      const game = await queryRunner.manager.save(
+        MahjongGameRecord,
+        gameRecord,
+      );
+
+      const yakumanRecords = await Promise.all(
+        createMahjongGameDto.yakumans.map(
+          async ({ yakuman, winner, opponent, round }) => {
+            const winnerEntity = players.filter(
+              (v) => v.playerName === winner,
+            )[0];
+            const opponentEntity =
+              players.filter((v) => v.playerName === opponent)[0] ?? null;
+            const record = queryRunner.manager.create(MahjongYakumanRecord, {
+              game: game,
+              yakuman: yakuman as MahjongYakuman[],
+              winner: winnerEntity,
+              opponent: opponentEntity,
+              round,
+            });
+            return record;
+          },
+        ),
+      );
+
+      const yakumanResult = await queryRunner.manager.save(
+        MahjongYakumanRecord,
+        yakumanRecords,
+      );
+
       await queryRunner.commitTransaction();
       await queryRunner.release();
-      return res;
+      return game;
     } catch (err) {
       // console.error(err);
       await queryRunner.rollbackTransaction();
@@ -117,13 +139,65 @@ export class MahjongService {
     }
   }
 
-  verifyGame(players: string[], scores: number[]) {
-    if (players.length !== new Set(players).size) return false;
+  async verifyGame(createMahjongGameDto: CreateMahjongGameDto) {
+    const players = createMahjongGameDto.players.map(
+      ({ playerName }) => playerName,
+    );
+    const scores = createMahjongGameDto.players.map(({ score }) => +score);
+
+    await Promise.all([
+      ...createMahjongGameDto.yakumans.map(
+        async (v) => await this.verifyYakuman(v, players),
+      ),
+      ...players.map(async (playerName) => {
+        const res =
+          await this.mahjongPlayerService.findOneByPlayerName(playerName);
+        if (!res)
+          throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
+      }),
+    ]);
+
+    if (players.length !== new Set(players).size)
+      throw new ServiceException('MAHJONG_GAME_DUPLICATE_PLAYER');
     const playerCount = scores.length;
-    if (playerCount < 3 || 4 < playerCount) return false;
+    if (playerCount < 3 || 4 < playerCount)
+      throw new ServiceException('MAHJONG_GAME_INVALID_PLAYER_NUMBER');
     const targetTotal = playerCount === 3 ? 105000 : 100000;
     const scoreTotal = scores.reduce((acc, val) => acc + val, 0);
-    return targetTotal === scoreTotal;
+    if (targetTotal !== scoreTotal)
+      throw new ServiceException('MAHJONG_GAME_INVALID_SCORE');
+    return true;
+  }
+
+  async verifyYakuman(yakuman: YakumanRecordDto, players: string[]) {
+    console.log(yakuman);
+    if (yakuman.winner === yakuman.opponent)
+      throw new ServiceException('YAKUMAN_DUPLICATED_PLAYER');
+    if (yakuman.yakuman.length > MAX_YAKUMAN_COUNT)
+      throw new ServiceException('YAKUMAN_TOO_MANY_OVERLAPPING_YAKUMAN');
+    yakuman.yakuman.forEach((v) => {
+      if (!MahjongYakumanValues.includes(v as MahjongYakuman))
+        throw new ServiceException('YAKUMAN_WRONG_YAKUMAN_NAME');
+    });
+    const yakumanComb: MahjongYakuman[][] = combination(yakuman.yakuman, 2);
+    yakumanComb.forEach(([v1, v2]) => {
+      console.log([v1, v2]);
+      if (!OverlappableYakuman[v1].includes(v2))
+        throw new ServiceException('YAKUMAN_WRONG_COMBINATION');
+    });
+    const winnerEntity = this.mahjongPlayerService.findOneByPlayerName(
+      yakuman.winner,
+    );
+    const opponentEntity = this.mahjongPlayerService.findOneByPlayerName(
+      yakuman.opponent,
+    );
+    if (
+      !winnerEntity ||
+      !opponentEntity ||
+      !players.includes(yakuman.winner) ||
+      (yakuman.opponent && !players.includes(yakuman.opponent))
+    )
+      throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
   }
 
   calculateRating(scores: number[], subcategory: MahjongSubcategory) {
@@ -156,18 +230,6 @@ export class MahjongService {
       .sort((v1, v2) => v1[1] - v2[1])
       .map((v) => v[2]);
     return rank;
-  }
-
-  nthAlphabet(n: number) {
-    const l: number[] = [];
-    const a = 'A'.charCodeAt(0);
-    while (n) {
-      console.log(n);
-      const q = n % 26;
-      n = Math.floor(n / 26);
-      if (q) l.push(a + q - 1);
-    }
-    return String.fromCharCode(...l.reverse());
   }
 
   async updateRating(

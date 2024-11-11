@@ -3,15 +3,16 @@ import { text } from "@/lib/data";
 import {
   Box,
   FormControl,
-  FormLabel,
   TextField,
   Grid2 as Grid,
-  Checkbox,
   FormControlLabel,
   Button,
   RadioGroup,
   Radio,
   Autocomplete,
+  Typography,
+  ButtonGroup,
+  Link,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { createRecord, fetchPlayers } from "./actions";
@@ -19,8 +20,11 @@ import { useFormState } from "react-dom";
 import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
 import { MahjongCategory, MahjongPlayersDto } from "@/types/mahjong";
+import { Add, Remove } from "@mui/icons-material";
+import { YakumanEntry } from "./_components/yakuman-entry";
 
 const initialState = {
+  state: "initial",
   message: "",
 };
 
@@ -45,17 +49,21 @@ export default function MahjongAddRecordPage() {
   const [formState, formAction] = useFormState(createRecord, initialState);
   const [players, setPlayers] = useState<MahjongPlayersDto[]>([]);
   const [playerLabel, setPlayerLabel] = useState(playerLabelArr["4마"]);
+  const [yakumanNumber, setYakumanNumber] = useState(0);
   const [isPending, startTransition] = useTransition();
+
+  const yakumanRange = [...Array(yakumanNumber)];
 
   useEffect(() => {
     startTransition(async () => await setPlayers(await fetchPlayers()));
   }, []);
   useEffect(() => {
-    if (formState.message === text.mahjong.addRecord.success) {
+    if (formState.state === "success") {
       enqueueSnackbar(formState.message, { variant: "success" });
       router.push(`/mahjong`);
-    } else if (formState.message === text.mahjong.addRecord.error)
+    } else if (formState.state === "error") {
       enqueueSnackbar(formState.message, { variant: "error" });
+    }
   }, [formState, enqueueSnackbar, router]);
   return (
     <Box
@@ -66,7 +74,17 @@ export default function MahjongAddRecordPage() {
         justifyContent: "center",
       }}
     >
-      <h2>{text.mahjong.addRecord.title}</h2>
+      <Typography
+        variant="h5"
+        noWrap
+        component="div"
+        sx={{
+          display: { sm: "block" },
+          userSelect: "none",
+        }}
+      >
+        {text.mahjong.addRecord.title}
+      </Typography>
       <form action={formAction}>
         <Box
           sx={{
@@ -75,8 +93,16 @@ export default function MahjongAddRecordPage() {
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
+            rowGap: "0.5rem",
           }}
         >
+          <FormControl>
+            <TextField
+              type="hidden"
+              name="yakuman-number"
+              defaultValue={yakumanNumber}
+            />
+          </FormControl>
           <FormControl>
             <RadioGroup
               row
@@ -113,15 +139,30 @@ export default function MahjongAddRecordPage() {
               />
             </RadioGroup>
           </FormControl>
+          <Grid container sx={{ width: "80%" }}>
+            <Grid size={4}>
+              <Typography>플레이어</Typography>
+            </Grid>
+            <Grid size={8}>
+              <Link
+                href="/mahjong/add-player"
+                variant="caption"
+                underline="none"
+                sx={{ textAlign: "right" }}
+              >
+                처음 기록하는 플레이어인가요?
+              </Link>
+            </Grid>
+          </Grid>
           {playerLabel.map(([enVal, krVal]) => (
             <Grid container key={enVal} sx={{ width: "80%" }}>
-              <Grid size={5}>
-                <FormControl sx={{ width: "100%" }}>
+              <Grid size={6}>
+                <FormControl fullWidth>
                   {/* TODO: 플레이어 로딩 보이게 하기? */}
                   <Autocomplete
-                    freeSolo
                     autoHighlight
                     autoComplete
+                    forcePopupIcon={false}
                     options={players.map(({ playerName }) => {
                       return {
                         label: playerName,
@@ -138,7 +179,7 @@ export default function MahjongAddRecordPage() {
                   />
                 </FormControl>
               </Grid>
-              <Grid size={5}>
+              <Grid size={6}>
                 <FormControl sx={{ width: "100%" }}>
                   <TextField
                     type="text"
@@ -147,22 +188,36 @@ export default function MahjongAddRecordPage() {
                   ></TextField>
                 </FormControl>
               </Grid>
-              <Grid size={2}>
-                <FormControlLabel
-                  name={`${enVal}-is-guest`}
-                  control={<Checkbox />}
-                  label="신규"
-                  labelPlacement="top"
-                />
-              </Grid>
             </Grid>
           ))}
+          {yakumanRange.map((_, i) => (
+            <YakumanEntry key={`yakuman-${i}`} players={players} idx={i} />
+          ))}
+          <ButtonGroup>
+            <Button
+              variant="outlined"
+              onClick={() => setYakumanNumber(yakumanNumber + 1)}
+            >
+              <Add />
+              <Typography>역만 추가하기</Typography>
+            </Button>
+            {yakumanNumber !== 0 && (
+              <Button
+                variant="outlined"
+                color="error"
+                onClick={() => setYakumanNumber(Math.max(yakumanNumber - 1, 0))}
+              >
+                <Remove />
+              </Button>
+            )}
+          </ButtonGroup>
+
           <FormControl sx={{ width: "80%" }}>
             <TextField
               type="text"
               name="note"
               label="추가 기록 사항 (선택)"
-              placeholder="역만 등 추가적으로 경기에서 기록할 만한 사항을 적어주세요."
+              placeholder="추가적으로 경기에서 기록할 만한 사항을 적어주세요."
               multiline
               rows={4}
             ></TextField>

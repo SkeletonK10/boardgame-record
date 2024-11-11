@@ -1,18 +1,13 @@
 "use client";
-import {
-  Box,
-  CircularProgress,
-  FormControlLabel,
-  Radio,
-  RadioGroup,
-  Typography,
-} from "@mui/material";
+import { Box, CircularProgress, Typography } from "@mui/material";
 import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
 import { useEffect, useState, useTransition } from "react";
 import { fetchPlayerStatistics } from "./actions";
 import { text } from "@/lib/data";
 import { CategoryRadio } from "../../_components/category-radio";
+import { useRouter } from "next/navigation";
+import { format } from "url";
 
 const columns: GridColDef[] = [
   // { field: 'playerName', headerName: '아이디' },       // 필요 없을듯?
@@ -37,6 +32,7 @@ const columns: GridColDef[] = [
 ];
 
 export default function MahjongPlayerStatisticsPage() {
+  const router = useRouter();
   const [category, setCategory] = useState<MahjongCategory>("4마");
   // TODO: 구분하기
   // const [subcategory, setSubcategory] = useState('반장전');
@@ -50,6 +46,14 @@ export default function MahjongPlayerStatisticsPage() {
     // console.log(category);
   }, [category]);
 
+  const handleRowClick: GridEventListener<"rowClick"> = (params) => {
+    router.push(
+      format({
+        pathname: `/mahjong/player/${params.row.playerName}`,
+        query: { category },
+      })
+    );
+  };
   return (
     <Box
       sx={{
@@ -88,6 +92,7 @@ export default function MahjongPlayerStatisticsPage() {
         <DataGrid
           rows={stats}
           columns={columns}
+          onRowClick={handleRowClick}
           sx={{
             width: "100%",
 
