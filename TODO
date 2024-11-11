@@ -6,11 +6,8 @@
 
 // /mahjong 관련
 
-// TODO: /mahjong/add-record 폼 입력 검증 좀더 잘하기
 // TODO: 게임 상세 페이지 만들기
 // TODO: 플레이어 <-> 유저 연동하기
-
-// TODO: add-player로 가는 링크 만들기
 
 // /mahjong/yakuman 관련
 
