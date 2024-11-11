@@ -217,7 +217,7 @@ export default function MahjongAddRecordPage() {
               type="text"
               name="note"
               label="추가 기록 사항 (선택)"
-              placeholder="역만 등 추가적으로 경기에서 기록할 만한 사항을 적어주세요."
+              placeholder="추가적으로 경기에서 기록할 만한 사항을 적어주세요."
               multiline
               rows={4}
             ></TextField>
