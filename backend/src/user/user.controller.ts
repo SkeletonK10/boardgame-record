@@ -33,8 +33,8 @@ export class UserController {
     };
   }
 
-  // @UseGuards(JwtAccessTokenGuard, RoleGuard)
-  // @Roles(Role.ADMIN)
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.ADMIN)
   @Get()
   @ApiOkResponse({
     description: "User created. 'USER' role granted",
