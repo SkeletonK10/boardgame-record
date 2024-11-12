@@ -10,11 +10,11 @@ import { useRouter } from "next/navigation";
 import { MahjongCategory, MahjongRankingRecord } from "@/types/mahjong";
 import { format } from "url";
 
-class MahjongRankingEntryProps extends MahjongRankingRecord {
+interface MahjongRankingEntryProps extends MahjongRankingRecord {
   category?: MahjongCategory;
 }
 
-export function RankingEntry({
+export default function RankingEntry({
   category,
   playerName,
   nickname,

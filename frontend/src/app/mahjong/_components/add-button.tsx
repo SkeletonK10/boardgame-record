@@ -6,7 +6,7 @@ import { text } from "@/lib/data";
 import { useSnackbar } from "notistack";
 import { Role, RoleType } from "@/types/auth";
 
-export function AddButton() {
+export default function AddButton() {
   const router = useRouter();
   const { data: session } = useSession();
   const { enqueueSnackbar } = useSnackbar();
