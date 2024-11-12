@@ -2,14 +2,14 @@
 import { MahjongGameRecord } from "@/types/mahjong";
 import { Button, Collapse, List } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { RecordEntry } from "./record-entry";
+import RecordEntry from "./record-entry";
 import { TransitionGroup } from "react-transition-group";
 
-class MahjongGameListProps {
-  record!: MahjongGameRecord[];
+interface MahjongGameListProps {
+  record: MahjongGameRecord[];
 }
 
-export function MahjongGameList({ record }: MahjongGameListProps) {
+export default function MahjongGameList({ record }: MahjongGameListProps) {
   const router = useRouter();
   return (
     <List sx={{ width: "100%" }}>

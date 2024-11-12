@@ -4,12 +4,12 @@ import { Dispatch, SetStateAction } from "react";
 import { MahjongCategory } from "@/types/mahjong";
 import { MahjongCategoryValues } from "@/lib/constants/mahjong";
 
-class Props {
+interface Props {
   defaultValue?: MahjongCategory;
-  setCategory!: Dispatch<SetStateAction<MahjongCategory>>;
+  setCategory: Dispatch<SetStateAction<MahjongCategory>>;
 }
 
-export function CategoryRadio({ defaultValue, setCategory }: Props) {
+export default function CategoryRadio({ defaultValue, setCategory }: Props) {
   return (
     <RadioGroup
       row

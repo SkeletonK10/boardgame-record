@@ -21,7 +21,7 @@ import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
 import { MahjongCategory, MahjongPlayersDto } from "@/types/mahjong";
 import { Add, Remove } from "@mui/icons-material";
-import { YakumanEntry } from "./_components/yakuman-entry";
+import YakumanEntry from "./_components/yakuman-entry";
 
 const initialState = {
   state: "initial",
