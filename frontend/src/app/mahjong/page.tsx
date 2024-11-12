@@ -5,11 +5,10 @@ import {
   MahjongMainPageDto,
   MahjongRankingRecord,
 } from "@/types/mahjong";
-import { AddButton } from "./_components/add-button";
-import { StatisticsButton } from "./_components/statistics-button";
-import { RankingEntry } from "./_components/ranking-entry";
-import { RecordEntry } from "./_components/record-entry";
-import { MahjongGameList } from "./_components/game-list";
+import AddButton from "./_components/add-button";
+import StatisticsButton from "./_components/statistics-button";
+import RankingEntry from "./_components/ranking-entry";
+import MahjongGameList from "./_components/game-list";
 
 const testRecord = [
   {

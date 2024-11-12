@@ -2,7 +2,7 @@
 import { Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 
-export function StatisticsButton() {
+export default function StatisticsButton() {
   const router = useRouter();
   return (
     <Button

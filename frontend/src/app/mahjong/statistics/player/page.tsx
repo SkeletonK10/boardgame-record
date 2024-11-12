@@ -5,7 +5,7 @@ import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
 import { useEffect, useState, useTransition } from "react";
 import { fetchPlayerStatistics } from "./actions";
 import { text } from "@/lib/data";
-import { CategoryRadio } from "../../_components/category-radio";
+import CategoryRadio from "../../_components/category-radio";
 import { useRouter } from "next/navigation";
 import { format } from "url";
 

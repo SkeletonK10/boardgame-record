@@ -1,6 +1,5 @@
 "use client";
 import {
-  Box,
   Button,
   Dialog,
   DialogActions,
@@ -26,13 +25,13 @@ import { text } from "@/lib/data";
 import { useSession } from "next-auth/react";
 import { Role, RoleType } from "@/types/auth";
 
-class MahjongRecordEntryProps extends MahjongGameRecord {}
+interface MahjongRecordEntryProps extends MahjongGameRecord {}
 
 const initialState = {
   message: "",
 };
 
-export function RecordEntry({
+export default function RecordEntry({
   id,
   category,
   subcategory,

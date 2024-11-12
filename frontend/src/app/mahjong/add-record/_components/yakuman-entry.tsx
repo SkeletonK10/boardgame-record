@@ -19,7 +19,7 @@ class YakumanEntryProps {
   idx!: number;
 }
 
-export function YakumanEntry({ players, idx }: YakumanEntryProps) {
+export default function YakumanEntry({ players, idx }: YakumanEntryProps) {
   const [isTsumo, setIsTsumo] = useState(true);
   const [wonYakuman, setWonYakuman] = useState<string[]>([]);
   return (
