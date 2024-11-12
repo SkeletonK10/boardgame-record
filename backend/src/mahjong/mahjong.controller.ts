@@ -26,7 +26,7 @@ export class MahjongController {
   @ApiCreatedResponse()
   async createGame(@Body() createMahjongGameDto: CreateMahjongGameDto) {
     const res = await this.mahjongService.create(createMahjongGameDto);
-    return res;
+    return { id: res.id };
   }
 
   @Get('game')
