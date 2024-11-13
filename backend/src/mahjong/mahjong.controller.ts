@@ -15,6 +15,7 @@ import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from './constants/mahjong.constant';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { getGameExample } from './constants/mahjong.example';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -23,57 +24,14 @@ export class MahjongController {
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post('game')
-  @ApiCreatedResponse({
-    example: {
-      id: 345,
-    },
-  })
+  @ApiCreatedResponse({ example: { id: 345 } })
   async createGame(@Body() createMahjongGameDto: CreateMahjongGameDto) {
     const res = await this.mahjongService.create(createMahjongGameDto);
     return { id: res.id };
   }
 
   @Get('game')
-  @ApiOkResponse({
-    example: [
-      {
-        id: 213,
-        subcategory: '반장전',
-        category: '4마',
-        players: [
-          {
-            playerName: '김철수A',
-            nickname: '김철수',
-            seat: 0,
-            rank: 3,
-            score: 25000,
-          },
-          {
-            playerName: '김영희A',
-            nickname: '김영희',
-            seat: 1,
-            rank: 1,
-            score: 37200,
-          },
-          {
-            playerName: '홍길동A',
-            nickname: '홍길동',
-            seat: 2,
-            rank: 4,
-            score: 11000,
-          },
-          {
-            playerName: '홍길순A',
-            nickname: '홍길순',
-            seat: 3,
-            rank: 2,
-            score: 26800,
-          },
-        ],
-        note: null,
-      },
-    ],
-  })
+  @ApiOkResponse({ example: getGameExample })
   async findAll(
     @Query('playername') playerName?: string,
     @Query('category') category?: MahjongCategory,
