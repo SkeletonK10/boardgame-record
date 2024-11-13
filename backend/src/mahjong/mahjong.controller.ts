@@ -14,6 +14,11 @@ import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from './constants/mahjong.constant';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import {
+  getGameExample,
+  playerStatisticsExample,
+} from './constants/mahjong.example';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -22,12 +27,14 @@ export class MahjongController {
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post('game')
+  @ApiCreatedResponse({ example: { id: 345 } })
   async createGame(@Body() createMahjongGameDto: CreateMahjongGameDto) {
     const res = await this.mahjongService.create(createMahjongGameDto);
     return { id: res.id };
   }
 
   @Get('game')
+  @ApiOkResponse({ example: getGameExample })
   async findAll(
     @Query('playername') playerName?: string,
     @Query('category') category?: MahjongCategory,
@@ -63,12 +70,14 @@ export class MahjongController {
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Delete('game/:id')
+  @ApiOkResponse()
   async deleteGame(@Param('id') id: number) {
     const res = await this.mahjongService.delete(id);
     return res;
   }
 
   @Get('/statistics/player')
+  @ApiOkResponse({ example: playerStatisticsExample })
   async getAllStatistics(
     @Query('category') category?: MahjongCategory,
     @Query('playername') playerName?: string,

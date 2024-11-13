@@ -11,6 +11,7 @@ import {
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create.user.dto';
 import { UpdateUserDto } from './dto/update.user.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from './entities/role.entity';
@@ -20,6 +21,10 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
+  @ApiCreatedResponse({
+    description: "User created. 'USER' role granted",
+    example: { username: 'daddy123', nickname: 'Steve' },
+  })
   async create(@Body() createUserDto: CreateUserDto) {
     const user = await this.userService.create(createUserDto);
     return {
@@ -31,6 +36,10 @@ export class UserController {
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.ADMIN)
   @Get()
+  @ApiOkResponse({
+    description: "User created. 'USER' role granted",
+    example: [{ id: 22123, username: 'daddy123', nickname: 'Steve' }],
+  })
   async findAll() {
     const users = await this.userService.findAll();
     return users;
