@@ -16,6 +16,7 @@ import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from '../constants/mahjong.constant';
 import { ServiceException } from 'src/common/exception/exception';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
+import { playerRankingExmample } from './constants/player.example';
 
 @Controller('mahjong/player')
 export class MahjongPlayerController {
@@ -78,28 +79,7 @@ export class MahjongPlayerController {
   }
 
   @Get('ranking')
-  @ApiOkResponse({
-    example: [
-      {
-        playerName: '김철수A',
-        nickname: '김철수',
-        rating: '152.60',
-        ranking: '1',
-      },
-      {
-        playerName: '김철수B',
-        nickname: '김철수',
-        rating: '152.60',
-        ranking: '1',
-      },
-      {
-        playerName: '홍길동A',
-        nickname: '홍길동',
-        rating: '150.00',
-        ranking: '3',
-      },
-    ],
-  })
+  @ApiOkResponse({ example: playerRankingExmample })
   async getRanking(@Query('category') category: MahjongCategory) {
     const res = await this.MahjongplayerService.getRanking(category);
     return res;
