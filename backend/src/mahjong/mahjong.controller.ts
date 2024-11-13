@@ -15,7 +15,10 @@ import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from './constants/mahjong.constant';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
-import { getGameExample } from './constants/mahjong.example';
+import {
+  getGameExample,
+  playerStatisticsExample,
+} from './constants/mahjong.example';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -74,7 +77,7 @@ export class MahjongController {
   }
 
   @Get('/statistics/player')
-  @ApiOkResponse()
+  @ApiOkResponse({ example: playerStatisticsExample })
   async getAllStatistics(
     @Query('category') category?: MahjongCategory,
     @Query('playername') playerName?: string,
