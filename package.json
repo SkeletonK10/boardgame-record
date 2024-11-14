@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run start:dev --prefix backend\"",
-    "install": "npm i --prefix frontend && npm i --prefix backend",
+    "install": "concurrently \"cd frontend && npm i\"  \"cd backend && npm i\"",
     "build": "npm run build --prefix frontend && npm run build --prefix backend",
     "start": "pm2 start ecosystem.config.js"
   },
