@@ -14,9 +14,9 @@ import { useState } from "react";
 import { MahjongPlayersDto } from "@/types/mahjong";
 import { MahjongYakumanValues } from "@/lib/constants/mahjong";
 
-interface YakumanEntryProps {
-  players: MahjongPlayersDto[];
-  idx: number;
+class YakumanEntryProps {
+  players!: MahjongPlayersDto[];
+  idx!: number;
 }
 
 export default function YakumanEntry({ players, idx }: YakumanEntryProps) {
