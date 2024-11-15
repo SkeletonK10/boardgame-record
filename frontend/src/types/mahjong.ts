@@ -95,3 +95,35 @@ export interface MahjongPlayersDto {
   playerName: string;
   nickname: string;
 }
+
+// Game page //////////////////////////////////////////////////////////////////
+
+export interface MahjongDetailedUserRecord {
+  playerName: string;
+  nickname: string;
+  rank: number;
+  ratingDiff: number;
+  seat: string;
+  score: number;
+}
+
+export interface MahjongYakumanRecord {
+  // 역만 종류
+  yakuman: string[];
+  // 화료자
+  winner: string;
+  // 방총자 (쯔모 시엔 null)
+  opponent: string | null;
+  // 동 n국 m본장 (모르면 null)
+  round: string | null;
+}
+
+export interface MahjongDetailedGameDto {
+  id: number;
+  category: string;
+  subcategory: string;
+  players: MahjongDetailedUserRecord[];
+  note?: string;
+  createdAt: string;
+  yakumans: MahjongYakumanRecord[];
+}
