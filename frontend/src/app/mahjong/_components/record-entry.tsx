@@ -24,6 +24,7 @@ import { useSnackbar } from "notistack";
 import { text } from "@/lib/data";
 import { useSession } from "next-auth/react";
 import { Role, RoleType } from "@/types/auth";
+import { formatDate } from "@/lib/utils";
 
 interface MahjongRecordEntryProps extends MahjongGameRecord {}
 
@@ -37,6 +38,7 @@ export default function RecordEntry({
   subcategory,
   players,
   note,
+  createdAt,
 }: MahjongRecordEntryProps) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -105,6 +107,11 @@ export default function RecordEntry({
           <Grid size={12}>
             <Typography component="div" noWrap sx={{ fontSize: "0.8rem" }}>
               {`${category} ${subcategory}`}
+            </Typography>
+          </Grid>
+          <Grid size={12}>
+            <Typography component="div" noWrap sx={{ fontSize: "0.8rem" }}>
+              {formatDate(createdAt)}
             </Typography>
           </Grid>
           <IconButton
