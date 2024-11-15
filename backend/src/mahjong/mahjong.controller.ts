@@ -16,6 +16,7 @@ import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from './constants/mahjong.constant';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
+  getDetailedGameExample,
   getGameExample,
   playerStatisticsExample,
 } from './constants/mahjong.example';
@@ -44,6 +45,7 @@ export class MahjongController {
   }
 
   @Get('game/:id')
+  @ApiOkResponse({ example: getDetailedGameExample })
   async findOneById(@Param('id') id: number) {
     const res = await this.mahjongService.findById(+id);
     return res;

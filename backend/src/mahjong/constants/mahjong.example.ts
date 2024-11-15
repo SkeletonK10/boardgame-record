@@ -37,6 +37,60 @@ export const getGameExample = [
   },
 ];
 
+export const getDetailedGameExample = {
+  id: 133,
+  category: '4마',
+  subcategory: '반장전',
+  players: [
+    {
+      playerName: '홍길동A',
+      nickname: '홍길동',
+      seat: 0,
+      rank: 1,
+      score: 73000,
+      ratingDiff: null,
+    },
+    {
+      playerName: '홍길순A',
+      nickname: '홍길순',
+      seat: 1,
+      rank: 2,
+      score: 25000,
+      ratingDiff: null,
+    },
+    {
+      playerName: '김철수A',
+      nickname: '김철수',
+      seat: 2,
+      rank: 3,
+      score: 25000,
+      ratingDiff: null,
+    },
+    {
+      playerName: '김영희A',
+      nickname: '김영희',
+      seat: 3,
+      rank: 4,
+      score: -23000,
+      ratingDiff: null,
+    },
+  ],
+  note: null,
+  createdAt: '2024-11-02T09:02:45.324Z',
+  yakuman: [
+    {
+      id: 6,
+      yakuman: ['스안커 단기'],
+      round: '동 1국 0본장',
+    },
+    {
+      id: 7,
+      yakuman: ['녹일색'],
+      round: null,
+    },
+  ],
+};
+
 export const playerStatisticsExample = [
   {
     id: 22350,
