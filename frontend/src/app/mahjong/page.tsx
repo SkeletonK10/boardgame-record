@@ -10,72 +10,6 @@ import StatisticsButton from "./_components/statistics-button";
 import RankingEntry from "./_components/ranking-entry";
 import MahjongGameList from "./_components/game-list";
 
-const testRecord = [
-  {
-    id: 2,
-    category: "4마",
-    subcategory: "반장전",
-    players: [
-      {
-        playerName: "p1",
-        nickname: "참가자1",
-        rank: 1,
-        seat: "동",
-        score: 73000,
-      },
-      {
-        playerName: "p2",
-        nickname: "참가자2",
-        rank: 4,
-        seat: "남",
-        score: -23000,
-      },
-      {
-        playerName: "p3",
-        nickname: "참가자3",
-        rank: 2,
-        seat: "서",
-        score: 25000,
-      },
-      {
-        playerName: "p4",
-        nickname: "참가자4",
-        rank: 3,
-        seat: "북",
-        score: 25000,
-      },
-    ],
-  },
-  {
-    id: 1,
-    category: "3마",
-    subcategory: "동풍전",
-    players: [
-      {
-        playerName: "p1",
-        nickname: "참가자1",
-        rank: 1,
-        seat: "동",
-        score: 83000,
-      },
-      {
-        playerName: "p2",
-        nickname: "참가자2",
-        rank: 4,
-        seat: "남",
-        score: -13000,
-      },
-      {
-        playerName: "p3",
-        nickname: "참가자3",
-        rank: 2,
-        seat: "서",
-        score: 35000,
-      },
-    ],
-  },
-];
-
 const testRanking = [
   {
     playerName: "p1",
@@ -148,7 +82,7 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
   } catch (err) {
     // return test data
     return {
-      record: testRecord,
+      record: [],
       ranking: [
         {
           category: "4마",
