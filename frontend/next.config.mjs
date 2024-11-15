@@ -4,6 +4,9 @@ import createMDX from "@next/mdx";
 const nextConfig = {
   // 마크다운 및 MDX 파일을 포함하도록 `pageExtensions`를 구성합니다
   pageExtensions: ["js", "jsx", "md", "mdx", "ts", "tsx"],
+  compiler: {
+    styledComponents: true,
+  },
 };
 
 const withMDX = createMDX({
