@@ -3,8 +3,10 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { MahjongYakuman } from '../constants/mahjong.constant';
@@ -23,7 +25,11 @@ export class MahjongYakumanRecord {
   @ManyToOne(() => MahjongGameRecord, (game) => game.yakumans, {
     onDelete: 'CASCADE',
   })
+  @JoinColumn({ name: 'gameId' })
   game: MahjongGameRecord;
+
+  @Column('int', { name: 'gameId', nullable: true })
+  gameId: number;
 
   @Column({ nullable: true })
   round: string | null;

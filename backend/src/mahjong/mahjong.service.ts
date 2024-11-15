@@ -365,7 +365,7 @@ export class MahjongService {
       throw new ServiceException('MAHJONG_GAME_ID_DOES_NOT_EXISTS');
     const yakumanQueryResult = await this.dataSource.manager.find(
       MahjongYakumanRecord,
-      { where: { game: { id } } },
+      { where: { gameId: id } },
     );
     const ratingDiff = this.calculateRating(
       queryResult.map(({ record_score }) => +record_score),
