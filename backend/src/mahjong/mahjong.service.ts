@@ -361,21 +361,36 @@ export class MahjongService {
         'record.score',
       ])
       .getRawMany();
-    console.log(queryResult);
     if (queryResult.length === 0)
       throw new ServiceException('MAHJONG_GAME_ID_DOES_NOT_EXISTS');
+    const yakumanQueryResult = await this.dataSource.manager.find(
+      MahjongYakumanRecord,
+      { where: { game: { id } } },
+    );
+    const ratingDiff = this.calculateRating(
+      queryResult.map(({ record_score }) => +record_score),
+      queryResult[0].game_subcategory,
+    );
+    console.log(ratingDiff);
     return {
+      id: queryResult[0].game_id,
       category: queryResult[0].game_category,
       subcategory: queryResult[0].game_subcategory,
       players: queryResult.map((player) => {
         return {
-          playerName: player.player_playerName,
+          playerName: player.playerName,
           nickname: player.player_nickname,
+          seat: player.record_seat,
+          rank: player.record_rank,
           score: player.record_score,
+          ratingDiff: ratingDiff[player.record_seat],
         };
       }),
       note: queryResult[0].game_note,
       createdAt: queryResult[0].createdAt,
+      yakuman: yakumanQueryResult.map(({ id, yakuman, round }) => {
+        return { id, yakuman, round };
+      }),
     };
   }
 
