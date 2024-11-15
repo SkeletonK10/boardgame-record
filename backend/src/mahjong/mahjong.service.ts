@@ -301,6 +301,7 @@ export class MahjongService {
         'game.subcategory',
         'game.category',
         'game.note',
+        'game."createdAt" AS "createdAt"',
         'player."playerName" AS "playerName"',
         'player.nickname',
         'record.seat',
@@ -332,6 +333,7 @@ export class MahjongService {
           };
         }),
         note: game[0].game_note,
+        createdAt: game[0].createdAt,
       };
     });
     result.reverse();
@@ -350,10 +352,13 @@ export class MahjongService {
         'game.id',
         'game.subcategory',
         'game.category',
-        'player.playerName',
-        'player.nickname',
-        'record.score',
         'game.note',
+        'game."createdAt"',
+        'player."playerName"',
+        'player.nickname',
+        'record.seat',
+        'record.rank',
+        'record.score',
       ])
       .getRawMany();
     console.log(queryResult);
@@ -370,6 +375,7 @@ export class MahjongService {
         };
       }),
       note: queryResult[0].game_note,
+      createdAt: queryResult[0].createdAt,
     };
   }
 
