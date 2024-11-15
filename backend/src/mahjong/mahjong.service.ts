@@ -371,7 +371,7 @@ export class MahjongService {
       queryResult.map(({ record_score }) => +record_score),
       queryResult[0].game_subcategory,
     );
-    console.log(ratingDiff);
+    // console.log(ratingDiff);
     return {
       id: queryResult[0].game_id,
       category: queryResult[0].game_category,
