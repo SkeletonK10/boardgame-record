@@ -13,9 +13,9 @@ type Props = {
 
 export default function MahjongDetailedGamePage({ params }: Props) {
   const [isPending, startTransition] = useTransition();
+  const [game, setGame] = useState<MahjongDetailedGameDto>();
 
   useEffect(() => {
-    const [game, setGame] = useState<MahjongDetailedGameDto>();
     startTransition(
       async () => await setGame(await fetchDetailedGame(+params.id))
     );
