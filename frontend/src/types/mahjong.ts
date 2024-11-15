@@ -14,57 +14,57 @@ export type MahjongYakuman = (typeof MahjongYakumanValues)[number];
 
 // Main page //////////////////////////////////////////////////////////////////
 
-export class MahjongUserRecord {
-  playerName!: string;
-  nickname!: string;
-  rank!: number;
-  seat!: string;
-  score!: number;
+export interface MahjongUserRecord {
+  playerName: string;
+  nickname: string;
+  rank: number;
+  seat: string;
+  score: number;
 }
 
-export class MahjongGameRecord {
-  id!: number;
-  category!: string;
-  subcategory!: string;
-  players!: MahjongUserRecord[];
+export interface MahjongGameRecord {
+  id: number;
+  category: string;
+  subcategory: string;
+  players: MahjongUserRecord[];
   note?: string;
-  createdAt!: string;
+  createdAt: string;
 }
 
-export class MahjongRankingRecord {
-  ranking!: number;
-  playerName!: string;
-  nickname!: string;
-  rating!: number;
+export interface MahjongRankingRecord {
+  ranking: number;
+  playerName: string;
+  nickname: string;
+  rating: number;
 }
 
-export class MahjongRanking {
-  category!: MahjongCategory;
-  ranking: MahjongRankingRecord[] = [];
+export interface MahjongRanking {
+  category: MahjongCategory;
+  ranking: MahjongRankingRecord[];
 }
 
-export class MahjongMainPageDto {
-  record: MahjongGameRecord[] = [];
-  ranking: MahjongRanking[] = [];
+export interface MahjongMainPageDto {
+  record: MahjongGameRecord[];
+  ranking: MahjongRanking[];
 }
 
 // Statistics page ////////////////////////////////////////////////////////////
 
-export class MahjongPlayerStatistics {
-  playerName!: string;
-  nickname!: string;
-  category!: string;
-  rating!: number;
-  averageRating!: number;
-  averageScore!: number;
-  maxScore!: number;
-  minScore!: number;
-  count!: number;
-  first!: number;
-  second!: number;
-  third!: number;
-  fourth!: number;
-  tobi!: number;
+export interface MahjongPlayerStatistics {
+  playerName: string;
+  nickname: string;
+  category: string;
+  rating: number;
+  averageRating: number;
+  averageScore: number;
+  maxScore: number;
+  minScore: number;
+  count: number;
+  first: number;
+  second: number;
+  third: number;
+  fourth: number;
+  tobi: number;
 }
 
 // Player page ////////////////////////////////////////////////////////////////
@@ -81,17 +81,17 @@ export type MahjongPlayerstatisticsDict = Record<
   MahjongPlayerStatistics
 >;
 
-export class MahjongPlayerPageDto {
-  playerName!: string;
-  nickname!: string;
-  rankings!: MahjongPlayerRankingDict;
-  records!: MahjongPlayerRecordDict;
-  statistics!: MahjongPlayerstatisticsDict;
+export interface MahjongPlayerPageDto {
+  playerName: string;
+  nickname: string;
+  rankings: MahjongPlayerRankingDict;
+  records: MahjongPlayerRecordDict;
+  statistics: MahjongPlayerstatisticsDict;
 }
 
 // Add record page ////////////////////////////////////////////////////////////
 
-export class MahjongPlayersDto {
-  playerName!: string;
-  nickname!: string;
+export interface MahjongPlayersDto {
+  playerName: string;
+  nickname: string;
 }

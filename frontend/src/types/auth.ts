@@ -6,8 +6,8 @@ export const Role = {
 
 export type RoleType = keyof typeof Role;
 
-export class UserWithRolesDto {
-  username!: string;
-  nickname!: string;
-  roles!: RoleType[];
+export interface UserWithRolesDto {
+  username: string;
+  nickname: string;
+  roles: RoleType[];
 }
