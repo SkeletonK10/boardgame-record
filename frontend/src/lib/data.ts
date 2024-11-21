@@ -67,5 +67,13 @@ export const text = {
         subtitle: `(PC버전에 최적화되어 있습니다.)`,
       },
     },
+
+    game: {
+      title: (id: number) => `경기 상세 - #${id}`,
+      createdAt: `경기 일시`,
+      error: {
+        notFound: `해당하는 경기가 존재하지 않습니다.`,
+      },
+    },
   },
 };
