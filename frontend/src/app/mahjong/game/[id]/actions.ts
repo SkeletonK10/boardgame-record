@@ -5,7 +5,7 @@ import { MahjongDetailedGameDto } from "@/types/mahjong";
 
 export async function fetchDetailedGame(
   id: number
-): Promise<MahjongDetailedGameDto> {
+): Promise<MahjongDetailedGameDto | undefined> {
   try {
     const response = await api.get(`/mahjong/game/${id}`);
     // console.log(response.data);
@@ -16,6 +16,6 @@ export async function fetchDetailedGame(
     else return response.data as MahjongDetailedGameDto;
   } catch (err) {
     console.log((err as Error).message);
-    return {} as MahjongDetailedGameDto;
+    return undefined;
   }
 }
