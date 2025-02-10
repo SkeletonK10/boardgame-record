@@ -71,6 +71,7 @@ export const text = {
     game: {
       title: (id: number) => `경기 상세 - #${id}`,
       createdAt: `경기 일시`,
+      result: `최종 결과`,
       error: {
         notFound: `해당하는 경기가 존재하지 않습니다.`,
       },

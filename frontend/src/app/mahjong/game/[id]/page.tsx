@@ -69,13 +69,39 @@ export default function MahjongDetailedGamePage({ params }: Props) {
               >
                 {text.mahjong.game.title(params.id)}
               </Typography>
-              <Box sx={{ height: "10vh" }} />
+              <Typography
+                variant="subtitle1"
+                noWrap
+                component="div"
+                sx={{
+                  display: { sm: "block" },
+                  userSelect: "none",
+                  textAlign: "center",
+                }}
+              >
+                {game.createdAt.slice(0, 10)}
+              </Typography>
+              <Box sx={{ height: "3vh" }} />
+              <Typography
+                variant="h6"
+                noWrap
+                component="div"
+                sx={{
+                  display: { sm: "block" },
+                  userSelect: "none",
+                  textAlign: "center",
+                }}
+              >
+                {text.mahjong.game.result}
+              </Typography>
+              <Box sx={{ height: "3vh" }} />
               <Grid
                 container
                 columns={24}
                 spacing={2}
                 sx={{
                   minWidth: "200px",
+                  maxWidth: "400px",
                 }}
               >
                 <Grid size={7} />
@@ -101,36 +127,6 @@ export default function MahjongDetailedGamePage({ params }: Props) {
                   <PlayerCard {...game.players[0]}></PlayerCard>
                 </Grid>
                 <Grid size={7} />
-              </Grid>
-              <Box sx={{ height: "10vh" }} />
-              <Grid container sx={{ width: "100%" }}>
-                <Grid size={4}>
-                  <Typography
-                    noWrap
-                    component="div"
-                    sx={{
-                      display: { sm: "block" },
-                      userSelect: "none",
-                    }}
-                  >
-                    {text.mahjong.game.createdAt}
-                  </Typography>
-                </Grid>
-                <Grid size={8}>
-                  <Typography
-                    noWrap
-                    component="div"
-                    sx={{
-                      display: { sm: "block" },
-                      userSelect: "none",
-                    }}
-                  >
-                    {/* 2024-09-14 (2달 전) */}
-                    {`${game.createdAt.slice(0, 10)} (${formatDate(
-                      game.createdAt
-                    )})`}
-                  </Typography>
-                </Grid>
               </Grid>
             </>
           ) : (
