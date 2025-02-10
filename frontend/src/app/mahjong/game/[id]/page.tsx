@@ -28,7 +28,7 @@ export default function MahjongDetailedGamePage({ params }: Props) {
 
   useEffect(() => {
     try {
-      if (!Number.isInteger(params.id)) throw new Error();
+      if (!Number.isInteger(Number(params.id))) throw new Error();
       startTransition(
         async () => await setGame(await fetchDetailedGame(params.id))
       );
@@ -37,7 +37,6 @@ export default function MahjongDetailedGamePage({ params }: Props) {
       enqueueSnackbar(msg, { variant: "error" });
       router.push("/mahjong");
     }
-    // console.log(category);
   }, []);
 
   return (
