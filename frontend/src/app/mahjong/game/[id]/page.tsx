@@ -3,6 +3,7 @@ import {
   Box,
   CircularProgress,
   Grid2 as Grid,
+  Paper,
   Typography,
 } from "@mui/material";
 import React, { useEffect, useState, useTransition } from "react";
@@ -102,6 +103,7 @@ export default function MahjongDetailedGamePage({ params }: Props) {
                 sx={{
                   minWidth: "200px",
                   maxWidth: "400px",
+                  padding: "10px",
                 }}
               >
                 <Grid size={7} />
@@ -114,7 +116,15 @@ export default function MahjongDetailedGamePage({ params }: Props) {
                   {game.players[3] ? (
                     <PlayerCard {...game.players[3]}></PlayerCard>
                   ) : (
-                    <></>
+                    <Paper
+                      sx={{
+                        height: "100%",
+                        padding: "0.5rem",
+                        fontSize: "0.7rem",
+                        textAlign: "center",
+                        backgroundColor: "#FFFFFF",
+                      }}
+                    />
                   )}
                 </Grid>
                 <Grid size={4} />
