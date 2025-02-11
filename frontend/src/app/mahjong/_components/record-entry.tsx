@@ -47,7 +47,7 @@ export default function RecordEntry({
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   const handlePopoverOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.preventDefault();
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
@@ -101,7 +101,9 @@ export default function RecordEntry({
         sx={{
           width: "100%",
           backgroundColor: note ? "#BBFFBB" : "#FFFFFF",
+          cursor: "pointer",
         }}
+        onClick={() => router.push(`/mahjong/game/${id}`)}
       >
         <Grid container spacing={2} sx={{ width: "100%", padding: "0.3rem" }}>
           <Grid size={12}>
