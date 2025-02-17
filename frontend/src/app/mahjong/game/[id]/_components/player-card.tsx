@@ -6,6 +6,7 @@ interface MahjongPlayerCardProps {
   nickname: string;
   score: number;
   rank: number;
+  seat: number;
   ratingDiff: number;
 }
 
@@ -42,20 +43,18 @@ const formatRatingDiff = (ratingDiff: number) => {
 };
 
 export default function PlayerCard({
-  playerName,
   nickname,
   score,
   rank,
+  seat,
   ratingDiff,
 }: MahjongPlayerCardProps) {
+  const name = seat === 0 ? "[동]" + nickname : nickname;
   return (
     <Paper sx={backgroundStyle(rank)}>
       <Grid container>
         <Grid size={12}>
-          <Typography
-            sx={textStyle}
-            noWrap
-          >{`${nickname} (${playerName})`}</Typography>
+          <Typography sx={textStyle} noWrap>{`${name}`}</Typography>
         </Grid>
         <Grid size={6}>
           <Typography sx={textStyle}>{score}</Typography>
