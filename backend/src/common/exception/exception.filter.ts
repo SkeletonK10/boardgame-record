@@ -19,7 +19,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const status = exception.getStatus();
     const message = exception.message;
 
-    if (this.configService.get('IS_DEV')) console.error(message);
+    if (this.configService.get('NODE_ENV') !== 'production')
+      console.error(status, message);
 
     response.status(status).json({
       statusCode: status,
