@@ -9,6 +9,7 @@ import AddButton from "./_components/add-button";
 import StatisticsButton from "./_components/statistics-button";
 import RankingEntry from "./_components/ranking-entry";
 import MahjongGameList from "./_components/game-list";
+import { getCurrentQuarter } from "@/lib/utils";
 
 const testRanking = [
   {
@@ -39,15 +40,20 @@ const testRanking = [
 
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
+    const { start: startdate, end: enddate } = getCurrentQuarter(); // no capital
     const recordResponsePromise = api.get(`/mahjong/game`);
     const p3RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
       params: {
         category: "3마",
+        startdate,
+        enddate,
       },
     });
     const p4RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
       params: {
         category: "4마",
+        startdate,
+        enddate,
       },
     });
     const [recordResponse, p3RankingResponse, p4RankingResponse] =
@@ -165,7 +171,7 @@ export default async function MahjongMainPage() {
                     flexGrow: 1,
                   }}
                 >
-                  {`${category} 우마 순위`}
+                  {`시즌 ${category} 순위`}
                 </Typography>
                 <List sx={{ width: "100%" }}>
                   {ranking.map((value) => (
