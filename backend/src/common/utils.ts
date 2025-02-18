@@ -30,7 +30,10 @@ export const nthAlphabet = (n: number) => {
 /**
  * startDate, endDate 쿼리 스트링 포매팅.
  * @param startDate? 시작 날짜
- * @param endDate? 끝 날짜 (포함)
+ * @param endDate? 끝 날짜 (포함할 날짜)
+ *
+ * 날짜가 주어지지 않을 경우, 기본값은 1970-01-01, 9999-12-31
+ * endDate는 포함할 날짜이므로, 하루 더해준다.
  *
  * @returns { startDate, endDate }
  * @example { start: '2021-01-01', end: '2021-01-31' }
