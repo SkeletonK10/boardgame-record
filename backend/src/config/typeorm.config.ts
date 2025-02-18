@@ -43,7 +43,7 @@ const AppDataSource = new DataSource({
   database: '',
   synchronize: false,
   entities: ['/../**/*.entity.{js,ts}'],
-  migrations: ['src/migrations/*'],
+  migrations: ['src/database/migrations/*'],
   migrationsRun: false,
   logging: true,
 });
