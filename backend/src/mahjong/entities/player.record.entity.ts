@@ -26,6 +26,9 @@ export class MahjongPlayerRecord {
   @Column()
   rank: number;
 
+  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  ratingDiff: number;
+
   @Column()
   score: number;
 
