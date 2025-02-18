@@ -1,5 +1,6 @@
 import { ConfigService } from '@nestjs/config';
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 export function TypeormConfig(configService: ConfigService) {
   const env = configService.get('NODE_ENV');
@@ -23,6 +24,28 @@ export function TypeormConfig(configService: ConfigService) {
     useUTC: false,
     logging: logging,
     retryAttempts: env === 'production' ? 10 : 1,
+    migrationsRun: false,
+    migrations: [__dirname + '/**/migrations/*'],
+    migrationsTableName: 'migrations',
   };
   return option;
 }
+
+// 마이그레이션을 위한 DataSource Config
+// 빈칸에 원하는 .env의 정보를 입력하고 마이그레이션 실행
+
+const AppDataSource = new DataSource({
+  type: 'postgres',
+  host: '',
+  port: +'',
+  username: '',
+  password: '',
+  database: '',
+  synchronize: false,
+  entities: ['/../**/*.entity.{js,ts}'],
+  migrations: ['src/migrations/*'],
+  migrationsRun: false,
+  logging: true,
+});
+
+export default AppDataSource;
