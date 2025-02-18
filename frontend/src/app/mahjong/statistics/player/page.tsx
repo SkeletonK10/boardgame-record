@@ -18,7 +18,7 @@ const columns: GridColDef[] = [
     field: "averageRating",
     headerName: "평균 우마",
     type: "number",
-    width: 70,
+    width: 80,
   },
   { field: "averageScore", headerName: "평균 점수", type: "number", width: 80 },
   { field: "maxScore", headerName: "최고 점수", type: "number", width: 80 },
@@ -93,6 +93,7 @@ export default function MahjongPlayerStatisticsPage() {
           rows={stats}
           columns={columns}
           onRowClick={handleRowClick}
+          getRowId={(row) => row.playerName}
           sx={{
             width: "100%",
 
