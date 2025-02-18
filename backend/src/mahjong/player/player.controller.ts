@@ -80,8 +80,16 @@ export class MahjongPlayerController {
 
   @Get('ranking')
   @ApiOkResponse({ example: playerRankingExmample })
-  async getRanking(@Query('category') category: MahjongCategory) {
-    const res = await this.MahjongplayerService.getRanking(category);
+  async getRanking(
+    @Query('category') category: MahjongCategory,
+    @Query('startdate') startDate?: string,
+    @Query('enddate') endDate?: string,
+  ) {
+    const res = await this.MahjongplayerService.getRanking(
+      category,
+      startDate,
+      endDate,
+    );
     return res;
   }
 }

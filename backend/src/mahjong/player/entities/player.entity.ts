@@ -10,7 +10,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { MahjongRating } from './rating.entity';
 import { MahjongYakumanRecord } from 'src/mahjong/entities/yakuman.record.entity';
 
 @Entity()
@@ -27,9 +26,6 @@ export class MahjongPlayer {
   @OneToOne(() => User)
   @JoinColumn()
   user?: User;
-
-  @OneToMany(() => MahjongRating, (rating) => rating.player)
-  rating: MahjongRating[];
 
   @OneToMany(() => MahjongPlayerRecord, (record) => record.player)
   games: MahjongPlayerRecord[];

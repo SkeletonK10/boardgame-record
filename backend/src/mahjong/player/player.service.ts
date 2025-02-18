@@ -5,17 +5,17 @@ import { MahjongPlayer } from './entities/player.entity';
 import { Like, Repository } from 'typeorm';
 import { CreateMahjongPlayerDto } from './dto/create.player.dto';
 import { MahjongCategory } from '../constants/mahjong.constant';
-import { MahjongRating } from './entities/rating.entity';
 import { ServiceException } from 'src/common/exception/exception';
-import { nthAlphabet } from 'src/common/utils';
+import { formatDate, nthAlphabet } from 'src/common/utils';
+import { MahjongPlayerRecord } from '../entities/player.record.entity';
 
 @Injectable()
 export class MahjongPlayerService {
   constructor(
     @InjectRepository(MahjongPlayer)
     private mahjongPlayerRepository: Repository<MahjongPlayer>,
-    @InjectRepository(MahjongRating)
-    private mahjongRatingRepository: Repository<MahjongRating>,
+    @InjectRepository(MahjongPlayerRecord)
+    private mahjongPlayerRecordRepository: Repository<MahjongPlayerRecord>,
     private readonly userService: UserService,
   ) {}
 
@@ -66,27 +66,38 @@ export class MahjongPlayerService {
       select: {
         playerName: true,
         nickname: true,
-        rating: {
-          category: true,
-          rating: true,
-        },
       },
-      relations: ['rating'],
     });
     return res;
   }
 
-  async getRanking(category: MahjongCategory) {
-    const res = await this.mahjongRatingRepository
-      .createQueryBuilder('rating')
-      .leftJoin('rating.player', 'player')
-      .where('rating.category = :category', { category })
+  async getRanking(
+    category: MahjongCategory,
+    startDate?: string,
+    endDate?: string,
+  ) {
+    const { start: formattedStartDate, end: formattedEndDate } = formatDate(
+      startDate,
+      endDate,
+    );
+    const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
+
+    const res = await this.mahjongPlayerRecordRepository
+      .createQueryBuilder('record')
+      .leftJoin('record.player', 'player')
+      .leftJoin('record.game', 'game')
+      .where('game.category = :category', { category })
+      .andWhere(createdAtWhere, {
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      })
       .select([
-        'player.playerName AS "playerName"',
-        'player.nickname AS nickname',
-        'rating.rating AS rating',
-        'RANK () OVER (ORDER BY "rating"."rating" DESC) AS ranking',
+        'player."playerName" AS "playerName"',
+        'MAX(player.nickname) AS nickname',
+        'SUM(record."ratingDiff") AS rating',
+        'RANK () OVER (ORDER BY SUM(record."ratingDiff") DESC) AS ranking',
       ])
+      .groupBy('player."playerName"')
       .getRawMany();
     return res;
   }

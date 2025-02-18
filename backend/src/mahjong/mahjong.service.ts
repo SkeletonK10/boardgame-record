@@ -8,7 +8,6 @@ import { MahjongGameRecord } from './entities/game.record.entity';
 import { DataSource, QueryRunner } from 'typeorm';
 import { MahjongPlayerRecord } from './entities/player.record.entity';
 import { MahjongPlayer } from './player/entities/player.entity';
-import { MahjongRating } from './player/entities/rating.entity';
 import {
   MahjongCategory,
   MahjongSubcategory,
@@ -66,19 +65,27 @@ export class MahjongService {
         }),
       );
 
+      // TODO: PlayerRecord도 Yakuman같이 이후에 저장하도록 (UPDATE 쿼리 줄이기)
+      const gameRecord = queryRunner.manager.create(MahjongGameRecord, {
+        category: category,
+        subcategory: createMahjongGameDto.subcategory,
+        note: note,
+      });
+
+      const game = await queryRunner.manager.save(
+        MahjongGameRecord,
+        gameRecord,
+      );
+
       const playerRecords = await Promise.all(
         players.map(async (player, seat) => {
-          const updatedPlayer = await this.updateRating(
-            player,
-            category,
-            rating[seat],
-            queryRunner,
-          );
           const recordDto = queryRunner.manager.create(MahjongPlayerRecord, {
-            player: updatedPlayer,
+            game: game,
+            player,
             seat,
             rank: ranks[seat],
             score: scores[seat],
+            ratingDiff: rating[seat],
           });
           const record = await queryRunner.manager.save(
             MahjongPlayerRecord,
@@ -86,19 +93,6 @@ export class MahjongService {
           );
           return record;
         }),
-      );
-
-      // TODO: PlayerRecord도 Yakuman같이 이후에 저장하도록 (UPDATE 쿼리 줄이기)
-      const gameRecord = queryRunner.manager.create(MahjongGameRecord, {
-        category: category,
-        subcategory: createMahjongGameDto.subcategory,
-        players: playerRecords,
-        note: note,
-      });
-
-      const game = await queryRunner.manager.save(
-        MahjongGameRecord,
-        gameRecord,
       );
 
       const yakumanRecords = await Promise.all(
@@ -232,38 +226,6 @@ export class MahjongService {
       .sort((v1, v2) => v1[1] - v2[1])
       .map((v) => v[2]);
     return rank;
-  }
-
-  async updateRating(
-    player: MahjongPlayer,
-    category: MahjongCategory,
-    delta: number,
-    queryRunner: QueryRunner,
-  ) {
-    const rating = await queryRunner.manager.findOne(MahjongRating, {
-      where: {
-        player: {
-          id: player.id,
-        },
-        category,
-      },
-    });
-
-    if (!rating) {
-      await queryRunner.manager.insert(MahjongRating, { player, category });
-    }
-
-    const res = await queryRunner.manager.update(
-      MahjongRating,
-      { player, category },
-      {
-        rating: () => `rating + ${delta}`,
-      },
-    );
-    const p = await this.mahjongPlayerService.findOneByPlayerName(
-      player.playerName,
-    );
-    return p;
   }
 
   async findAll(
@@ -412,32 +374,10 @@ export class MahjongService {
 
   async delete(id: number) {
     const game = await this.findById(id);
-    console.log(game);
-    const scores = game.players.map(({ score }) => +score);
-    const rating = this.calculateRating(scores, game.subcategory);
-    const rollbackRating = rating.map((r) => -r);
-    console.log(rollbackRating);
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const playerRecords = await Promise.all(
-        // 각 player마다
-        game.players.map(async ({ playerName }, i) => {
-          const player =
-            await this.mahjongPlayerService.findOneByPlayerName(playerName);
-          if (!player) {
-            return;
-          }
-          const updatedPlayer = await this.updateRating(
-            player,
-            game.category,
-            rollbackRating[i],
-            queryRunner,
-          );
-          return;
-        }),
-      );
       await queryRunner.manager
         .createQueryBuilder()
         .softDelete()
@@ -526,57 +466,34 @@ export class MahjongService {
       ? 'player."playerName"=:playerName'
       : 'TRUE';
     const queryResult = await this.dataSource
-      .createQueryBuilder(MahjongRating, 'rating')
-      .innerJoin(
-        // TODO: 임시 테이블 만들기 (기능 지원하면...)
-        (qb) =>
-          qb
-            .from(MahjongPlayerRecord, 'record')
-            .leftJoin('record.game', 'game')
-            .leftJoin('record.player', 'player')
-            .select([
-              'player.id AS "playerId"',
-              'player.playerName AS "playerName"',
-              'player.nickname AS nickname',
-              'game."category" AS category',
-              'ROUND(AVG(record.score), 2) AS "averageScore"',
-              'MAX(record.score) AS "maxScore"',
-              'MIN(record.score) AS "minScore"',
-              'COUNT(*) AS count',
-              'COUNT(CASE WHEN record.rank = 1 THEN 1 ELSE NULL END) AS first',
-              'COUNT(CASE WHEN record.rank = 2 THEN 1 ELSE NULL END) AS second',
-              'COUNT(CASE WHEN record.rank = 3 THEN 1 ELSE NULL END) AS third',
-              'COUNT(CASE WHEN record.rank = 4 THEN 1 ELSE NULL END) AS fourth',
-              'COUNT(CASE WHEN record.score < 0 THEN 1 ELSE NULL END) AS tobi',
-            ])
-            .where(categoryWhere, { category })
-            .andWhere(playerNameWhere, { playerName })
-            .andWhere(createdAtWhere, {
-              startDate: formattedStartDate,
-              endDate: formattedEndDate,
-            })
-            .groupBy('player.id')
-            .addGroupBy('game."category"'),
-        'r',
-        'rating."playerId" = r."playerId" AND rating."category"=r."category"',
-      )
+      .createQueryBuilder(MahjongPlayerRecord, 'record')
+      .leftJoin('record.game', 'game')
+      .leftJoin('record.player', 'player')
       .select([
-        'r."playerId" AS id',
-        'r."playerName" AS "playerName"',
-        'r.nickname AS nickname',
-        'r.category AS category',
-        'rating.rating AS rating',
-        'ROUND(rating.rating / r.count, 3) AS "averageRating"',
-        'r."averageScore" AS "averageScore"',
-        'r."maxScore" AS "maxScore"',
-        'r."minScore" AS "minScore"',
-        'r.count AS count',
-        'r.first AS first',
-        'r.second AS second',
-        'r.third AS third',
-        'r.fourth AS fourth',
-        'r.tobi AS tobi',
+        'player.id AS "playerId"',
+        'player.playerName AS "playerName"',
+        'player.nickname AS nickname',
+        'game."category" AS category',
+        'SUM(record."ratingDiff") AS rating',
+        'ROUND(SUM(record."ratingDiff") / COUNT(*), 3) AS "averageRating"',
+        'ROUND(AVG(record.score), 2) AS "averageScore"',
+        'MAX(record.score) AS "maxScore"',
+        'MIN(record.score) AS "minScore"',
+        'COUNT(*) AS count',
+        'COUNT(CASE WHEN record.rank = 1 THEN 1 ELSE NULL END) AS first',
+        'COUNT(CASE WHEN record.rank = 2 THEN 1 ELSE NULL END) AS second',
+        'COUNT(CASE WHEN record.rank = 3 THEN 1 ELSE NULL END) AS third',
+        'COUNT(CASE WHEN record.rank = 4 THEN 1 ELSE NULL END) AS fourth',
+        'COUNT(CASE WHEN record.score < 0 THEN 1 ELSE NULL END) AS tobi',
       ])
+      .where(categoryWhere, { category })
+      .andWhere(playerNameWhere, { playerName })
+      .andWhere(createdAtWhere, {
+        startDate: formattedStartDate,
+        endDate: formattedEndDate,
+      })
+      .groupBy('player.id')
+      .addGroupBy('game."category"')
       .getRawMany();
     return queryResult;
   }

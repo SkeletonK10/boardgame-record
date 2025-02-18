@@ -22,6 +22,7 @@ export class MahjongYakumanRecord {
   @Column('varchar', { array: true })
   yakuman: MahjongYakuman[];
 
+  // BUG: Soft delete: cascade not working
   @ManyToOne(() => MahjongGameRecord, (game) => game.yakumans, {
     onDelete: 'CASCADE',
   })
