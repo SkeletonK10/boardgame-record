@@ -1,5 +1,6 @@
 "use client";
-import { Box, CircularProgress, Typography } from "@mui/material";
+import { Box, CircularProgress, Tab, Typography } from "@mui/material";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
 import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
 import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
 import { useEffect, useState, useTransition } from "react";
@@ -8,6 +9,7 @@ import { text } from "@/lib/data";
 import CategoryRadio from "../../_components/category-radio";
 import { useRouter } from "next/navigation";
 import { format } from "url";
+import { getCurrentQuarter } from "@/lib/utils";
 
 const columns: GridColDef[] = [
   // { field: 'playerName', headerName: '아이디' },       // 필요 없을듯?
@@ -34,17 +36,46 @@ const columns: GridColDef[] = [
 export default function MahjongPlayerStatisticsPage() {
   const router = useRouter();
   const [category, setCategory] = useState<MahjongCategory>("4마");
+  const [tabValue, setTabValue] = useState("1");
+  const [period, setPeriod] = useState({
+    start: "1970-01-01",
+    end: "9999-12-31",
+  });
   // TODO: 구분하기
   // const [subcategory, setSubcategory] = useState('반장전');
   const [stats, setStats] = useState<MahjongPlayerStatistics[]>([]);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
+    const { start, end } = period;
+    console.log(start, end);
     startTransition(
-      async () => await setStats(await fetchPlayerStatistics(category))
+      async () =>
+        await setStats(await fetchPlayerStatistics(category, start, end))
     );
     // console.log(category);
-  }, [category]);
+  }, [category, period]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+    if (newValue === "1") {
+      setPeriod(getCurrentQuarter());
+    } else if (newValue === "2") {
+      setPeriod({
+        start: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
+          .toISOString()
+          .slice(0, 10),
+        end: new Date().toISOString().slice(0, 10),
+      });
+    } else if (newValue === "3") {
+      setPeriod({
+        start: new Date(new Date().setMonth(new Date().getMonth() - 1))
+          .toISOString()
+          .slice(0, 10),
+        end: new Date().toISOString().slice(0, 10),
+      });
+    }
+  };
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     router.push(
@@ -86,6 +117,13 @@ export default function MahjongPlayerStatisticsPage() {
         {text.mahjong.statistics.player.subtitle}
       </Typography>
       <CategoryRadio setCategory={setCategory} />
+      <TabContext value={tabValue}>
+        <TabList onChange={handleTabChange}>
+          <Tab label="현재 시즌" value="1" />
+          <Tab label="최근 1년" value="2" />
+          <Tab label="최근 1달" value="3" />
+        </TabList>
+      </TabContext>
       {isPending ? (
         <CircularProgress />
       ) : (

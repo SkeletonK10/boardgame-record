@@ -4,11 +4,17 @@ import { api } from "@/lib/axiosInterceptor";
 import { MahjongPlayerStatistics } from "@/types/mahjong";
 
 export async function fetchPlayerStatistics(
-  category?: string
+  category?: string,
+  start?: string,
+  end?: string
 ): Promise<MahjongPlayerStatistics[]> {
   try {
     const response = await api.get(`/mahjong/statistics/player`, {
-      params: { category },
+      params: {
+        category,
+        startdate: start,
+        enddate: end,
+      },
     });
     // console.log(response.data);
     if (!response.data) return [];
