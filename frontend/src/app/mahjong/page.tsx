@@ -7,9 +7,9 @@ import {
 } from "@/types/mahjong";
 import AddButton from "./_components/add-button";
 import StatisticsButton from "./_components/statistics-button";
-import RankingEntry from "./_components/ranking-entry";
 import MahjongGameList from "./_components/game-list";
 import { getCurrentQuarter } from "@/lib/utils";
+import MahjongRankingList from "./_components/ranking-list";
 
 const testRanking = [
   {
@@ -151,38 +151,11 @@ export default async function MahjongMainPage() {
             }}
           >
             {ranking.map(({ category, ranking }) => (
-              <Box
+              <MahjongRankingList
                 key={category}
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="div"
-                  sx={{
-                    display: { sm: "block" },
-                    userSelect: "none",
-                    flexGrow: 1,
-                  }}
-                >
-                  {`시즌 ${category} 순위`}
-                </Typography>
-                <List sx={{ width: "100%" }}>
-                  {ranking.map((value) => (
-                    <RankingEntry
-                      key={value.playerName}
-                      category={category}
-                      {...value}
-                    />
-                  ))}
-                </List>
-              </Box>
+                category={category}
+                ranking={ranking}
+              />
             ))}
           </Box>
         </Grid>
