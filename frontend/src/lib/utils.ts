@@ -21,12 +21,15 @@ export const getQuarter = (date: Date) => {
   const year = date.getFullYear();
   const month = date.getMonth();
 
-  if (month < 3)
+  if (month < 3) {
+    const febLastDay = new Date(
+      new Date(year, 2).toLocaleString("en", { timeZone: "Asia/Seoul" })
+    );
     return {
       start: `${year}-12-01`,
-      end: new Date(year, 2).toISOString().slice(0, 10),
+      end: febLastDay.toISOString().slice(0, 10),
     };
-  else if (month < 6) return { start: `${year}-03-01`, end: `${year}-05-31` };
+  } else if (month < 6) return { start: `${year}-03-01`, end: `${year}-05-31` };
   else if (month < 9) return { start: `${year}-06-01`, end: `${year}-08-31` };
   else return { start: `${year}-09-01`, end: `${year}-11-31` };
 };
