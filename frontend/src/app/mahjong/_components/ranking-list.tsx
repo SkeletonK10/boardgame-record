@@ -30,6 +30,7 @@ export default function MahjongRankingList({
         noWrap
         component="div"
         sx={{
+          margin: "8px 0",
           display: { sm: "block" },
           userSelect: "none",
           flexGrow: 1,
@@ -37,11 +38,21 @@ export default function MahjongRankingList({
       >
         {`시즌 ${category} 순위`}
       </Typography>
-      <List sx={{ width: "100%" }}>
-        {ranking.map((value) => (
-          <RankingEntry key={value.playerName} category={category} {...value} />
-        ))}
-      </List>
+      {ranking.length === 0 ? (
+        <Typography variant="body2" sx={{ flexGrow: 1 }}>
+          {`아직 순위가 없습니다. ${category} 경기를 해보세요!`}
+        </Typography>
+      ) : (
+        <List sx={{ width: "100%" }}>
+          {ranking.map((value) => (
+            <RankingEntry
+              key={value.playerName}
+              category={category}
+              {...value}
+            />
+          ))}
+        </List>
+      )}
     </Box>
   );
 }
