@@ -1,15 +1,15 @@
 import { api } from "@/lib/axiosInterceptor";
-import { Box, Grid2 as Grid, List, Typography } from "@mui/material";
+import { getCurrentQuarter } from "@/lib/utils";
 import {
   MahjongGameRecord,
   MahjongMainPageDto,
   MahjongRankingRecord,
 } from "@/types/mahjong";
+import { Box, Grid2 as Grid, Typography } from "@mui/material";
 import AddButton from "./_components/add-button";
-import StatisticsButton from "./_components/statistics-button";
 import MahjongGameList from "./_components/game-list";
-import { getCurrentQuarter } from "@/lib/utils";
 import MahjongRankingList from "./_components/ranking-list";
+import StatisticsButton from "./_components/statistics-button";
 
 const testRanking = [
   {
@@ -62,10 +62,7 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
         p3RankingResponsePromise,
         p4RankingResponsePromise,
       ]);
-    // console.log("AAAAAAAAAAAAA");
 
-    // BUG: recordResponse has old response type
-    // need to refactor /backend/mahjong
     const record = recordResponse.data as MahjongGameRecord[];
     const p3Ranking: MahjongRankingRecord[] =
       p3RankingResponse.data as MahjongRankingRecord[];
