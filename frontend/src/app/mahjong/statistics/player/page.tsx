@@ -37,10 +37,7 @@ export default function MahjongPlayerStatisticsPage() {
   const router = useRouter();
   const [category, setCategory] = useState<MahjongCategory>("4마");
   const [tabValue, setTabValue] = useState("1");
-  const [period, setPeriod] = useState({
-    start: "1970-01-01",
-    end: "9999-12-31",
-  });
+  const [period, setPeriod] = useState(getCurrentQuarter());
   // TODO: 구분하기
   // const [subcategory, setSubcategory] = useState('반장전');
   const [stats, setStats] = useState<MahjongPlayerStatistics[]>([]);
@@ -61,13 +58,21 @@ export default function MahjongPlayerStatisticsPage() {
     if (newValue === "1") {
       setPeriod(getCurrentQuarter());
     } else if (newValue === "2") {
+      // 전체 기간
+      setPeriod({
+        start: "1970-01-01",
+        end: new Date().toISOString().slice(0, 10),
+      });
+    } else if (newValue === "3") {
+      // 최근 1년
       setPeriod({
         start: new Date(new Date().setFullYear(new Date().getFullYear() - 1))
           .toISOString()
           .slice(0, 10),
         end: new Date().toISOString().slice(0, 10),
       });
-    } else if (newValue === "3") {
+    } else if (newValue === "4") {
+      // 최근 1달
       setPeriod({
         start: new Date(new Date().setMonth(new Date().getMonth() - 1))
           .toISOString()
@@ -120,8 +125,9 @@ export default function MahjongPlayerStatisticsPage() {
       <TabContext value={tabValue}>
         <TabList onChange={handleTabChange}>
           <Tab label="현재 시즌" value="1" />
-          <Tab label="최근 1년" value="2" />
-          <Tab label="최근 1달" value="3" />
+          <Tab label="전체 기간" value="2" />
+          <Tab label="최근 1년" value="3" />
+          <Tab label="최근 1달" value="4" />
         </TabList>
       </TabContext>
       {isPending ? (
