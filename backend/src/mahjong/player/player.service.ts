@@ -6,7 +6,7 @@ import { Like, Repository } from 'typeorm';
 import { CreateMahjongPlayerDto } from './dto/create.player.dto';
 import { MahjongCategory } from '../constants/mahjong.constant';
 import { ServiceException } from 'src/common/exception/exception';
-import { formatDate, nthAlphabet } from 'src/common/utils';
+import { nthAlphabet } from 'src/common/utils';
 import { MahjongPlayerRecord } from '../entities/player.record.entity';
 
 @Injectable()
@@ -76,10 +76,6 @@ export class MahjongPlayerService {
     startDate?: string,
     endDate?: string,
   ) {
-    const { start: formattedStartDate, end: formattedEndDate } = formatDate(
-      startDate,
-      endDate,
-    );
     const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
 
     const res = await this.mahjongPlayerRecordRepository
@@ -88,8 +84,8 @@ export class MahjongPlayerService {
       .leftJoin('record.game', 'game')
       .where('game.category = :category', { category })
       .andWhere(createdAtWhere, {
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
+        startDate,
+        endDate,
       })
       .select([
         'player."playerName" AS "playerName"',

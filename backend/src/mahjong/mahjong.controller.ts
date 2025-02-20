@@ -39,7 +39,7 @@ export class MahjongController {
   async findAll(
     @Query('playername') playerName?: string,
     @Query('category') category?: MahjongCategory,
-    @Query('startdate') startDate?: string, // ISO 8601 (YYYY-MM-DD)
+    @Query('startdate') startDate?: string, // ISO 8601 (YYYY-MM-DDThh:mm:ss.xxxZ)
     @Query('enddate') endDate?: string,
   ) {
     const res = await this.mahjongService.findAll(
@@ -77,7 +77,7 @@ export class MahjongController {
   async getAllStatistics(
     @Query('category') category?: MahjongCategory,
     @Query('playername') playerName?: string,
-    @Query('startdate') startDate?: string, // ISO 8601 (YYYY-MM-DD)
+    @Query('startdate') startDate?: string, // ISO 8601 (YYYY-MM-DDThh:mm:ss.xxxZ)
     @Query('enddate') endDate?: string,
   ) {
     const res = await this.mahjongService.getPlayerStatistics(

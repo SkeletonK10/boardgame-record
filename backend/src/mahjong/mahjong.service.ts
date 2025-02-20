@@ -17,7 +17,7 @@ import {
   OverlappableYakuman,
 } from './constants/mahjong.constant';
 import { ServiceException } from 'src/common/exception/exception';
-import { combination, formatDate, nthAlphabet } from 'src/common/utils';
+import { combination, nthAlphabet } from 'src/common/utils';
 import { MahjongYakumanRecord } from './entities/yakuman.record.entity';
 import { start } from 'repl';
 import e from 'express';
@@ -258,10 +258,6 @@ export class MahjongService {
           : 'FALSE'
         : 'TRUE';
 
-    const { start: formattedStartDate, end: formattedEndDate } = formatDate(
-      startDate,
-      endDate,
-    );
     const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongPlayerRecord, 'record')
@@ -271,8 +267,8 @@ export class MahjongService {
       .leftJoin('record.player', 'player')
       .where(gameIdFilterWhere, { ids: gameIdFilterArray })
       .andWhere(createdAtWhere, {
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
+        startDate,
+        endDate,
       })
       .select([
         'game.id',
@@ -456,10 +452,6 @@ export class MahjongService {
     //     GROUP BY "player"."id", game."category"
     // ) "r"
     // ON rating."playerId" = r."playerId" AND rating."category" = r."category";
-    const { start: formattedStartDate, end: formattedEndDate } = formatDate(
-      startDate,
-      endDate,
-    );
     const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
     const categoryWhere = category ? 'game."category"=:category' : 'TRUE';
     const playerNameWhere = playerName
@@ -489,8 +481,8 @@ export class MahjongService {
       .where(categoryWhere, { category })
       .andWhere(playerNameWhere, { playerName })
       .andWhere(createdAtWhere, {
-        startDate: formattedStartDate,
-        endDate: formattedEndDate,
+        startDate,
+        endDate,
       })
       .groupBy('player.id')
       .addGroupBy('game."category"')
