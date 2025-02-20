@@ -40,7 +40,7 @@ export const nthAlphabet = (n: number) => {
  */
 export const formatDate = (startDate?: string, endDate?: string) => {
   if (!startDate) startDate = '1970-01-01';
-  if (endDate) {
+  if (endDate && endDate < '9999-12-31') {
     const endDateObj = new Date(endDate);
     endDateObj.setDate(endDateObj.getDate() + 1);
     endDate = endDateObj.toISOString().split('T')[0];
