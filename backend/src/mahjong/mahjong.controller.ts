@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   UseGuards,
@@ -20,6 +21,7 @@ import {
   getGameExample,
   playerStatisticsExample,
 } from './constants/mahjong.example';
+import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -50,6 +52,26 @@ export class MahjongController {
     );
     return res;
   }
+
+  // 당장은 필요 없을듯?
+
+  // @Get('game/season')
+  // @ApiOkResponse({ example: getGameExample })
+  // async getSeasonGame(
+  //   @Query('playername') playerName?: string,
+  //   @Query('category') category?: MahjongCategory,
+  //   @Query('season', new ParseIntPipe({ optional: true })) season?: number,
+  // ) {
+  //   if (!season) season = getCurrentSeason();
+  //   const { start, end } = getSeasonPeriod(season);
+  //   const res = await this.mahjongService.findAll(
+  //     playerName,
+  //     category,
+  //     start,
+  //     end,
+  //   );
+  //   return res;
+  // }
 
   @Get('game/:id')
   @ApiOkResponse({ example: getDetailedGameExample })
@@ -85,6 +107,24 @@ export class MahjongController {
       playerName,
       startDate,
       endDate,
+    );
+    return res;
+  }
+
+  @Get('/statistics/player/season')
+  @ApiOkResponse({ example: playerStatisticsExample })
+  async getSeasonStatistics(
+    @Query('category') category?: MahjongCategory,
+    @Query('playername') playerName?: string,
+    @Query('season', new ParseIntPipe({ optional: true })) season?: number,
+  ) {
+    if (!season) season = getCurrentSeason();
+    const { start, end } = getSeasonPeriod(season);
+    const res = await this.mahjongService.getPlayerStatistics(
+      category,
+      playerName,
+      start,
+      end,
     );
     return res;
   }

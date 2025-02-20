@@ -4,6 +4,7 @@ import {
   Get,
   HttpCode,
   Param,
+  ParseIntPipe,
   Post,
   Query,
   UseGuards,
@@ -17,6 +18,7 @@ import { MahjongCategory } from '../constants/mahjong.constant';
 import { ServiceException } from 'src/common/exception/exception';
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { playerRankingExmample } from './constants/player.example';
+import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
 
 @Controller('mahjong/player')
 export class MahjongPlayerController {
@@ -89,6 +91,22 @@ export class MahjongPlayerController {
       category,
       startDate,
       endDate,
+    );
+    return res;
+  }
+
+  @Get('ranking/season')
+  @ApiOkResponse({ example: playerRankingExmample })
+  async getSeasonRanking(
+    @Query('category') category: MahjongCategory,
+    @Query('season', new ParseIntPipe({ optional: true })) season?: number,
+  ) {
+    if (!season) season = getCurrentSeason();
+    const { start, end } = getSeasonPeriod(season);
+    const res = await this.MahjongplayerService.getRanking(
+      category,
+      start,
+      end,
     );
     return res;
   }
