@@ -383,7 +383,7 @@ export class MahjongService {
           seat: player.record_seat,
           rank: player.record_rank,
           score: player.record_score,
-          ratingDiff: ratingDiff[player.record_seat],
+          ratingDiff: parseFloat(ratingDiff[player.record_seat].toFixed(2)),
         };
       }),
       note: queryResult[0].game_note,
