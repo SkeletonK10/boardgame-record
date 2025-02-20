@@ -1,15 +1,15 @@
 "use client";
-import { Box, CircularProgress, Tab, Typography } from "@mui/material";
-import { TabContext, TabList, TabPanel } from "@mui/lab";
-import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
-import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
-import { useEffect, useState, useTransition } from "react";
-import { fetchPlayerStatistics } from "./actions";
 import { text } from "@/lib/data";
-import CategoryRadio from "../../_components/category-radio";
-import { useRouter } from "next/navigation";
-import { format } from "url";
 import { getCurrentQuarter } from "@/lib/utils";
+import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
+import { TabContext, TabList } from "@mui/lab";
+import { Box, Tab, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
+import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
+import { format } from "url";
+import CategoryRadio from "../../_components/category-radio";
+import { fetchPlayerStatistics } from "./actions";
 
 const columns: GridColDef[] = [
   // { field: 'playerName', headerName: '아이디' },       // 필요 없을듯?
@@ -45,12 +45,10 @@ export default function MahjongPlayerStatisticsPage() {
 
   useEffect(() => {
     const { start, end } = period;
-    console.log(start, end);
     startTransition(
       async () =>
         await setStats(await fetchPlayerStatistics(category, start, end))
     );
-    // console.log(category);
   }, [category, period]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
@@ -130,27 +128,24 @@ export default function MahjongPlayerStatisticsPage() {
           <Tab label="최근 1달" value="4" />
         </TabList>
       </TabContext>
-      {isPending ? (
-        <CircularProgress />
-      ) : (
-        <DataGrid
-          rows={stats}
-          columns={columns}
-          onRowClick={handleRowClick}
-          getRowId={(row) => row.playerName}
-          sx={{
-            width: "100%",
-
-            "& .MuiDataGrid-columnHeaderTitle": {
-              whiteSpace: "normal",
-              lineHeight: "normal",
-            },
-          }}
-          disableColumnMenu
-          disableColumnResize
-          columnHeaderHeight={90}
-        />
-      )}
+      <DataGrid
+        rows={stats}
+        columns={columns}
+        loading={isPending}
+        onRowClick={handleRowClick}
+        getRowId={(row) => row.playerName}
+        sx={{
+          width: "100%",
+          "& .MuiDataGrid-columnHeaderTitle": {
+            whiteSpace: "normal",
+            lineHeight: "normal",
+          },
+        }}
+        autoHeight
+        disableColumnMenu
+        disableColumnResize
+        columnHeaderHeight={90}
+      />
     </Box>
   );
 }
