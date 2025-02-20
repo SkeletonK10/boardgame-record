@@ -1,5 +1,4 @@
 import { api } from "@/lib/axiosInterceptor";
-import { getCurrentQuarter } from "@/lib/utils";
 import {
   MahjongGameRecord,
   MahjongMainPageDto,
@@ -40,20 +39,15 @@ const testRanking = [
 
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
-    const { start: startdate, end: enddate } = getCurrentQuarter(); // no capital
-    const recordResponsePromise = api.get(`/mahjong/game`);
-    const p3RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
+    const recordResponsePromise = api.get(`/mahjong/game/season`);
+    const p3RankingResponsePromise = api.get(`/mahjong/player/ranking/season`, {
       params: {
         category: "3마",
-        startdate,
-        enddate,
       },
     });
-    const p4RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
+    const p4RankingResponsePromise = api.get(`/mahjong/player/ranking/season`, {
       params: {
         category: "4마",
-        startdate,
-        enddate,
       },
     });
     const [recordResponse, p3RankingResponse, p4RankingResponse] =
