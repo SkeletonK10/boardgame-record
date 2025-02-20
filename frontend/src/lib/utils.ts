@@ -17,13 +17,50 @@ export const formatDate = (date: string) => {
   else return `${Math.trunc(gap / year)}년 전`;
 };
 
-export const getCurrentQuarter = () => {
-  const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
+export const getQuarter = (date: Date) => {
+  const year = date.getFullYear();
+  const month = date.getMonth();
 
-  if (month < 3) return { start: `${year}-01-01`, end: `${year}-03-31` };
-  else if (month < 6) return { start: `${year}-04-01`, end: `${year}-06-30` };
-  else if (month < 9) return { start: `${year}-07-01`, end: `${year}-09-30` };
-  else return { start: `${year}-10-01`, end: `${year}-12-31` };
+  if (month < 3)
+    return {
+      start: `${year}-12-01`,
+      end: new Date(year, 2).toISOString().slice(0, 10),
+    };
+  else if (month < 6) return { start: `${year}-03-01`, end: `${year}-05-31` };
+  else if (month < 9) return { start: `${year}-06-01`, end: `${year}-08-31` };
+  else return { start: `${year}-09-01`, end: `${year}-11-31` };
+};
+
+export const getCurrentQuarter = () => {
+  return getQuarter(new Date());
+};
+
+const seasonStart = "2025-03-01";
+
+export const getSeasonPeriod = (season: number) => {
+  if (season < 0) {
+    throw new Error("Invalid season");
+  }
+
+  // Pre-season
+  else if (season === 0) {
+    return { start: "1970-01-01", end: "2025-03-31" };
+  }
+
+  const year = 2025 + Math.floor(season / 4);
+  const month = (4 + (season % 4) * 3) % 12; //4 - 7 - 10 - 1
+  return getQuarter(new Date(year, month, 1));
+};
+
+export const getSeason = (date: Date) => {
+  const seasonStartDate = new Date(seasonStart);
+  const seasonStartYear = seasonStartDate.getFullYear();
+  const year = date.getFullYear();
+  const month = date.getMonth();
+  const season = (year - seasonStartYear) * 4 + Math.floor((month - 4) / 3);
+  return Math.max(season, 0);
+};
+
+export const getCurrentSeason = () => {
+  return getSeason(new Date());
 };
