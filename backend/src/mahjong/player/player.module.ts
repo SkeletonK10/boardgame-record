@@ -6,6 +6,7 @@ import { MahjongPlayer } from './entities/player.entity';
 import { UserModule } from 'src/user/user.module';
 import { UserService } from 'src/user/user.service';
 import { MahjongPlayerRecord } from '../entities/player.record.entity';
+import { MahjongService } from '../mahjong.service';
 
 @Module({
   imports: [
@@ -14,6 +15,6 @@ import { MahjongPlayerRecord } from '../entities/player.record.entity';
   ],
   exports: [MahjongPlayerService],
   controllers: [MahjongPlayerController],
-  providers: [MahjongPlayerService, UserService],
+  providers: [MahjongService, MahjongPlayerService, UserService],
 })
 export class MahjongPlayerModule {}

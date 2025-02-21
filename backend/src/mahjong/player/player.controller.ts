@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Get,
   HttpCode,
   Param,
@@ -13,17 +12,19 @@ import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { ServiceException } from 'src/common/exception/exception';
-import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
 import { Role } from 'src/user/entities/role.entity';
-import { MahjongCategory } from '../constants/mahjong.constant';
+import { MahjongOptionDto } from '../dto/option.mahjong.dto';
+import { MahjongService } from '../mahjong.service';
 import { playerRankingExmample } from './constants/player.example';
 import { CreateMahjongPlayerDto } from './dto/create.player.dto';
 import { MahjongPlayerService } from './player.service';
-import { MahjongOptionDto } from '../dto/option.mahjong.dto';
 
 @Controller('mahjong/player')
 export class MahjongPlayerController {
-  constructor(private readonly MahjongplayerService: MahjongPlayerService) {}
+  constructor(
+    private readonly mahjongService: MahjongService,
+    private readonly mahjongplayerService: MahjongPlayerService,
+  ) {}
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.ADMIN, Role.MAHJONG_RECORD_ADMIN)
@@ -32,7 +33,7 @@ export class MahjongPlayerController {
     description: 'Player successfuly created',
   })
   async create(@Body() createMahjongPlayerDto: CreateMahjongPlayerDto) {
-    return await this.MahjongplayerService.create(createMahjongPlayerDto);
+    return await this.mahjongplayerService.create(createMahjongPlayerDto);
   }
 
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
@@ -44,7 +45,7 @@ export class MahjongPlayerController {
     example: 3,
   })
   async countGuestCount(@Body('playerName') playerName: string) {
-    return await this.MahjongplayerService.countGuestByPlayerName(playerName);
+    return await this.mahjongplayerService.countGuestByPlayerName(playerName);
   }
 
   @Get()
@@ -61,7 +62,7 @@ export class MahjongPlayerController {
     ],
   })
   async getAll() {
-    const res = await this.MahjongplayerService.getAll();
+    const res = await this.mahjongplayerService.getAll();
     return res;
   }
 
@@ -76,7 +77,7 @@ export class MahjongPlayerController {
     },
   })
   async findOne(@Param('playername') playerName: string) {
-    const res = await this.MahjongplayerService.findOneByPlayerName(playerName);
+    const res = await this.mahjongplayerService.findOneByPlayerName(playerName);
     if (!res) throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
     return res;
   }
@@ -86,7 +87,7 @@ export class MahjongPlayerController {
   async getRanking(
     @Query() { startDate, endDate, category }: MahjongOptionDto,
   ) {
-    const res = await this.MahjongplayerService.getRanking(
+    const res = await this.mahjongplayerService.getRanking(
       startDate,
       endDate,
       category,
@@ -97,11 +98,12 @@ export class MahjongPlayerController {
   @Get('ranking/season')
   @ApiOkResponse({ example: playerRankingExmample })
   async getSeasonRanking(@Query() { season, category }: MahjongOptionDto) {
-    const { start, end } = getSeasonPeriod(season);
+    const { startDate, endDate } =
+      await this.mahjongService.getSeasonPeriod(season);
     category = category ?? '4마';
-    const res = await this.MahjongplayerService.getRanking(
-      start,
-      end,
+    const res = await this.mahjongplayerService.getRanking(
+      startDate,
+      endDate,
       category,
     );
     return res;

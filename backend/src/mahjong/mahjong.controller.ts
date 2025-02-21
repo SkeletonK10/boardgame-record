@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  DefaultValuePipe,
   Delete,
   Get,
   Param,
@@ -12,17 +11,15 @@ import {
 import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
-import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
 import { Role } from 'src/user/entities/role.entity';
-import { MahjongCategory } from './constants/mahjong.constant';
 import {
   getDetailedGameExample,
   getGameExample,
   playerStatisticsExample,
 } from './constants/mahjong.example';
 import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
-import { MahjongService } from './mahjong.service';
 import { MahjongOptionDto } from './dto/option.mahjong.dto';
+import { MahjongService } from './mahjong.service';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -108,10 +105,11 @@ export class MahjongController {
   async getSeasonStatistics(
     @Query() { season, playerName, category }: MahjongOptionDto,
   ) {
-    const { start, end } = getSeasonPeriod(season);
+    const { startDate, endDate } =
+      await this.mahjongService.getSeasonPeriod(season);
     const res = await this.mahjongService.getPlayerStatistics(
-      start,
-      end,
+      startDate,
+      endDate,
       category,
       playerName,
     );

@@ -16,6 +16,7 @@ import {
 } from './dto/create.mahjong.dto';
 import { MahjongGameRecord } from './entities/game.record.entity';
 import { MahjongPlayerRecord } from './entities/player.record.entity';
+import { MahjongSeason } from './entities/season.entity';
 import { MahjongYakumanRecord } from './entities/yakuman.record.entity';
 import { MahjongPlayerService } from './player/player.service';
 
@@ -484,6 +485,23 @@ export class MahjongService {
       .groupBy('player.id')
       .addGroupBy('game."category"')
       .getRawMany();
+    return queryResult;
+  }
+
+  async getSeasonPeriod(season?: number) {
+    const seasonWhere = season ? `season=:season` : `season=MAX(season)`;
+    const queryResult = await this.dataSource
+      .createQueryBuilder(MahjongSeason, 's')
+      .select(['"startDate"', '"endDate"'])
+      .where(seasonWhere, { season })
+      .getRawOne();
+    if (!queryResult) {
+      throw new ServiceException('MAHJONG_INVALID_SEASON');
+    }
+    const ret = {
+      startDate: queryResult.startDate,
+      endDate: queryResult.endDate,
+    };
     return queryResult;
   }
 }
