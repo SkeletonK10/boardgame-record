@@ -19,6 +19,7 @@ import { MahjongCategory } from '../constants/mahjong.constant';
 import { playerRankingExmample } from './constants/player.example';
 import { CreateMahjongPlayerDto } from './dto/create.player.dto';
 import { MahjongPlayerService } from './player.service';
+import { MahjongOptionDto } from '../dto/option.mahjong.dto';
 
 @Controller('mahjong/player')
 export class MahjongPlayerController {
@@ -83,12 +84,7 @@ export class MahjongPlayerController {
   @Get('ranking')
   @ApiOkResponse({ example: playerRankingExmample })
   async getRanking(
-    @Query('startdate', new DefaultValuePipe(new Date(1970).toISOString()))
-    startDate: string,
-    @Query('enddate', new DefaultValuePipe(new Date().toISOString()))
-    endDate: string,
-    @Query('category', new DefaultValuePipe('4마' as MahjongCategory))
-    category: MahjongCategory,
+    @Query() { startDate, endDate, category }: MahjongOptionDto,
   ) {
     const res = await this.MahjongplayerService.getRanking(
       startDate,
@@ -100,12 +96,9 @@ export class MahjongPlayerController {
 
   @Get('ranking/season')
   @ApiOkResponse({ example: playerRankingExmample })
-  async getSeasonRanking(
-    @Query('season', new DefaultValuePipe(getCurrentSeason())) season: number,
-    @Query('category', new DefaultValuePipe('4마' as MahjongCategory))
-    category: MahjongCategory,
-  ) {
+  async getSeasonRanking(@Query() { season, category }: MahjongOptionDto) {
     const { start, end } = getSeasonPeriod(season);
+    category = category ?? '4마';
     const res = await this.MahjongplayerService.getRanking(
       start,
       end,
