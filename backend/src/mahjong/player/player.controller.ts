@@ -1,24 +1,24 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Get,
   HttpCode,
   Param,
-  ParseIntPipe,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { MahjongPlayerService } from './player.service';
-import { CreateMahjongPlayerDto } from './dto/create.player.dto';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
+import { ServiceException } from 'src/common/exception/exception';
+import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
 import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from '../constants/mahjong.constant';
-import { ServiceException } from 'src/common/exception/exception';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { playerRankingExmample } from './constants/player.example';
-import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
+import { CreateMahjongPlayerDto } from './dto/create.player.dto';
+import { MahjongPlayerService } from './player.service';
 
 @Controller('mahjong/player')
 export class MahjongPlayerController {
@@ -83,14 +83,17 @@ export class MahjongPlayerController {
   @Get('ranking')
   @ApiOkResponse({ example: playerRankingExmample })
   async getRanking(
-    @Query('category') category: MahjongCategory,
-    @Query('startdate') startDate?: string, // ISO 8601 (YYYY-MM-DDThh:mm:ss.xxxZ)
-    @Query('enddate') endDate?: string,
+    @Query('startdate', new DefaultValuePipe(new Date(1970).toISOString()))
+    startDate: string,
+    @Query('enddate', new DefaultValuePipe(new Date().toISOString()))
+    endDate: string,
+    @Query('category', new DefaultValuePipe('4마' as MahjongCategory))
+    category: MahjongCategory,
   ) {
     const res = await this.MahjongplayerService.getRanking(
-      category,
       startDate,
       endDate,
+      category,
     );
     return res;
   }
@@ -98,15 +101,15 @@ export class MahjongPlayerController {
   @Get('ranking/season')
   @ApiOkResponse({ example: playerRankingExmample })
   async getSeasonRanking(
-    @Query('category') category: MahjongCategory,
-    @Query('season', new ParseIntPipe({ optional: true })) season?: number,
+    @Query('season', new DefaultValuePipe(getCurrentSeason())) season: number,
+    @Query('category', new DefaultValuePipe('4마' as MahjongCategory))
+    category: MahjongCategory,
   ) {
-    if (!season) season = getCurrentSeason();
     const { start, end } = getSeasonPeriod(season);
     const res = await this.MahjongplayerService.getRanking(
-      category,
       start,
       end,
+      category,
     );
     return res;
   }

@@ -1,27 +1,27 @@
 import {
   Body,
   Controller,
+  DefaultValuePipe,
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { MahjongService } from './mahjong.service';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
-import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
+import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
 import { Role } from 'src/user/entities/role.entity';
 import { MahjongCategory } from './constants/mahjong.constant';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   getDetailedGameExample,
   getGameExample,
   playerStatisticsExample,
 } from './constants/mahjong.example';
-import { getCurrentSeason, getSeasonPeriod } from 'src/common/utils';
+import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
+import { MahjongService } from './mahjong.service';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -39,16 +39,18 @@ export class MahjongController {
   @Get('game')
   @ApiOkResponse({ example: getGameExample })
   async findAll(
+    @Query('startdate', new DefaultValuePipe(new Date(1970).toISOString()))
+    startDate: string,
+    @Query('enddate', new DefaultValuePipe(new Date().toISOString()))
+    endDate: string,
     @Query('playername') playerName?: string,
     @Query('category') category?: MahjongCategory,
-    @Query('startdate') startDate?: string, // ISO 8601 (YYYY-MM-DDThh:mm:ss.xxxZ)
-    @Query('enddate') endDate?: string,
   ) {
     const res = await this.mahjongService.findAll(
-      playerName,
-      category,
       startDate,
       endDate,
+      playerName,
+      category,
     );
     return res;
   }
@@ -58,17 +60,16 @@ export class MahjongController {
   // @Get('game/season')
   // @ApiOkResponse({ example: getGameExample })
   // async getSeasonGame(
-  //   @Query('playername') playerName?: string,
+  //   @Query('season', new DefaultValuePipe(getCurrentSeason())) season: number,
   //   @Query('category') category?: MahjongCategory,
-  //   @Query('season', new ParseIntPipe({ optional: true })) season?: number,
+  //   @Query('playername') playerName?: string,
   // ) {
-  //   if (!season) season = getCurrentSeason();
   //   const { start, end } = getSeasonPeriod(season);
   //   const res = await this.mahjongService.findAll(
-  //     playerName,
-  //     category,
   //     start,
   //     end,
+  //     playerName,
+  //     category,
   //   );
   //   return res;
   // }
@@ -97,16 +98,18 @@ export class MahjongController {
   @Get('/statistics/player')
   @ApiOkResponse({ example: playerStatisticsExample })
   async getAllStatistics(
+    @Query('startdate', new DefaultValuePipe(new Date(1970).toISOString()))
+    startDate: string,
+    @Query('enddate', new DefaultValuePipe(new Date().toISOString()))
+    endDate: string,
     @Query('category') category?: MahjongCategory,
     @Query('playername') playerName?: string,
-    @Query('startdate') startDate?: string, // ISO 8601 (YYYY-MM-DDThh:mm:ss.xxxZ)
-    @Query('enddate') endDate?: string,
   ) {
     const res = await this.mahjongService.getPlayerStatistics(
-      category,
-      playerName,
       startDate,
       endDate,
+      category,
+      playerName,
     );
     return res;
   }
@@ -114,17 +117,16 @@ export class MahjongController {
   @Get('/statistics/player/season')
   @ApiOkResponse({ example: playerStatisticsExample })
   async getSeasonStatistics(
+    @Query('season', new DefaultValuePipe(getCurrentSeason())) season: number,
     @Query('category') category?: MahjongCategory,
     @Query('playername') playerName?: string,
-    @Query('season', new ParseIntPipe({ optional: true })) season?: number,
   ) {
-    if (!season) season = getCurrentSeason();
     const { start, end } = getSeasonPeriod(season);
     const res = await this.mahjongService.getPlayerStatistics(
-      category,
-      playerName,
       start,
       end,
+      category,
+      playerName,
     );
     return res;
   }

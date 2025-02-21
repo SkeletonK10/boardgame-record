@@ -1,13 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreateMahjongGameDto,
-  YakumanRecordDto,
-} from './dto/create.mahjong.dto';
-import { MahjongPlayerService } from './player/player.service';
-import { MahjongGameRecord } from './entities/game.record.entity';
-import { DataSource, QueryRunner } from 'typeorm';
-import { MahjongPlayerRecord } from './entities/player.record.entity';
-import { MahjongPlayer } from './player/entities/player.entity';
+import { ServiceException } from 'src/common/exception/exception';
+import { combination } from 'src/common/utils';
+import { DataSource } from 'typeorm';
 import {
   MahjongCategory,
   MahjongSubcategory,
@@ -16,11 +10,14 @@ import {
   MAX_YAKUMAN_COUNT,
   OverlappableYakuman,
 } from './constants/mahjong.constant';
-import { ServiceException } from 'src/common/exception/exception';
-import { combination, nthAlphabet } from 'src/common/utils';
+import {
+  CreateMahjongGameDto,
+  YakumanRecordDto,
+} from './dto/create.mahjong.dto';
+import { MahjongGameRecord } from './entities/game.record.entity';
+import { MahjongPlayerRecord } from './entities/player.record.entity';
 import { MahjongYakumanRecord } from './entities/yakuman.record.entity';
-import { start } from 'repl';
-import e from 'express';
+import { MahjongPlayerService } from './player/player.service';
 
 @Injectable()
 export class MahjongService {
@@ -229,10 +226,10 @@ export class MahjongService {
   }
 
   async findAll(
+    startDate: string,
+    endDate: string,
     playerName?: string,
     category?: MahjongCategory,
-    startDate?: string,
-    endDate?: string,
   ) {
     const categoryWhere = category ? 'game."category"=:category' : 'TRUE';
     const playerNameWhere = playerName
@@ -400,10 +397,10 @@ export class MahjongService {
   }
 
   async getPlayerStatistics(
+    startDate: string,
+    endDate: string,
     category?: MahjongCategory,
     playerName?: string,
-    startDate?: string,
-    endDate?: string,
   ) {
     // QUERY
     // SELECT

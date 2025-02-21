@@ -72,9 +72,9 @@ export class MahjongPlayerService {
   }
 
   async getRanking(
+    startDate: string,
+    endDate: string,
     category: MahjongCategory,
-    startDate?: string,
-    endDate?: string,
   ) {
     const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
 
