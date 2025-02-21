@@ -1,16 +1,16 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
-export class MahjongSeasonDivider {
+export class MahjongSeason {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
   season: number;
 
-  @Column({ type: 'integer' })
-  startGameId: number;
+  @Column()
+  startDate: Date;
 
-  @Column({ type: 'integer' })
-  endGameId: number;
+  @Column()
+  endDate: Date;
 }
