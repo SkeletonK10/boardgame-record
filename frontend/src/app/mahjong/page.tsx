@@ -39,7 +39,7 @@ const testRanking = [
 
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
-    const recordResponsePromise = api.get(`/mahjong/game/season`);
+    const recordResponsePromise = api.get(`/mahjong/game`);
     const p3RankingResponsePromise = api.get(`/mahjong/player/ranking/season`, {
       params: {
         category: "3마",
