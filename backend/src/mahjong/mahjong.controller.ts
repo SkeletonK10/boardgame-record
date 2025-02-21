@@ -22,6 +22,7 @@ import {
 } from './constants/mahjong.example';
 import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
 import { MahjongService } from './mahjong.service';
+import { MahjongOptionDto } from './dto/option.mahjong.dto';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -39,12 +40,7 @@ export class MahjongController {
   @Get('game')
   @ApiOkResponse({ example: getGameExample })
   async findAll(
-    @Query('startdate', new DefaultValuePipe(new Date(1970).toISOString()))
-    startDate: string,
-    @Query('enddate', new DefaultValuePipe(new Date().toISOString()))
-    endDate: string,
-    @Query('playername') playerName?: string,
-    @Query('category') category?: MahjongCategory,
+    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
   ) {
     const res = await this.mahjongService.findAll(
       startDate,
@@ -60,9 +56,7 @@ export class MahjongController {
   // @Get('game/season')
   // @ApiOkResponse({ example: getGameExample })
   // async getSeasonGame(
-  //   @Query('season', new DefaultValuePipe(getCurrentSeason())) season: number,
-  //   @Query('category') category?: MahjongCategory,
-  //   @Query('playername') playerName?: string,
+  //   @Query() { season, playerName, category }: MahjongOptionDto
   // ) {
   //   const { start, end } = getSeasonPeriod(season);
   //   const res = await this.mahjongService.findAll(
@@ -98,12 +92,7 @@ export class MahjongController {
   @Get('/statistics/player')
   @ApiOkResponse({ example: playerStatisticsExample })
   async getAllStatistics(
-    @Query('startdate', new DefaultValuePipe(new Date(1970).toISOString()))
-    startDate: string,
-    @Query('enddate', new DefaultValuePipe(new Date().toISOString()))
-    endDate: string,
-    @Query('category') category?: MahjongCategory,
-    @Query('playername') playerName?: string,
+    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
   ) {
     const res = await this.mahjongService.getPlayerStatistics(
       startDate,
@@ -117,9 +106,7 @@ export class MahjongController {
   @Get('/statistics/player/season')
   @ApiOkResponse({ example: playerStatisticsExample })
   async getSeasonStatistics(
-    @Query('season', new DefaultValuePipe(getCurrentSeason())) season: number,
-    @Query('category') category?: MahjongCategory,
-    @Query('playername') playerName?: string,
+    @Query() { season, playerName, category }: MahjongOptionDto,
   ) {
     const { start, end } = getSeasonPeriod(season);
     const res = await this.mahjongService.getPlayerStatistics(
