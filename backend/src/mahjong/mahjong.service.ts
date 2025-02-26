@@ -489,7 +489,9 @@ export class MahjongService {
   }
 
   async getSeasonPeriod(season?: number) {
-    const seasonWhere = season ? `season=:season` : `season=MAX(season)`;
+    const seasonWhere = season
+      ? `season=:season`
+      : `season=(SELECT MAX(season) FROM mahjong_season)`;
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongSeason, 's')
       .select(['"startDate"', '"endDate"'])
@@ -498,10 +500,9 @@ export class MahjongService {
     if (!queryResult) {
       throw new ServiceException('MAHJONG_INVALID_SEASON');
     }
-    const ret = {
+    return {
       startDate: queryResult.startDate,
-      endDate: queryResult.endDate,
+      endDate: queryResult.endDate ?? new Date(),
     };
-    return queryResult;
   }
 }
