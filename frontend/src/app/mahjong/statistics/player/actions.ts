@@ -15,8 +15,8 @@ export async function fetchPlayerStatistics(
       {
         params: {
           category,
-          startdate: start,
-          enddate: end,
+          startDate: start,
+          endDate: end,
         },
       }
     );
