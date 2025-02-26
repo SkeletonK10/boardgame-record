@@ -494,15 +494,45 @@ export class MahjongService {
       : `season=(SELECT MAX(season) FROM mahjong_season)`;
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongSeason, 's')
-      .select(['"startDate"', '"endDate"'])
+      .select(['season', '"startDate"', '"endDate"'])
       .where(seasonWhere, { season })
       .getRawOne();
     if (!queryResult) {
       throw new ServiceException('MAHJONG_INVALID_SEASON');
     }
     return {
+      season: queryResult.season,
       startDate: queryResult.startDate,
       endDate: queryResult.endDate ?? new Date(),
     };
+  }
+
+  async startSeason(startDate: string) {
+    const { season: lastSeason } = await this.getSeasonPeriod();
+    const newSeason = lastSeason + 1;
+    const newSeasonRecord = this.dataSource
+      .getRepository(MahjongSeason)
+      .create({
+        season: newSeason,
+        startDate: new Date(),
+        endDate: null,
+      });
+    await this.dataSource.manager.save(MahjongSeason, newSeasonRecord);
+    return newSeason;
+  }
+
+  async endSeason(season?: number) {
+    const { season: retSeason, endDate } = await this.getSeasonPeriod(season);
+    if (endDate !== null) {
+      throw new ServiceException('MAHJONG_SEASON_ALREADY_ENDED');
+    } else {
+      await this.dataSource
+        .createQueryBuilder(MahjongSeason, 's')
+        .update()
+        .set({ endDate: new Date() })
+        .where('season=:season', { season: retSeason })
+        .execute();
+      return retSeason;
+    }
   }
 }

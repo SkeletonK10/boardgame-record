@@ -128,6 +128,12 @@ export const ExceptionValues = {
     message: '해당 시즌은 존재하지 않습니다.',
   },
 
+  MAHJONG_SEASON_ALREADY_ENDED: {
+    statusCode: HttpStatus.BAD_REQUEST,
+    errorCode: 30401,
+    message: '해당 시즌은 이미 종료된 시즌입니다.',
+  },
+
   MAHJONG_CREATE_GAME_RECORD_FAIL: {
     statusCode: HttpStatus.INTERNAL_SERVER_ERROR,
     errorCode: 30900,
