@@ -128,9 +128,15 @@ export const ExceptionValues = {
     message: '해당 시즌은 존재하지 않습니다.',
   },
 
-  MAHJONG_SEASON_ALREADY_ENDED: {
+  MAHJONG_INVALID_END_DATE: {
     statusCode: HttpStatus.BAD_REQUEST,
     errorCode: 30401,
+    message: '시즌 종료 시각이 올바르지 않습니다.',
+  },
+
+  MAHJONG_SEASON_ALREADY_ENDED: {
+    statusCode: HttpStatus.BAD_REQUEST,
+    errorCode: 30402,
     message: '해당 시즌은 이미 종료된 시즌입니다.',
   },
 

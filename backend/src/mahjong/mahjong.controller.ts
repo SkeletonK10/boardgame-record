@@ -18,6 +18,7 @@ import {
   playerStatisticsExample,
 } from './constants/mahjong.example';
 import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
+import { MahjongSeasonOptionDto } from './dto/mahjong.season.option.dto';
 import { MahjongOptionDto } from './dto/option.mahjong.dto';
 import { MahjongService } from './mahjong.service';
 
@@ -114,5 +115,17 @@ export class MahjongController {
       playerName,
     );
     return res;
+  }
+
+  @Post('season')
+  @ApiOkResponse()
+  async startSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
+    if (seasonDto.isStart) {
+      const res = await this.mahjongService.startSeason(seasonDto);
+      return res;
+    } else {
+      const res = await this.mahjongService.endSeason(seasonDto);
+      return res;
+    }
   }
 }

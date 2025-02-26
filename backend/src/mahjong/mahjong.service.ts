@@ -19,6 +19,7 @@ import { MahjongPlayerRecord } from './entities/player.record.entity';
 import { MahjongSeason } from './entities/season.entity';
 import { MahjongYakumanRecord } from './entities/yakuman.record.entity';
 import { MahjongPlayerService } from './player/player.service';
+import { MahjongSeasonOptionDto } from './dto/mahjong.season.option.dto';
 
 @Injectable()
 export class MahjongService {
@@ -507,32 +508,35 @@ export class MahjongService {
     };
   }
 
-  async startSeason(startDate: string) {
+  async startSeason({ startDate, endDate }: MahjongSeasonOptionDto) {
     const { season: lastSeason } = await this.getSeasonPeriod();
     const newSeason = lastSeason + 1;
     const newSeasonRecord = this.dataSource
       .getRepository(MahjongSeason)
       .create({
         season: newSeason,
-        startDate: new Date(),
-        endDate: null,
+        startDate: startDate ?? new Date(),
+        endDate: endDate ?? null,
       });
     await this.dataSource.manager.save(MahjongSeason, newSeasonRecord);
-    return newSeason;
+    return newSeasonRecord;
   }
 
-  async endSeason(season?: number) {
-    const { season: retSeason, endDate } = await this.getSeasonPeriod(season);
-    if (endDate !== null) {
+  async endSeason({ endDate, season }: MahjongSeasonOptionDto) {
+    if (endDate && new Date(endDate) < new Date()) {
+      throw new ServiceException('MAHJONG_INVALID_END_DATE');
+    }
+    const seasonPeriod = await this.getSeasonPeriod(season);
+    if (seasonPeriod.endDate !== null && seasonPeriod.endDate < new Date()) {
       throw new ServiceException('MAHJONG_SEASON_ALREADY_ENDED');
     } else {
       await this.dataSource
         .createQueryBuilder(MahjongSeason, 's')
         .update()
-        .set({ endDate: new Date() })
-        .where('season=:season', { season: retSeason })
+        .set({ endDate: endDate ?? new Date() })
+        .where('season=:season', { season: season ?? seasonPeriod.season })
         .execute();
-      return retSeason;
+      return { ...seasonPeriod, endDate };
     }
   }
 }
