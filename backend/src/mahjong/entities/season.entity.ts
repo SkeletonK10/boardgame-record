@@ -11,6 +11,6 @@ export class MahjongSeason {
   @Column()
   startDate: Date;
 
-  @Column()
+  @Column({ nullable: true })
   endDate: Date;
 }
