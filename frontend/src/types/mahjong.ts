@@ -127,3 +127,11 @@ export interface MahjongDetailedGameDto {
   createdAt: string;
   yakumans: MahjongYakumanRecord[];
 }
+
+// Season Management Page /////////////////////////////////////////////////////
+
+export interface MahjongSeasonDto {
+  season: number;
+  startDate: string;
+  endDate: string;
+}
