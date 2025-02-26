@@ -117,6 +117,8 @@ export class MahjongController {
     return res;
   }
 
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post('season')
   @ApiOkResponse()
   async startSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
@@ -127,5 +129,12 @@ export class MahjongController {
       const res = await this.mahjongService.endSeason(seasonDto);
       return res;
     }
+  }
+
+  @Get('season')
+  @ApiOkResponse()
+  async getAllSeason() {
+    const res = await this.mahjongService.getAllSeason();
+    return res;
   }
 }

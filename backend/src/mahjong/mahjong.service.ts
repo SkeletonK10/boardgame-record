@@ -539,4 +539,11 @@ export class MahjongService {
       return { ...seasonPeriod, endDate };
     }
   }
+
+  async getAllSeason() {
+    const queryResult = await this.dataSource
+      .getRepository(MahjongSeason)
+      .find({ select: ['season', 'startDate', 'endDate'] });
+    return queryResult;
+  }
 }
