@@ -24,49 +24,29 @@ export async function fetchSeasons(): Promise<MahjongSeasonDto[]> {
 
 export async function postSeasonManagement(prevState: any, formData: FormData) {
   try {
-    const yakumanRange = [...Array(Number(formData.get("yakuman-number")))];
     const body = {
-      category: formData.get("category"),
-      subcategory: formData.get("subcategory"),
-      players: ["east", "south", "west", "north"].map((val) => {
-        const playerName = formData.get(`${val}-player-name`);
-        const score = formData.get(`${val}-score`);
-        return {
-          playerName: playerName ? playerName : undefined,
-          score: score ? score : undefined,
-        };
-      }),
-      yakumans: yakumanRange.map((_, idx) => {
-        const yakumanValue = String(formData.get(`yakuman-${idx}-yakuman`))
-          .split(",")
-          .filter((v) => MahjongYakumanValues.includes(v as MahjongYakuman));
-        return {
-          yakuman: yakumanValue,
-          winner: formData.get(`yakuman-${idx}-winner`) || null,
-          opponent: formData.get(`yakuman-${idx}-opponent`) || null,
-          tsumo: formData.get(`yakuman-${idx}-tsumo`) === "쯔모",
-          round: formData.get(`yakuman-${idx}-round`) || null,
-        };
-      }),
-      note: formData.get("note"),
+      isStart: formData.get("isStart") === "true",
+      season: Number(formData.get("season")),
+      startDate: formData.get("startDate")?.slice(0, 10),
+      endDate: formData.get("endDate")?.slice(0, 10),
     };
-    const response = await api.post(`/mahjong/game`, body);
+    const response = await api.post(`/mahjong/season`, body);
     if (response.status !== 201)
       return {
         state: "error",
         message:
           (response as any).response.data.message ??
-          text.mahjong.addRecord.error,
+          text.mahjong.manageSeason.error,
       };
     else {
       revalidatePath(`/mahjong`);
       return {
         state: "success",
-        message: text.mahjong.addRecord.success,
+        message: text.mahjong.manageSeason.success,
       };
     }
   } catch (err) {
     // console.log((err as Error).message);
-    return { message: text.mahjong.addRecord.error };
+    return { state: "error", message: text.mahjong.manageSeason.error };
   }
 }

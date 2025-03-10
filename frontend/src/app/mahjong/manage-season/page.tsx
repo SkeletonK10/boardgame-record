@@ -6,8 +6,10 @@ import {
   Button,
   FormControl,
   FormControlLabel,
+  MenuItem,
   Radio,
   RadioGroup,
+  TextField,
   Typography,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
@@ -25,7 +27,7 @@ const initialState = {
 // TODO: radio에 따라 폼 적당히 변경하기 (백엔드 api 참고)
 // TODO: ./actions에 api 요청 적당히 보내기
 
-export default function MahjongAddRecordPage() {
+export default function MahjongManageSeasonPage() {
   const router = useRouter();
   const { enqueueSnackbar } = useSnackbar();
   const [seasons, setSeasons] = useState<MahjongSeasonDto[]>([]);
@@ -34,15 +36,22 @@ export default function MahjongAddRecordPage() {
     initialState
   );
   const [isPending, startTransition] = useTransition();
+  const [isStart, setIsStart] = useState(true);
 
   const runningSeasons = seasons.filter((season) => {
     const now = new Date();
-    return new Date(season.startDate) < now && now < new Date(season.endDate);
+    return (
+      new Date(season.startDate) < now &&
+      (season.endDate === null || now < new Date(season.endDate))
+    );
   });
 
   useEffect(() => {
     startTransition(async () => await setSeasons(await fetchSeasons()));
   }, []);
+  useEffect(() => {
+    setIsStart(runningSeasons.length === 0);
+  }, [seasons]);
   useEffect(() => {
     if (formState.state === "success") {
       enqueueSnackbar(formState.message, { variant: "success" });
@@ -69,19 +78,32 @@ export default function MahjongAddRecordPage() {
           userSelect: "none",
         }}
       >
-        {text.mahjong.addRecord.title}
+        {text.mahjong.manageSeason.title}
       </Typography>
-      {seasons.map((season) => (
-        <Typography>
-          {`시즌 ${season.season}: ${new Date(
-            season.startDate
-          ).toLocaleString()} ~ ${
-            season.endDate
-              ? new Date(season.endDate).toLocaleString()
-              : "진행 중"
-          }`}
+      <Box sx={{ height: "1rem" }} />
+      {isStart ? (
+        <Typography variant="body2" sx={{ whiteSpace: "pre-line" }}>
+          {text.mahjong.manageSeason.noRunningSeason}
         </Typography>
-      ))}
+      ) : (
+        runningSeasons.map((season) => (
+          <>
+            <Typography variant="body2" key={season.season}>
+              {`시즌 ${season.season}: ${new Date(
+                season.startDate
+              ).toLocaleString()}`}
+            </Typography>
+            <Typography variant="body2" key={season.season + "end"}>
+              {` ~ ${
+                season.endDate
+                  ? new Date(season.endDate).toLocaleString()
+                  : "진행 중"
+              }
+            `}
+            </Typography>
+          </>
+        ))
+      )}
       <form action={formAction}>
         <Box
           sx={{
@@ -94,32 +116,71 @@ export default function MahjongAddRecordPage() {
           }}
         >
           <FormControl>
-            <RadioGroup row defaultValue={true} name="isStart">
-              <FormControlLabel
-                key="start"
-                value={true}
-                control={<Radio />}
-                label="새 시즌 생성"
-              />
-              <FormControlLabel
-                key="end"
-                value={false}
-                control={<Radio />}
-                label="시즌 종료"
-              />
-            </RadioGroup>
+            <TextField type="hidden" name="isStart" value={isStart} />
           </FormControl>
+          <Box sx={{ flexGrow: 1 }}>
+            {isStart ? (
+              <>
+                <FormControl sx={{ width: "100%" }} margin="normal">
+                  <TextField
+                    type="date"
+                    name="startDate"
+                    label="시작일"
+                    defaultValue={new Date().toISOString().split("T")[0]}
+                  />
+                </FormControl>
+                <FormControl sx={{ width: "100%" }} margin="normal">
+                  <TextField
+                    type="date"
+                    name="endDate"
+                    label="종료일"
+                    defaultValue={
+                      new Date(new Date().setMonth(new Date().getMonth() + 3))
+                        .toISOString()
+                        .split("T")[0]
+                    }
+                  />
+                </FormControl>
+              </>
+            ) : (
+              <>
+                <FormControl sx={{ width: "100%" }} margin="normal">
+                  <TextField
+                    select
+                    label="변경할 시즌"
+                    name="season"
+                    placeholder="시즌 선택"
+                    defaultValue={runningSeasons[0]?.season}
+                  >
+                    {runningSeasons.map((season) => (
+                      <MenuItem key={season.season} value={season.season}>
+                        {`시즌 ${season.season}`}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </FormControl>
+                <FormControl sx={{ width: "100%" }} margin="normal">
+                  <TextField
+                    type="date"
+                    name="endDate"
+                    label="종료일"
+                    defaultValue={new Date().toISOString().split("T")[0]}
+                  />
+                </FormControl>
+              </>
+            )}
+          </Box>
+          <Button
+            variant="contained"
+            type="submit"
+            sx={{
+              width: "100%",
+              marginTop: "2rem",
+            }}
+          >
+            {text.mahjong.manageSeason.submit}
+          </Button>
         </Box>
-        <Button
-          variant="contained"
-          type="submit"
-          sx={{
-            width: "100%",
-            marginTop: "2rem",
-          }}
-        >
-          요청 보내기
-        </Button>
       </form>
     </Box>
   );
