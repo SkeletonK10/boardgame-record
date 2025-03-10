@@ -492,7 +492,7 @@ export class MahjongService {
   async getSeasonPeriod(season?: number) {
     const seasonWhere = season
       ? `season=:season`
-      : `season=(SELECT MAX(season) FROM mahjong_season)`;
+      : `season=(SELECT MAX(season) FROM mahjong_season WHERE "startDate" < NOW())`;
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongSeason, 's')
       .select(['season', '"startDate"', '"endDate"'])
@@ -511,6 +511,11 @@ export class MahjongService {
   async startSeason({ startDate, endDate }: MahjongSeasonOptionDto) {
     const { season: lastSeason } = await this.getSeasonPeriod();
     const newSeason = lastSeason + 1;
+
+    // endDate를 23:59:59에 끝나도록. GMT+9 기준
+    endDate = new Date(
+      new Date(endDate).getTime() + 1000 * 60 * 60 * 15 - 1,
+    ).toISOString();
     const newSeasonRecord = this.dataSource
       .getRepository(MahjongSeason)
       .create({
@@ -543,7 +548,10 @@ export class MahjongService {
   async getAllSeason() {
     const queryResult = await this.dataSource
       .getRepository(MahjongSeason)
-      .find({ select: ['season', 'startDate', 'endDate'] });
+      .find({
+        select: ['season', 'startDate', 'endDate'],
+        order: { season: 'ASC' },
+      });
     return queryResult;
   }
 }
