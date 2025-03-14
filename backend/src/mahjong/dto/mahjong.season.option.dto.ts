@@ -1,11 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsBoolean,
-  IsDateString,
-  IsInt,
-  IsOptional,
-  Min,
-} from 'class-validator';
+import { IsDateString, IsInt, IsOptional, Min } from 'class-validator';
 
 export class MahjongSeasonOptionDto {
   @ApiProperty()
@@ -13,10 +7,6 @@ export class MahjongSeasonOptionDto {
   @IsInt()
   @Min(0)
   season?: number;
-
-  @ApiProperty()
-  @IsBoolean()
-  isStart: boolean;
 
   @ApiProperty()
   @IsDateString()

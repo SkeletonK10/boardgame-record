@@ -3,7 +3,9 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -121,14 +123,20 @@ export class MahjongController {
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post('season')
   @ApiOkResponse()
+  @HttpCode(200)
+  async startSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
+    const res = await this.mahjongService.startSeason(seasonDto);
+    return res;
+  }
+
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
+  @Patch('season')
+  @ApiOkResponse()
+  @HttpCode(200)
   async manageSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
-    if (seasonDto.isStart) {
-      const res = await this.mahjongService.startSeason(seasonDto);
-      return res;
-    } else {
-      const res = await this.mahjongService.endSeason(seasonDto);
-      return res;
-    }
+    const res = await this.mahjongService.modifySeasonEnd(seasonDto);
+    return res;
   }
 
   @Get('season')
