@@ -17,6 +17,7 @@ import { useSnackbar } from "notistack";
 import { useEffect, useState, useTransition } from "react";
 import { useFormState } from "react-dom";
 import { fetchSeasons, postSeasonManagement } from "./actions";
+import { getRunningSeasons } from "@/lib/utils";
 
 const initialState = {
   state: "initial",
@@ -38,13 +39,7 @@ export default function MahjongManageSeasonPage() {
   const [isPending, startTransition] = useTransition();
   const [isStart, setIsStart] = useState(true);
 
-  const runningSeasons = seasons.filter((season) => {
-    const now = new Date();
-    return (
-      new Date(season.startDate) < now &&
-      (season.endDate === null || now < new Date(season.endDate))
-    );
-  });
+  const runningSeasons = getRunningSeasons(seasons);
 
   useEffect(() => {
     startTransition(async () => await setSeasons(await fetchSeasons()));
