@@ -121,7 +121,7 @@ export class MahjongController {
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post('season')
   @ApiOkResponse()
-  async startSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
+  async manageSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
     if (seasonDto.isStart) {
       const res = await this.mahjongService.startSeason(seasonDto);
       return res;
