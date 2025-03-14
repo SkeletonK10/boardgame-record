@@ -527,10 +527,14 @@ export class MahjongService {
     return newSeasonRecord;
   }
 
-  async endSeason({ endDate, season }: MahjongSeasonOptionDto) {
-    if (endDate && new Date(endDate) < new Date()) {
+  async modifySeasonEnd({ endDate, season }: MahjongSeasonOptionDto) {
+    if (!endDate || new Date(endDate) < new Date()) {
       throw new ServiceException('MAHJONG_INVALID_END_DATE');
     }
+    // endDate를 23:59:59에 끝나도록. GMT+9 기준
+    endDate = new Date(
+      new Date(endDate).getTime() + 1000 * 60 * 60 * 15 - 1,
+    ).toISOString();
     const seasonPeriod = await this.getSeasonPeriod(season);
     if (seasonPeriod.endDate !== null && seasonPeriod.endDate < new Date()) {
       throw new ServiceException('MAHJONG_SEASON_ALREADY_ENDED');
