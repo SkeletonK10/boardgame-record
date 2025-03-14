@@ -46,6 +46,7 @@ export class MahjongRanking {
 export class MahjongMainPageDto {
   record: MahjongGameRecord[] = [];
   ranking: MahjongRanking[] = [];
+  season?: MahjongSeasonDto;
 }
 
 // Statistics page ////////////////////////////////////////////////////////////

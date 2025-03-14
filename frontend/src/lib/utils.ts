@@ -1,3 +1,5 @@
+import { MahjongSeasonDto } from "@/types/mahjong";
+
 export const formatDate = (date: string) => {
   const now = new Date();
   // ms unit
@@ -15,4 +17,12 @@ export const formatDate = (date: string) => {
   else if (gap < month) return `${Math.trunc(gap / day)}일 전`;
   else if (gap < year) return `${Math.trunc(gap / month)}달 전`;
   else return `${Math.trunc(gap / year)}년 전`;
+};
+
+export const getRunningSeasons = (seasons: MahjongSeasonDto[]) => {
+  const now = new Date();
+  return seasons.filter(
+    (season) =>
+      new Date(season.startDate) < now && now < new Date(season.endDate)
+  );
 };
