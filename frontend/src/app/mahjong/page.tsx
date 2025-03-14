@@ -1,14 +1,18 @@
 import { api } from "@/lib/axiosInterceptor";
-import { Box, Grid2 as Grid, List, Typography } from "@mui/material";
 import {
   MahjongGameRecord,
   MahjongMainPageDto,
   MahjongRankingRecord,
+  MahjongSeasonDto,
 } from "@/types/mahjong";
+import { Box, Grid2 as Grid, Typography } from "@mui/material";
 import AddButton from "./_components/add-button";
-import StatisticsButton from "./_components/statistics-button";
-import RankingEntry from "./_components/ranking-entry";
 import MahjongGameList from "./_components/game-list";
+import MahjongRankingList from "./_components/ranking-list";
+import StatisticsButton from "./_components/statistics-button";
+import { getRunningSeasons } from "@/lib/utils";
+import SeasonDisplay from "./_components/season-display";
+import ManageSeasonButton from "./_components/manage-season-button";
 
 const testRanking = [
   {
@@ -40,31 +44,36 @@ const testRanking = [
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
     const recordResponsePromise = api.get(`/mahjong/game`);
-    const p3RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
+    const p3RankingResponsePromise = api.get(`/mahjong/player/ranking/season`, {
       params: {
         category: "3마",
       },
     });
-    const p4RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
+    const p4RankingResponsePromise = api.get(`/mahjong/player/ranking/season`, {
       params: {
         category: "4마",
       },
     });
-    const [recordResponse, p3RankingResponse, p4RankingResponse] =
-      await Promise.all([
-        recordResponsePromise,
-        p3RankingResponsePromise,
-        p4RankingResponsePromise,
-      ]);
-    // console.log("AAAAAAAAAAAAA");
+    const seasonResponsePromise = api.get(`/mahjong/season`);
+    const [
+      recordResponse,
+      p3RankingResponse,
+      p4RankingResponse,
+      seasonResponse,
+    ] = await Promise.all([
+      recordResponsePromise,
+      p3RankingResponsePromise,
+      p4RankingResponsePromise,
+      seasonResponsePromise,
+    ]);
 
-    // BUG: recordResponse has old response type
-    // need to refactor /backend/mahjong
     const record = recordResponse.data as MahjongGameRecord[];
     const p3Ranking: MahjongRankingRecord[] =
       p3RankingResponse.data as MahjongRankingRecord[];
     const p4Ranking: MahjongRankingRecord[] =
       p4RankingResponse.data as MahjongRankingRecord[];
+    const season = seasonResponse.data as MahjongSeasonDto[];
+    const runningSeason = getRunningSeasons(season)[0];
     // console.log(ranking);
     return {
       record: record,
@@ -78,6 +87,7 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
           ranking: p3Ranking,
         },
       ],
+      season: runningSeason,
     };
   } catch (err) {
     // return test data
@@ -98,20 +108,21 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
 };
 
 export default async function MahjongMainPage() {
-  const { record, ranking } = await getProps();
+  const { record, ranking, season } = await getProps();
   return (
     <Box sx={{ flexGrow: 1 }}>
       <Grid container spacing={1}>
-        <Grid size={2} />
-        <Grid size={8}>
+        <Grid size={12}>
+          <SeasonDisplay season={season} />
+        </Grid>
+        <Grid display={{ xs: "none", md: "inline" }} size={2} />
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <AddButton />
         </Grid>
-        <Grid size={2} />
-        <Grid size={2} />
-        <Grid size={8}>
+        <Grid size={{ xs: 12, sm: 6, md: 4 }}>
           <StatisticsButton />
         </Grid>
-        <Grid size={2} />
+        <Grid display={{ xs: "none", md: "inline" }} size={2} />
         <Grid size={{ xs: 12, sm: 6 }}>
           <Box
             sx={{
@@ -145,41 +156,19 @@ export default async function MahjongMainPage() {
             }}
           >
             {ranking.map(({ category, ranking }) => (
-              <Box
+              <MahjongRankingList
                 key={category}
-                sx={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <Typography
-                  variant="h6"
-                  noWrap
-                  component="div"
-                  sx={{
-                    display: { sm: "block" },
-                    userSelect: "none",
-                    flexGrow: 1,
-                  }}
-                >
-                  {`${category} 우마 순위`}
-                </Typography>
-                <List sx={{ width: "100%" }}>
-                  {ranking.map((value) => (
-                    <RankingEntry
-                      key={value.playerName}
-                      category={category}
-                      {...value}
-                    />
-                  ))}
-                </List>
-              </Box>
+                category={category}
+                ranking={ranking}
+              />
             ))}
           </Box>
         </Grid>
+        <Grid display={{ xs: "none", sm: "inline" }} size={2} />
+        <Grid size={{ xs: 12, sm: 8 }}>
+          <ManageSeasonButton />
+        </Grid>
+        <Grid display={{ xs: "none", sm: "inline" }} size={2} />
       </Grid>
     </Box>
   );

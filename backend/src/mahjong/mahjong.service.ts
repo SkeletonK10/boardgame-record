@@ -1,14 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreateMahjongGameDto,
-  YakumanRecordDto,
-} from './dto/create.mahjong.dto';
-import { MahjongPlayerService } from './player/player.service';
-import { MahjongGameRecord } from './entities/game.record.entity';
-import { DataSource, QueryRunner } from 'typeorm';
-import { MahjongPlayerRecord } from './entities/player.record.entity';
-import { MahjongPlayer } from './player/entities/player.entity';
-import { MahjongRating } from './player/entities/rating.entity';
+import { ServiceException } from 'src/common/exception/exception';
+import { combination } from 'src/common/utils';
+import { DataSource } from 'typeorm';
 import {
   MahjongCategory,
   MahjongSubcategory,
@@ -17,9 +10,16 @@ import {
   MAX_YAKUMAN_COUNT,
   OverlappableYakuman,
 } from './constants/mahjong.constant';
-import { ServiceException } from 'src/common/exception/exception';
-import { combination, nthAlphabet } from 'src/common/utils';
+import {
+  CreateMahjongGameDto,
+  YakumanRecordDto,
+} from './dto/create.mahjong.dto';
+import { MahjongGameRecord } from './entities/game.record.entity';
+import { MahjongPlayerRecord } from './entities/player.record.entity';
+import { MahjongSeason } from './entities/season.entity';
 import { MahjongYakumanRecord } from './entities/yakuman.record.entity';
+import { MahjongPlayerService } from './player/player.service';
+import { MahjongSeasonOptionDto } from './dto/mahjong.season.option.dto';
 
 @Injectable()
 export class MahjongService {
@@ -64,19 +64,27 @@ export class MahjongService {
         }),
       );
 
+      // TODO: PlayerRecord도 Yakuman같이 이후에 저장하도록 (UPDATE 쿼리 줄이기)
+      const gameRecord = queryRunner.manager.create(MahjongGameRecord, {
+        category: category,
+        subcategory: createMahjongGameDto.subcategory,
+        note: note,
+      });
+
+      const game = await queryRunner.manager.save(
+        MahjongGameRecord,
+        gameRecord,
+      );
+
       const playerRecords = await Promise.all(
         players.map(async (player, seat) => {
-          const updatedPlayer = await this.updateRating(
-            player,
-            category,
-            rating[seat],
-            queryRunner,
-          );
           const recordDto = queryRunner.manager.create(MahjongPlayerRecord, {
-            player: updatedPlayer,
+            game: game,
+            player,
             seat,
             rank: ranks[seat],
             score: scores[seat],
+            ratingDiff: rating[seat],
           });
           const record = await queryRunner.manager.save(
             MahjongPlayerRecord,
@@ -84,19 +92,6 @@ export class MahjongService {
           );
           return record;
         }),
-      );
-
-      // TODO: PlayerRecord도 Yakuman같이 이후에 저장하도록 (UPDATE 쿼리 줄이기)
-      const gameRecord = queryRunner.manager.create(MahjongGameRecord, {
-        category: category,
-        subcategory: createMahjongGameDto.subcategory,
-        players: playerRecords,
-        note: note,
-      });
-
-      const game = await queryRunner.manager.save(
-        MahjongGameRecord,
-        gameRecord,
       );
 
       const yakumanRecords = await Promise.all(
@@ -232,39 +227,12 @@ export class MahjongService {
     return rank;
   }
 
-  async updateRating(
-    player: MahjongPlayer,
-    category: MahjongCategory,
-    delta: number,
-    queryRunner: QueryRunner,
+  async findAll(
+    startDate: string,
+    endDate: string,
+    playerName?: string,
+    category?: MahjongCategory,
   ) {
-    const rating = await queryRunner.manager.findOne(MahjongRating, {
-      where: {
-        player: {
-          id: player.id,
-        },
-        category,
-      },
-    });
-
-    if (!rating) {
-      await queryRunner.manager.insert(MahjongRating, { player, category });
-    }
-
-    const res = await queryRunner.manager.update(
-      MahjongRating,
-      { player, category },
-      {
-        rating: () => `rating + ${delta}`,
-      },
-    );
-    const p = await this.mahjongPlayerService.findOneByPlayerName(
-      player.playerName,
-    );
-    return p;
-  }
-
-  async findAll(playerName?: string, category?: MahjongCategory) {
     const categoryWhere = category ? 'game."category"=:category' : 'TRUE';
     const playerNameWhere = playerName
       ? 'player."playerName"=:playerName'
@@ -289,6 +257,7 @@ export class MahjongService {
           : 'FALSE'
         : 'TRUE';
 
+    const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
     const queryResult = await this.dataSource
       .createQueryBuilder(MahjongPlayerRecord, 'record')
       .leftJoin('record.game', 'game')
@@ -296,6 +265,10 @@ export class MahjongService {
       .addOrderBy('record.seat')
       .leftJoin('record.player', 'player')
       .where(gameIdFilterWhere, { ids: gameIdFilterArray })
+      .andWhere(createdAtWhere, {
+        startDate,
+        endDate,
+      })
       .select([
         'game.id',
         'game.subcategory',
@@ -396,32 +369,10 @@ export class MahjongService {
 
   async delete(id: number) {
     const game = await this.findById(id);
-    console.log(game);
-    const scores = game.players.map(({ score }) => +score);
-    const rating = this.calculateRating(scores, game.subcategory);
-    const rollbackRating = rating.map((r) => -r);
-    console.log(rollbackRating);
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const playerRecords = await Promise.all(
-        // 각 player마다
-        game.players.map(async ({ playerName }, i) => {
-          const player =
-            await this.mahjongPlayerService.findOneByPlayerName(playerName);
-          if (!player) {
-            return;
-          }
-          const updatedPlayer = await this.updateRating(
-            player,
-            game.category,
-            rollbackRating[i],
-            queryRunner,
-          );
-          return;
-        }),
-      );
       await queryRunner.manager
         .createQueryBuilder()
         .softDelete()
@@ -447,7 +398,12 @@ export class MahjongService {
     }
   }
 
-  async getPlayerStatistics(category?: MahjongCategory, playerName?: string) {
+  async getPlayerStatistics(
+    startDate: string,
+    endDate: string,
+    category?: MahjongCategory,
+    playerName?: string,
+  ) {
     // QUERY
     // SELECT
     //     r."playerName" AS "playerName",
@@ -495,59 +451,111 @@ export class MahjongService {
     //     GROUP BY "player"."id", game."category"
     // ) "r"
     // ON rating."playerId" = r."playerId" AND rating."category" = r."category";
+    const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
     const categoryWhere = category ? 'game."category"=:category' : 'TRUE';
     const playerNameWhere = playerName
       ? 'player."playerName"=:playerName'
       : 'TRUE';
     const queryResult = await this.dataSource
-      .createQueryBuilder(MahjongRating, 'rating')
-      .innerJoin(
-        // TODO: 임시 테이블 만들기 (기능 지원하면...)
-        (qb) =>
-          qb
-            .from(MahjongPlayerRecord, 'record')
-            .leftJoin('record.game', 'game')
-            .leftJoin('record.player', 'player')
-            .select([
-              'player.id AS "playerId"',
-              'player.playerName AS "playerName"',
-              'player.nickname AS nickname',
-              'game."category" AS category',
-              'ROUND(AVG(record.score), 2) AS "averageScore"',
-              'MAX(record.score) AS "maxScore"',
-              'MIN(record.score) AS "minScore"',
-              'COUNT(*) AS count',
-              'COUNT(CASE WHEN record.rank = 1 THEN 1 ELSE NULL END) AS first',
-              'COUNT(CASE WHEN record.rank = 2 THEN 1 ELSE NULL END) AS second',
-              'COUNT(CASE WHEN record.rank = 3 THEN 1 ELSE NULL END) AS third',
-              'COUNT(CASE WHEN record.rank = 4 THEN 1 ELSE NULL END) AS fourth',
-              'COUNT(CASE WHEN record.score < 0 THEN 1 ELSE NULL END) AS tobi',
-            ])
-            .where(categoryWhere, { category })
-            .andWhere(playerNameWhere, { playerName })
-            .groupBy('player.id')
-            .addGroupBy('game."category"'),
-        'r',
-        'rating."playerId" = r."playerId" AND rating."category"=r."category"',
-      )
+      .createQueryBuilder(MahjongPlayerRecord, 'record')
+      .leftJoin('record.game', 'game')
+      .leftJoin('record.player', 'player')
       .select([
-        'r."playerId" AS id',
-        'r."playerName" AS "playerName"',
-        'r.nickname AS nickname',
-        'r.category AS category',
-        'rating.rating AS rating',
-        'ROUND(rating.rating / r.count, 3) AS "averageRating"',
-        'r."averageScore" AS "averageScore"',
-        'r."maxScore" AS "maxScore"',
-        'r."minScore" AS "minScore"',
-        'r.count AS count',
-        'r.first AS first',
-        'r.second AS second',
-        'r.third AS third',
-        'r.fourth AS fourth',
-        'r.tobi AS tobi',
+        'player.id AS "playerId"',
+        'player.playerName AS "playerName"',
+        'player.nickname AS nickname',
+        'game."category" AS category',
+        'SUM(record."ratingDiff") AS rating',
+        'ROUND(SUM(record."ratingDiff") / COUNT(*), 3) AS "averageRating"',
+        'ROUND(AVG(record.score), 2) AS "averageScore"',
+        'MAX(record.score) AS "maxScore"',
+        'MIN(record.score) AS "minScore"',
+        'COUNT(*) AS count',
+        'COUNT(CASE WHEN record.rank = 1 THEN 1 ELSE NULL END) AS first',
+        'COUNT(CASE WHEN record.rank = 2 THEN 1 ELSE NULL END) AS second',
+        'COUNT(CASE WHEN record.rank = 3 THEN 1 ELSE NULL END) AS third',
+        'COUNT(CASE WHEN record.rank = 4 THEN 1 ELSE NULL END) AS fourth',
+        'COUNT(CASE WHEN record.score < 0 THEN 1 ELSE NULL END) AS tobi',
       ])
+      .where(categoryWhere, { category })
+      .andWhere(playerNameWhere, { playerName })
+      .andWhere(createdAtWhere, {
+        startDate,
+        endDate,
+      })
+      .groupBy('player.id')
+      .addGroupBy('game."category"')
       .getRawMany();
+    return queryResult;
+  }
+
+  async getSeasonPeriod(season?: number) {
+    const seasonWhere = season
+      ? `season=:season`
+      : `season=(SELECT MAX(season) FROM mahjong_season WHERE "startDate" < NOW())`;
+    const queryResult = await this.dataSource
+      .createQueryBuilder(MahjongSeason, 's')
+      .select(['season', '"startDate"', '"endDate"'])
+      .where(seasonWhere, { season })
+      .getRawOne();
+    if (!queryResult) {
+      throw new ServiceException('MAHJONG_INVALID_SEASON');
+    }
+    return {
+      season: queryResult.season,
+      startDate: queryResult.startDate,
+      endDate: queryResult.endDate ?? new Date(),
+    };
+  }
+
+  async startSeason({ startDate, endDate }: MahjongSeasonOptionDto) {
+    const { season: lastSeason } = await this.getSeasonPeriod();
+    const newSeason = lastSeason + 1;
+
+    // endDate를 23:59:59에 끝나도록. GMT+9 기준
+    endDate = new Date(
+      new Date(endDate).getTime() + 1000 * 60 * 60 * 15 - 1,
+    ).toISOString();
+    const newSeasonRecord = this.dataSource
+      .getRepository(MahjongSeason)
+      .create({
+        season: newSeason,
+        startDate: startDate ?? new Date(),
+        endDate: endDate ?? null,
+      });
+    await this.dataSource.manager.save(MahjongSeason, newSeasonRecord);
+    return newSeasonRecord;
+  }
+
+  async modifySeasonEnd({ endDate, season }: MahjongSeasonOptionDto) {
+    if (!endDate || new Date(endDate) < new Date()) {
+      throw new ServiceException('MAHJONG_INVALID_END_DATE');
+    }
+    // endDate를 23:59:59에 끝나도록. GMT+9 기준
+    endDate = new Date(
+      new Date(endDate).getTime() + 1000 * 60 * 60 * 15 - 1,
+    ).toISOString();
+    const seasonPeriod = await this.getSeasonPeriod(season);
+    if (seasonPeriod.endDate !== null && seasonPeriod.endDate < new Date()) {
+      throw new ServiceException('MAHJONG_SEASON_ALREADY_ENDED');
+    } else {
+      await this.dataSource
+        .createQueryBuilder(MahjongSeason, 's')
+        .update()
+        .set({ endDate: endDate ?? new Date() })
+        .where('season=:season', { season: season ?? seasonPeriod.season })
+        .execute();
+      return { ...seasonPeriod, endDate };
+    }
+  }
+
+  async getAllSeason() {
+    const queryResult = await this.dataSource
+      .getRepository(MahjongSeason)
+      .find({
+        select: ['season', 'startDate', 'endDate'],
+        order: { season: 'ASC' },
+      });
     return queryResult;
   }
 }

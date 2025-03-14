@@ -76,5 +76,14 @@ export const text = {
         notFound: `해당하는 경기가 존재하지 않습니다.`,
       },
     },
+
+    manageSeason: {
+      title: `시즌 관리`,
+      noRunningSeason: `진행 중인 시즌이 없습니다.\n시즌을 시작해 주세요!`,
+      runningSeasonExists: `시즌 종료일을 변경하려면 아래 양식을 작성해 주세요.`,
+      submit: `요청 보내기`,
+      error: `시즌 관리 중 문제가 발생했습니다.`,
+      success: `요청이 정상적으로 처리되었습니다!`,
+    },
   },
 };

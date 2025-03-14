@@ -3,23 +3,26 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
 } from '@nestjs/common';
-import { MahjongService } from './mahjong.service';
+import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import { JwtAccessTokenGuard } from 'src/auth/guard/accesstoken.guard';
-import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
 import { RoleGuard, Roles } from 'src/auth/guard/role.guard';
 import { Role } from 'src/user/entities/role.entity';
-import { MahjongCategory } from './constants/mahjong.constant';
-import { ApiCreatedResponse, ApiOkResponse } from '@nestjs/swagger';
 import {
   getDetailedGameExample,
   getGameExample,
   playerStatisticsExample,
 } from './constants/mahjong.example';
+import { CreateMahjongGameDto } from './dto/create.mahjong.dto';
+import { MahjongSeasonOptionDto } from './dto/mahjong.season.option.dto';
+import { MahjongOptionDto } from './dto/option.mahjong.dto';
+import { MahjongService } from './mahjong.service';
 
 @Controller('mahjong')
 export class MahjongController {
@@ -37,12 +40,33 @@ export class MahjongController {
   @Get('game')
   @ApiOkResponse({ example: getGameExample })
   async findAll(
-    @Query('playername') playerName?: string,
-    @Query('category') category?: MahjongCategory,
+    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
   ) {
-    const res = await this.mahjongService.findAll(playerName, category);
+    const res = await this.mahjongService.findAll(
+      startDate,
+      endDate,
+      playerName,
+      category,
+    );
     return res;
   }
+
+  // 당장은 필요 없을듯?
+
+  // @Get('game/season')
+  // @ApiOkResponse({ example: getGameExample })
+  // async getSeasonGame(
+  //   @Query() { season, playerName, category }: MahjongOptionDto
+  // ) {
+  //   const { start, end } = getSeasonPeriod(season);
+  //   const res = await this.mahjongService.findAll(
+  //     start,
+  //     end,
+  //     playerName,
+  //     category,
+  //   );
+  //   return res;
+  // }
 
   @Get('game/:id')
   @ApiOkResponse({ example: getDetailedGameExample })
@@ -68,13 +92,57 @@ export class MahjongController {
   @Get('/statistics/player')
   @ApiOkResponse({ example: playerStatisticsExample })
   async getAllStatistics(
-    @Query('category') category?: MahjongCategory,
-    @Query('playername') playerName?: string,
+    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
   ) {
     const res = await this.mahjongService.getPlayerStatistics(
+      startDate,
+      endDate,
       category,
       playerName,
     );
+    return res;
+  }
+
+  @Get('/statistics/player/season')
+  @ApiOkResponse({ example: playerStatisticsExample })
+  async getSeasonStatistics(
+    @Query() { season, playerName, category }: MahjongOptionDto,
+  ) {
+    const { startDate, endDate } =
+      await this.mahjongService.getSeasonPeriod(season);
+    const res = await this.mahjongService.getPlayerStatistics(
+      startDate,
+      endDate,
+      category,
+      playerName,
+    );
+    return res;
+  }
+
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
+  @Post('season')
+  @ApiOkResponse()
+  @HttpCode(200)
+  async startSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
+    const res = await this.mahjongService.startSeason(seasonDto);
+    return res;
+  }
+
+  @UseGuards(JwtAccessTokenGuard, RoleGuard)
+  @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
+  @Patch('season')
+  @ApiOkResponse()
+  @HttpCode(200)
+  async manageSeason(@Body() seasonDto: MahjongSeasonOptionDto) {
+    const res = await this.mahjongService.modifySeasonEnd(seasonDto);
+    return res;
+  }
+
+  @Get('season')
+  @ApiOkResponse()
+  async getAllSeason() {
+    const res = await this.mahjongService.getAllSeason();
     return res;
   }
 }

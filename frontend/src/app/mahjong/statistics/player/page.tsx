@@ -1,13 +1,14 @@
 "use client";
-import { Box, CircularProgress, Typography } from "@mui/material";
-import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
-import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
-import { useEffect, useState, useTransition } from "react";
-import { fetchPlayerStatistics } from "./actions";
 import { text } from "@/lib/data";
-import CategoryRadio from "../../_components/category-radio";
+import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
+import { TabContext, TabList } from "@mui/lab";
+import { Box, Tab, Typography } from "@mui/material";
+import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
+import { useEffect, useState, useTransition } from "react";
 import { format } from "url";
+import CategoryRadio from "../../_components/category-radio";
+import { fetchPlayerStatistics } from "./actions";
 
 const columns: GridColDef[] = [
   // { field: 'playerName', headerName: '아이디' },       // 필요 없을듯?
@@ -18,7 +19,7 @@ const columns: GridColDef[] = [
     field: "averageRating",
     headerName: "평균 우마",
     type: "number",
-    width: 70,
+    width: 80,
   },
   { field: "averageScore", headerName: "평균 점수", type: "number", width: 80 },
   { field: "maxScore", headerName: "최고 점수", type: "number", width: 80 },
@@ -31,20 +32,59 @@ const columns: GridColDef[] = [
   { field: "tobi", headerName: "토비", type: "number", width: 75 },
 ];
 
+const now = new Date().toISOString();
+
 export default function MahjongPlayerStatisticsPage() {
   const router = useRouter();
   const [category, setCategory] = useState<MahjongCategory>("4마");
+  const [tabValue, setTabValue] = useState("1");
+  const [period, setPeriod] = useState({ start: now, end: now });
+  const [isSeason, setIsSeason] = useState(true);
   // TODO: 구분하기
   // const [subcategory, setSubcategory] = useState('반장전');
   const [stats, setStats] = useState<MahjongPlayerStatistics[]>([]);
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
+    const { start, end } = period;
     startTransition(
-      async () => await setStats(await fetchPlayerStatistics(category))
+      async () =>
+        await setStats(
+          await fetchPlayerStatistics(isSeason, category, start, end)
+        )
     );
-    // console.log(category);
-  }, [category]);
+  }, [category, period, isSeason]);
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
+    setTabValue(newValue);
+    const now = new Date();
+    if (newValue === "1") {
+      setIsSeason(true);
+    } else if (newValue === "2") {
+      // 전체 기간
+      setIsSeason(false);
+      setPeriod({
+        start: "1970-01-01T00:00:00Z",
+        end: now.toISOString(),
+      });
+    } else if (newValue === "3") {
+      // 최근 1년
+      setIsSeason(false);
+      setPeriod({
+        start: new Date(
+          new Date().setFullYear(now.getFullYear() - 1)
+        ).toISOString(),
+        end: now.toISOString(),
+      });
+    } else if (newValue === "4") {
+      // 최근 1달
+      setIsSeason(false);
+      setPeriod({
+        start: new Date(new Date().setMonth(now.getMonth() - 1)).toISOString(),
+        end: now.toISOString(),
+      });
+    }
+  };
 
   const handleRowClick: GridEventListener<"rowClick"> = (params) => {
     router.push(
@@ -86,26 +126,32 @@ export default function MahjongPlayerStatisticsPage() {
         {text.mahjong.statistics.player.subtitle}
       </Typography>
       <CategoryRadio setCategory={setCategory} />
-      {isPending ? (
-        <CircularProgress />
-      ) : (
-        <DataGrid
-          rows={stats}
-          columns={columns}
-          onRowClick={handleRowClick}
-          sx={{
-            width: "100%",
-
-            "& .MuiDataGrid-columnHeaderTitle": {
-              whiteSpace: "normal",
-              lineHeight: "normal",
-            },
-          }}
-          disableColumnMenu
-          disableColumnResize
-          columnHeaderHeight={90}
-        />
-      )}
+      <TabContext value={tabValue}>
+        <TabList onChange={handleTabChange}>
+          <Tab label="현재 시즌" value="1" />
+          <Tab label="전체 기간" value="2" />
+          <Tab label="최근 1년" value="3" />
+          <Tab label="최근 1달" value="4" />
+        </TabList>
+      </TabContext>
+      <DataGrid
+        rows={stats}
+        columns={columns}
+        loading={isPending}
+        onRowClick={handleRowClick}
+        getRowId={(row) => row.playerName}
+        sx={{
+          width: "100%",
+          "& .MuiDataGrid-columnHeaderTitle": {
+            whiteSpace: "normal",
+            lineHeight: "normal",
+          },
+        }}
+        autoHeight
+        disableColumnMenu
+        disableColumnResize
+        columnHeaderHeight={90}
+      />
     </Box>
   );
 }
