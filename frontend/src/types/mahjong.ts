@@ -104,7 +104,7 @@ export interface MahjongDetailedUserRecord {
   nickname: string;
   rank: number;
   ratingDiff: number;
-  seat: string;
+  seat: number;
   score: number;
 }
 
