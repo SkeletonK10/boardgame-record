@@ -15,7 +15,7 @@
     "migration:create": "npm run migration:create --prefix backend",
     "migration:run": "npm run migration:run --prefix backend",
     "migration:revert": "npm run migration:revert --prefix backend",
-    "update": "npm run install && npm run migration:run && npm run build && npm run restart"
+    "update": "npm run install && npm run migration:run && npm run build"
   },
   "author": "",
   "license": "ISC",
