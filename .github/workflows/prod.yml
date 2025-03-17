@@ -20,6 +20,6 @@ jobs:
           script: |
             cd /home/${{secrets.REMOTE_USER}}/boardgame-record
             git pull origin production
-            npm run kill
+            npm run stop
             npm run update
             npm run start
