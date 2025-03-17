@@ -11,6 +11,7 @@
     "start": "pm2 start ecosystem.config.js",
     "stop": "pm2 stop ecosystem.config.js",
     "restart": "pm2 restart ecosystem.config.js",
+    "kill": "pm2 kill ecosystem.config.js",
     "migration:generate": "npm run migration:generate --prefix backend",
     "migration:create": "npm run migration:create --prefix backend",
     "migration:run": "npm run migration:run --prefix backend",
