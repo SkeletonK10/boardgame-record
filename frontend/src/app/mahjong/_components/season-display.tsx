@@ -7,7 +7,10 @@ interface SeasonDisplayProps {
 }
 
 export default function SeasonDisplay({ season }: SeasonDisplayProps) {
-  return season ? (
+  const display = season !== undefined && season !== null && season.season >= 0;
+  console.log(season);
+  console.log(display);
+  return display ? (
     <Box sx={{ flexGrow: 1 }}>
       <Typography variant="h5" gutterBottom sx={{ textAlign: "center" }}>
         {`시즌 ${season.season}`}
@@ -25,9 +28,15 @@ export default function SeasonDisplay({ season }: SeasonDisplayProps) {
         <Grid size={{ xs: 12, sm: 6 }}>
           <Typography
             variant="body1"
-            sx={{ textAlign: { xs: "center", sm: "left" } }}
+            sx={{
+              textAlign: { xs: "center", sm: "left" },
+            }}
           >
-            {`~ ${new Date(season.endDate).toLocaleString()}`}
+            {`~ ${
+              season.endDate
+                ? new Date(season.endDate).toLocaleString()
+                : " 진행 중"
+            }`}
           </Typography>
         </Grid>
       </Grid>

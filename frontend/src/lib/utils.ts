@@ -23,6 +23,7 @@ export const getRunningSeasons = (seasons: MahjongSeasonDto[]) => {
   const now = new Date();
   return seasons.filter(
     (season) =>
-      new Date(season.startDate) < now && now < new Date(season.endDate)
+      new Date(season.startDate) < now &&
+      (season.endDate === null || now < new Date(season.endDate))
   );
 };
