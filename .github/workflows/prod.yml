@@ -1,0 +1,25 @@
+name: Deploy to production server
+
+on:
+  push:
+    branches: [production]
+
+jobs:
+  deploy:
+    name: deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: excuting remote ssh commands
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.REMOTE_HOST }}
+          username: ${{ secrets.REMOTE_USER }}
+          key: ${{ secrets.REMOTE_PRIVATE_KEY }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          script: |
+            cd /home/${{secrets.REMOTE_USER}}/boardgame-record
+            git pull origin production
+            npm run kill
+            npm run update
+            npm run start
