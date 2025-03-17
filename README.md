@@ -17,6 +17,10 @@ and
 - `$ npm run start`
   in production mode. (This require another preparation)
 
+## How to Update
+
+- `$ npm run update`
+
 ## commit convention
 
 `@-###: [brief explanation]`

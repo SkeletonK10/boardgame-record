@@ -8,7 +8,14 @@
     "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run start:dev --prefix backend\"",
     "install": "concurrently \"cd frontend && npm i\"  \"cd backend && npm i\"",
     "build": "npm run build --prefix frontend && npm run build --prefix backend",
-    "start": "pm2 start ecosystem.config.js"
+    "start": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop ecosystem.config.js",
+    "restart": "pm2 restart ecosystem.config.js",
+    "migration:generate": "npm run migration:generate --prefix backend",
+    "migration:create": "npm run migration:create --prefix backend",
+    "migration:run": "npm run migration:run --prefix backend",
+    "migration:revert": "npm run migration:revert --prefix backend",
+    "update": "npm run install && npm run migration:run && npm run build && npm run restart"
   },
   "author": "",
   "license": "ISC",
