@@ -86,7 +86,7 @@ export async function fetchPlayer(playerName: string) {
     const gameResponsePromise = categories.map(async (category) => {
       return await api.get(`/mahjong/game`, {
         params: {
-          playername: playerName,
+          playerName: playerName,
           category,
         },
       });
@@ -94,7 +94,7 @@ export async function fetchPlayer(playerName: string) {
     const statisticsResponsePromise = categories.map(async (category) => {
       return await api.get(`/mahjong/statistics/player`, {
         params: {
-          playername: playerName,
+          playerName: playerName,
           category,
         },
       });

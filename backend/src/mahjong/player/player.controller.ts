@@ -66,7 +66,7 @@ export class MahjongPlayerController {
     return res;
   }
 
-  @Get('/:playername/info')
+  @Get('/:playerName/info')
   @ApiOkResponse({
     example: {
       id: 223123,
@@ -76,7 +76,7 @@ export class MahjongPlayerController {
       updatedAt: '2024-09-14T22:11:48.964Z',
     },
   })
-  async findOne(@Param('playername') playerName: string) {
+  async findOne(@Param('playerName') playerName: string) {
     const res = await this.mahjongplayerService.findOneByPlayerName(playerName);
     if (!res) throw new ServiceException('MAHJONG_GAME_PLAYER_DOES_NOT_EXISTS');
     return res;
