@@ -7,11 +7,12 @@ import {
   IsDateString,
   IsIn,
   IsInt,
+  IsNumberString,
   IsOptional,
-  IsPositive,
   IsString,
   Min,
 } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class MahjongOptionDto {
   @ApiProperty()
@@ -35,15 +36,18 @@ export class MahjongOptionDto {
   to?: number;
 
   @ApiProperty()
+  @IsOptional()
   @IsDateString()
-  startDate: string = new Date(1970).toISOString();
-
-  @ApiProperty()
-  @IsDateString()
-  endDate: string = new Date().toISOString();
+  startDate?: string = new Date(1970).toISOString();
 
   @ApiProperty()
   @IsOptional()
+  @IsDateString()
+  endDate?: string = new Date().toISOString();
+
+  @ApiProperty()
+  @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(0)
   season?: number;
