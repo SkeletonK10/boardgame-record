@@ -1,14 +1,19 @@
 "use client";
 import { text } from "@/lib/data";
-import { MahjongCategory, MahjongPlayerStatistics } from "@/types/mahjong";
+import {
+  MahjongCategory,
+  MahjongPlayerStatistics,
+  MahjongSeasonDto,
+} from "@/types/mahjong";
 import { TabContext, TabList } from "@mui/lab";
-import { Box, Tab, Typography } from "@mui/material";
+import { Box, MenuItem, Select, Tab, Typography } from "@mui/material";
 import { DataGrid, GridColDef, GridEventListener } from "@mui/x-data-grid";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useTransition } from "react";
 import { format } from "url";
 import CategoryRadio from "../../_components/category-radio";
-import { fetchPlayerStatistics } from "./actions";
+import { fetchPlayerStatistics, fetchSeasons } from "./actions";
+import { getRunningSeasons } from "@/lib/utils";
 
 const columns: GridColDef[] = [
   // { field: 'playerName', headerName: '아이디' },       // 필요 없을듯?
@@ -37,9 +42,11 @@ const now = new Date().toISOString();
 export default function MahjongPlayerStatisticsPage() {
   const router = useRouter();
   const [category, setCategory] = useState<MahjongCategory>("4마");
-  const [tabValue, setTabValue] = useState("1");
+  const [tabValue, setTabValue] = useState("season");
   const [period, setPeriod] = useState({ start: now, end: now });
   const [isSeason, setIsSeason] = useState(true);
+  const [seasons, setSeasons] = useState<MahjongSeasonDto[]>([]);
+  const [selectedSeason, setSelectedSeason] = useState<number>(0);
   // TODO: 구분하기
   // const [subcategory, setSubcategory] = useState('반장전');
   const [stats, setStats] = useState<MahjongPlayerStatistics[]>([]);
@@ -47,27 +54,34 @@ export default function MahjongPlayerStatisticsPage() {
 
   useEffect(() => {
     const { start, end } = period;
-    startTransition(
-      async () =>
-        await setStats(
-          await fetchPlayerStatistics(isSeason, category, start, end)
-        )
-    );
-  }, [category, period, isSeason]);
+    startTransition(async () => {
+      await setStats(
+        await fetchPlayerStatistics({
+          isSeason,
+          selectedSeason,
+          category,
+          start,
+          end,
+        })
+      );
+      await setSeasons(await fetchSeasons());
+      setSelectedSeason(Math.max(...seasons.map((season) => season.season)));
+    });
+  }, [category, period, isSeason, selectedSeason]);
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: string) => {
     setTabValue(newValue);
     const now = new Date();
-    if (newValue === "1") {
+    if (newValue === "season") {
       setIsSeason(true);
-    } else if (newValue === "2") {
+    } else if (newValue === "all") {
       // 전체 기간
       setIsSeason(false);
       setPeriod({
         start: "1970-01-01T00:00:00Z",
         end: now.toISOString(),
       });
-    } else if (newValue === "3") {
+    } else if (newValue === "year") {
       // 최근 1년
       setIsSeason(false);
       setPeriod({
@@ -76,7 +90,7 @@ export default function MahjongPlayerStatisticsPage() {
         ).toISOString(),
         end: now.toISOString(),
       });
-    } else if (newValue === "4") {
+    } else if (newValue === "month") {
       // 최근 1달
       setIsSeason(false);
       setPeriod({
@@ -126,14 +140,39 @@ export default function MahjongPlayerStatisticsPage() {
         {text.mahjong.statistics.player.subtitle}
       </Typography>
       <CategoryRadio setCategory={setCategory} />
-      <TabContext value={tabValue}>
-        <TabList onChange={handleTabChange}>
-          <Tab label="현재 시즌" value="1" />
-          <Tab label="전체 기간" value="2" />
-          <Tab label="최근 1년" value="3" />
-          <Tab label="최근 1달" value="4" />
-        </TabList>
-      </TabContext>
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+          width: "100%",
+          justifyContent: "space-between",
+        }}
+      >
+        <Select
+          size="small"
+          sx={{
+            visibility: tabValue === "season" ? "visible" : "hidden",
+          }}
+          value={selectedSeason}
+          defaultValue={selectedSeason}
+          onChange={(e) => setSelectedSeason(e.target.value as number)}
+        >
+          {seasons.map((season) => (
+            <MenuItem key={season.season} value={season.season}>
+              시즌 {season.season}
+            </MenuItem>
+          ))}
+        </Select>
+        <TabContext value={tabValue}>
+          <TabList onChange={handleTabChange}>
+            <Tab label="시즌별" value="season" />
+            <Tab label="전체 기간" value="all" />
+            <Tab label="최근 1년" value="year" />
+            <Tab label="최근 1달" value="month" />
+          </TabList>
+        </TabContext>
+      </Box>
       <DataGrid
         rows={stats}
         columns={columns}
