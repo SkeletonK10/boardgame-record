@@ -47,11 +47,20 @@ export async function createRecord(prevState: any, formData: FormData) {
       note: formData.get("note"),
     };
     const response = await api.post(`/mahjong/game`, body);
-    revalidatePath(`/mahjong`);
-    return {
-      state: "success",
-      message: text.mahjong.addRecord.success,
-    };
+    if (response.status !== 201) {
+      return {
+        state: "error",
+        message:
+          (response as any).response.data.message ??
+          text.mahjong.addRecord.error,
+      };
+    } else {
+      revalidatePath(`/mahjong`);
+      return {
+        state: "success",
+        message: text.mahjong.addRecord.success,
+      };
+    }
   } catch (err) {
     return {
       state: "error",
