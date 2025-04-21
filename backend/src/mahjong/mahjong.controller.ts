@@ -119,6 +119,34 @@ export class MahjongController {
     return res;
   }
 
+  @Get('/statistics/rivals')
+  async getRivals(
+    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
+  ) {
+    const res = await this.mahjongService.getRivals(
+      startDate,
+      endDate,
+      category,
+      playerName,
+    );
+    return res;
+  }
+
+  @Get('/statistics/rivals/season')
+  async getSeasonRivals(
+    @Query() { season, playerName, category }: MahjongOptionDto,
+  ) {
+    const { startDate, endDate } =
+      await this.mahjongService.getSeasonPeriod(season);
+    const res = await this.mahjongService.getRivals(
+      startDate,
+      endDate,
+      category,
+      playerName,
+    );
+    return res;
+  }
+
   @UseGuards(JwtAccessTokenGuard, RoleGuard)
   @Roles(Role.MAHJONG_RECORD_ADMIN, Role.ADMIN)
   @Post('season')

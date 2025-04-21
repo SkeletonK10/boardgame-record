@@ -489,6 +489,47 @@ export class MahjongService {
     return queryResult;
   }
 
+  async getRivals(
+    startDate: string,
+    endDate: string,
+    category?: MahjongCategory,
+    playerName?: string,
+  ) {
+    const createdAtWhere = `game."createdAt" BETWEEN :startDate AND :endDate`;
+    const categoryWhere = category ? 'game."category"=:category' : 'TRUE';
+
+    const playerId = (
+      await this.mahjongPlayerService.findOneByPlayerName(playerName)
+    ).id;
+    const playerIdWhere = playerId ? 'r1.playerId=:playerId' : 'FALSE';
+
+    const queryResult = await this.dataSource
+      .createQueryBuilder(MahjongPlayerRecord, 'r1')
+      .innerJoin(
+        MahjongPlayerRecord,
+        'r2',
+        'r1."gameId" = r2."gameId" AND r1.seat != r2.seat',
+      )
+      .leftJoin('r2.player', 'player2')
+      .leftJoin('r2.game', 'game')
+      .select([
+        'player2."playerName" AS "playerName"',
+        'SUM(CASE WHEN r1.rank < r2.rank THEN 1 ELSE 0 END) AS "win"',
+        'SUM(CASE WHEN r1.rank > r2.rank THEN 1 ELSE 0 END) AS "lose"',
+      ])
+      .where(categoryWhere, { category })
+      .andWhere(playerIdWhere, { playerId })
+      .andWhere(createdAtWhere, {
+        startDate,
+        endDate,
+      })
+      .groupBy('player2."playerName"')
+      .orderBy('COUNT(*)', 'DESC')
+      .getRawMany();
+    console.log(queryResult);
+    return queryResult;
+  }
+
   async getSeasonPeriod(season?: number) {
     const seasonWhere = season
       ? `season=:season`
