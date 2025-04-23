@@ -136,3 +136,18 @@ export interface MahjongSeasonDto {
   startDate: string;
   endDate: string;
 }
+
+// Rival Page /////////////////////////////////////////////////////////////////
+
+export interface MahjongRival {
+  playerName: string;
+  nickname: string;
+  win: number;
+  lose: number;
+}
+
+export class MahjongRivalPageDto {
+  playerName!: string;
+  nickname!: string;
+  rivals!: MahjongRival[];
+}
