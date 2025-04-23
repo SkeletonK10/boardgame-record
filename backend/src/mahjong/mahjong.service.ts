@@ -514,6 +514,7 @@ export class MahjongService {
       .leftJoin('r2.game', 'game')
       .select([
         'player2."playerName" AS "playerName"',
+        'player2.nickname AS nickname',
         'SUM(CASE WHEN r1.rank < r2.rank THEN 1 ELSE 0 END) AS "win"',
         'SUM(CASE WHEN r1.rank > r2.rank THEN 1 ELSE 0 END) AS "lose"',
       ])
@@ -524,6 +525,7 @@ export class MahjongService {
         endDate,
       })
       .groupBy('player2."playerName"')
+      .addGroupBy('player2.nickname')
       .orderBy('COUNT(*)', 'DESC')
       .getRawMany();
     console.log(queryResult);
