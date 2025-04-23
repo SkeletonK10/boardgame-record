@@ -21,12 +21,10 @@ export async function fetchPlayerStatistics({
   try {
     console.log(isSeason, selectedSeason);
     const response = isSeason
-      ? await api.get(`/mahjong/statistics/player/season`, {
+      ? await api.get(`/mahjong/statistics/player`, {
           params: {
             category,
             season: selectedSeason,
-            startDate: start,
-            endDate: end,
           },
         })
       : await api.get(`/mahjong/statistics/player`, {

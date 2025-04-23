@@ -92,24 +92,21 @@ export class MahjongController {
   @Get('/statistics/player')
   @ApiOkResponse({ example: playerStatisticsExample })
   async getAllStatistics(
-    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
+    @Query()
+    { startDate, endDate, season, playerName, category }: MahjongOptionDto,
   ) {
-    const res = await this.mahjongService.getPlayerStatistics(
-      startDate,
-      endDate,
-      category,
-      playerName,
-    );
-    return res;
-  }
-
-  @Get('/statistics/player/season')
-  @ApiOkResponse({ example: playerStatisticsExample })
-  async getSeasonStatistics(
-    @Query() { season, playerName, category }: MahjongOptionDto,
-  ) {
-    const { startDate, endDate } =
-      await this.mahjongService.getSeasonPeriod(season);
+    category = category ?? '4마';
+    if (season) {
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod(season);
+      startDate = start;
+      endDate = end;
+    } else if (!startDate && !endDate) {
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod();
+      startDate = start;
+      endDate = end;
+    }
     const res = await this.mahjongService.getPlayerStatistics(
       startDate,
       endDate,
@@ -121,23 +118,21 @@ export class MahjongController {
 
   @Get('/statistics/player/rivals')
   async getRivals(
-    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
+    @Query()
+    { startDate, endDate, season, playerName, category }: MahjongOptionDto,
   ) {
-    const res = await this.mahjongService.getRivals(
-      startDate,
-      endDate,
-      category,
-      playerName,
-    );
-    return res;
-  }
-
-  @Get('/statistics/player/rivals/season')
-  async getSeasonRivals(
-    @Query() { season, playerName, category }: MahjongOptionDto,
-  ) {
-    const { startDate, endDate } =
-      await this.mahjongService.getSeasonPeriod(season);
+    category = category ?? '4마';
+    if (season) {
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod(season);
+      startDate = start;
+      endDate = end;
+    } else if (!startDate && !endDate) {
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod();
+      startDate = start;
+      endDate = end;
+    }
     const res = await this.mahjongService.getRivals(
       startDate,
       endDate,

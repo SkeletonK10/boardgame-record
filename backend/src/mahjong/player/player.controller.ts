@@ -85,22 +85,20 @@ export class MahjongPlayerController {
   @Get('ranking')
   @ApiOkResponse({ example: playerRankingExmample })
   async getRanking(
-    @Query() { startDate, endDate, category }: MahjongOptionDto,
+    @Query() { startDate, endDate, season, category }: MahjongOptionDto,
   ) {
-    const res = await this.mahjongplayerService.getRanking(
-      startDate,
-      endDate,
-      category,
-    );
-    return res;
-  }
-
-  @Get('ranking/season')
-  @ApiOkResponse({ example: playerRankingExmample })
-  async getSeasonRanking(@Query() { season, category }: MahjongOptionDto) {
-    const { startDate, endDate } =
-      await this.mahjongService.getSeasonPeriod(season);
     category = category ?? '4마';
+    if (season) {
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod(season);
+      startDate = start;
+      endDate = end;
+    } else if (!startDate && !endDate) {
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod();
+      startDate = start;
+      endDate = end;
+    }
     const res = await this.mahjongplayerService.getRanking(
       startDate,
       endDate,
