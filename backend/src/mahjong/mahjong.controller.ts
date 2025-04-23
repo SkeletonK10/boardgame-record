@@ -119,7 +119,7 @@ export class MahjongController {
     return res;
   }
 
-  @Get('/statistics/rivals')
+  @Get('/statistics/player/rivals')
   async getRivals(
     @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
   ) {
@@ -132,7 +132,7 @@ export class MahjongController {
     return res;
   }
 
-  @Get('/statistics/rivals/season')
+  @Get('/statistics/player/rivals/season')
   async getSeasonRivals(
     @Query() { season, playerName, category }: MahjongOptionDto,
   ) {
