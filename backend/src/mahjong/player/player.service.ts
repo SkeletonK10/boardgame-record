@@ -67,6 +67,9 @@ export class MahjongPlayerService {
         playerName: true,
         nickname: true,
       },
+      order: {
+        gameCount: 'DESC',
+      },
     });
     return res;
   }

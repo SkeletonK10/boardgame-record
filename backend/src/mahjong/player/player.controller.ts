@@ -54,10 +54,6 @@ export class MahjongPlayerController {
       {
         playerName: '홍길동A',
         nickname: '홍길동',
-        rating: [
-          { category: '4마', rating: 23.5 },
-          { category: '3마', rating: -222.1 },
-        ],
       },
     ],
   })
