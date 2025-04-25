@@ -58,16 +58,17 @@ const RivalsPage = ({ params }: Props) => {
     });
     setIsLoading(false);
   }, []);
+
   const data = {
     labels: rivals.map((rival) => rival.nickname),
     datasets: [
       {
-        label: "win",
+        label: "승리",
         data: rivals.map((rival) => rival.win),
         backgroundColor: "rgba(75, 192, 192, 0.6)",
       },
       {
-        label: "lose",
+        label: "패배",
         data: rivals.map((rival) => rival.lose),
         backgroundColor: "rgba(255, 99, 132, 0.6)",
       },
@@ -89,7 +90,7 @@ const RivalsPage = ({ params }: Props) => {
       },
       title: {
         display: true,
-        text: "Rival Win/Loss Statistics",
+        text: `승패 통계 (많이 플레이한 순)`,
         font: {
           size: 16, // 모바일 환경에 적합한 제목 크기
         },
@@ -134,7 +135,7 @@ const RivalsPage = ({ params }: Props) => {
         <CircularProgress />
       ) : (
         <>
-          <Typography variant="h6" gutterBottom>
+          <Typography variant="h5" gutterBottom>
             {nickname}의 라이벌
           </Typography>
           <Bar data={data} options={options} />
