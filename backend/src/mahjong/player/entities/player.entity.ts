@@ -30,6 +30,9 @@ export class MahjongPlayer {
   @OneToMany(() => MahjongPlayerRecord, (record) => record.player)
   games: MahjongPlayerRecord[];
 
+  @Column()
+  gameCount: number;
+
   @OneToMany(() => MahjongYakumanRecord, (yakuman) => yakuman.winner)
   yakumans: MahjongYakumanRecord[];
 
