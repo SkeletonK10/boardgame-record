@@ -1,5 +1,5 @@
 "use client";
-import { Box, Grid2 as Grid, List, Typography } from "@mui/material";
+import { Box, Grid2 as Grid, Link, List, Typography } from "@mui/material";
 import { text } from "@/lib/data";
 import { LineChart } from "@mui/x-charts";
 import React, { useEffect, useState, useTransition } from "react";
@@ -13,6 +13,10 @@ import CategoryRadio from "../../_components/category-radio";
 import RecordEntry from "../../_components/record-entry";
 import { useSearchParams } from "next/navigation";
 import { MahjongCategoryValues } from "@/lib/constants/mahjong";
+
+const Grid632 = ({ children }: { children: React.ReactNode }) => (
+  <Grid size={{ xs: 6, sm: 3, md: 2 }}>{children}</Grid>
+);
 
 type Props = {
   params: {
@@ -142,7 +146,7 @@ export default function MahjongPlayerPage({ params }: Props) {
         {normalLabel.map(([label, key]) => {
           return (
             <React.Fragment key={key}>
-              <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+              <Grid632>
                 <Typography
                   noWrap
                   component="div"
@@ -153,10 +157,10 @@ export default function MahjongPlayerPage({ params }: Props) {
                 >
                   {label}
                 </Typography>
-              </Grid>
-              <Grid size={{ xs: 6, sm: 3, md: 2 }}>
-                <Typography sx={{ fontSize: "0.9rem" }}>{stat[key]}</Typography>
-              </Grid>
+              </Grid632>
+              <Grid632>
+                <Typography variant="body2">{stat[key]}</Typography>
+              </Grid632>
             </React.Fragment>
           );
         })}
@@ -164,7 +168,7 @@ export default function MahjongPlayerPage({ params }: Props) {
           const percentage = ((stat[key] / stat["count"]) * 100).toFixed(2);
           return (
             <React.Fragment key={key}>
-              <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+              <Grid632>
                 <Typography
                   noWrap
                   component="div"
@@ -175,16 +179,30 @@ export default function MahjongPlayerPage({ params }: Props) {
                 >
                   {label}
                 </Typography>
-              </Grid>
-              <Grid size={{ xs: 6, sm: 3, md: 2 }}>
-                <Typography sx={{ fontSize: "0.9rem" }}>
+              </Grid632>
+              <Grid632>
+                <Typography variant="body2">
                   {stat[key]}
                   {`(${percentage}%)`}
                 </Typography>
-              </Grid>
+              </Grid632>
             </React.Fragment>
           );
         })}
+        <Grid632>
+          <Link
+            href={`/mahjong/player/${playerName}/rivals`}
+            variant="caption"
+            noWrap
+            sx={{
+              display: { sm: "block" },
+              userSelect: "none",
+              textDecoration: "none",
+            }}
+          >
+            라이벌 통계 확인
+          </Link>
+        </Grid632>
       </Grid>
       <List sx={{ width: "100%" }}>
         {player.records[category].map((value) => (
