@@ -22,7 +22,9 @@ export class AddRatingDiff1739856636975 implements MigrationInterface {
             WHEN rank = 3 THEN -50 END) END) 
       / (CASE WHEN
         (SELECT subcategory FROM mahjong_game_record WHERE id="gameId") = '반장전'
-        THEN 1 ELSE 2 END);`);
+        THEN 1 ELSE 2 END)
+      WHERE "ratingDiff" IS NULL
+      AND gameId <= 371;`);
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
