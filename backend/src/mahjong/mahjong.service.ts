@@ -198,13 +198,14 @@ export class MahjongService {
   calculateRating(scores: number[], subcategory: MahjongSubcategory) {
     const multiplier = subcategory === '반장전' ? 1 : 0.5;
     const playerCount = scores.length;
-    const returnScore = playerCount === 4 ? 25000 : 35000;
+    const returnScore = playerCount === 4 ? 30000 : 40000;
     const sortedScores = scores
       .map((v, i) => [(v - returnScore) / 1000, i])
       .sort((v1, v2) => v2[0] - v1[0]);
-    const bonusRating = playerCount === 4 ? [15, 5, -5, -15] : [15, 0, -15];
+    const uma = playerCount === 4 ? [15, 5, -5, -15] : [15, 0, -15];
+    const oka = playerCount === 4 ? [20, 0, 0, 0] : [15, 0, 0];
     const updatedRating = sortedScores.map((v, i) => [
-      v[0] + bonusRating[i],
+      v[0] + uma[i] + oka[i],
       v[1],
     ]);
     const sortedRating = updatedRating
