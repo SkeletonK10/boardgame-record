@@ -43,37 +43,39 @@ const testRanking = [
 
 const getProps: () => Promise<MahjongMainPageDto> = async () => {
   try {
-    const recordResponsePromise = api.get(`/mahjong/game`);
+    const seasons = (await api.get(`/mahjong/season`))
+      .data as MahjongSeasonDto[];
+    const runningSeason = getRunningSeasons(seasons)[0];
+    const recordResponsePromise = api.get(`/mahjong/game`, {
+      params: {
+        season: runningSeason.season,
+      },
+    });
     const p3RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
       params: {
         category: "3마",
+        season: runningSeason.season,
       },
     });
     const p4RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
       params: {
         category: "4마",
+        season: runningSeason.season,
       },
     });
-    const seasonResponsePromise = api.get(`/mahjong/season`);
-    const [
-      recordResponse,
-      p3RankingResponse,
-      p4RankingResponse,
-      seasonResponse,
-    ] = await Promise.all([
-      recordResponsePromise,
-      p3RankingResponsePromise,
-      p4RankingResponsePromise,
-      seasonResponsePromise,
-    ]);
+
+    const [recordResponse, p3RankingResponse, p4RankingResponse] =
+      await Promise.all([
+        recordResponsePromise,
+        p3RankingResponsePromise,
+        p4RankingResponsePromise,
+      ]);
 
     const record = recordResponse.data as MahjongGameRecord[];
     const p3Ranking: MahjongRankingRecord[] =
       p3RankingResponse.data as MahjongRankingRecord[];
     const p4Ranking: MahjongRankingRecord[] =
       p4RankingResponse.data as MahjongRankingRecord[];
-    const season = seasonResponse.data as MahjongSeasonDto[];
-    const runningSeason = getRunningSeasons(season)[0];
     // console.log(ranking);
     return {
       record: record,

@@ -40,8 +40,22 @@ export class MahjongController {
   @Get('game')
   @ApiOkResponse({ example: getGameExample })
   async findAll(
-    @Query() { startDate, endDate, playerName, category }: MahjongOptionDto,
+    @Query()
+    { season, startDate, endDate, playerName, category }: MahjongOptionDto,
   ) {
+    category = category ?? '4마';
+    if (season) {
+      console.log('season', season);
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod(season);
+      startDate = start;
+      endDate = end;
+    } else if (!startDate && !endDate) {
+      const { startDate: start, endDate: end } =
+        await this.mahjongService.getSeasonPeriod();
+      startDate = start;
+      endDate = end;
+    }
     const res = await this.mahjongService.findAll(
       startDate,
       endDate,
