@@ -50,11 +50,6 @@ export class MahjongController {
         await this.mahjongService.getSeasonPeriod(season);
       startDate = start;
       endDate = end;
-    } else if (!startDate && !endDate) {
-      const { startDate: start, endDate: end } =
-        await this.mahjongService.getSeasonPeriod();
-      startDate = start;
-      endDate = end;
     }
     const res = await this.mahjongService.findAll(
       startDate,
@@ -115,11 +110,6 @@ export class MahjongController {
         await this.mahjongService.getSeasonPeriod(season);
       startDate = start;
       endDate = end;
-    } else if (!startDate && !endDate) {
-      const { startDate: start, endDate: end } =
-        await this.mahjongService.getSeasonPeriod();
-      startDate = start;
-      endDate = end;
     }
     const res = await this.mahjongService.getPlayerStatistics(
       startDate,
@@ -139,11 +129,6 @@ export class MahjongController {
     if (season) {
       const { startDate: start, endDate: end } =
         await this.mahjongService.getSeasonPeriod(season);
-      startDate = start;
-      endDate = end;
-    } else if (!startDate && !endDate) {
-      const { startDate: start, endDate: end } =
-        await this.mahjongService.getSeasonPeriod();
       startDate = start;
       endDate = end;
     }

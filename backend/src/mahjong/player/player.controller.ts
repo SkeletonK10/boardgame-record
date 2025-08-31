@@ -89,11 +89,6 @@ export class MahjongPlayerController {
         await this.mahjongService.getSeasonPeriod(season);
       startDate = start;
       endDate = end;
-    } else if (!startDate && !endDate) {
-      const { startDate: start, endDate: end } =
-        await this.mahjongService.getSeasonPeriod();
-      startDate = start;
-      endDate = end;
     }
     const res = await this.mahjongplayerService.getRanking(
       startDate,
