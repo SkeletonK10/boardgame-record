@@ -47,22 +47,24 @@ const getProps: () => Promise<MahjongMainPageDto> = async () => {
       .data as MahjongSeasonDto[];
     const runningSeasons = getRunningSeasons(seasons);
     const runningSeason =
-      runningSeasons.length > 0 ? runningSeasons[0].season : undefined;
+      runningSeasons.length > 0
+        ? runningSeasons[0]
+        : { season: undefined, startDate: "", endDate: "" };
     const recordResponsePromise = api.get(`/mahjong/game`, {
       params: {
-        season: runningSeason,
+        season: runningSeason.season,
       },
     });
     const p3RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
       params: {
         category: "3마",
-        season: runningSeason,
+        season: runningSeason.season,
       },
     });
     const p4RankingResponsePromise = api.get(`/mahjong/player/ranking`, {
       params: {
         category: "4마",
-        season: runningSeason,
+        season: runningSeason.season,
       },
     });
 

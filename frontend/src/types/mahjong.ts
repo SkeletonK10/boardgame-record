@@ -132,7 +132,7 @@ export interface MahjongDetailedGameDto {
 // Season Management Page /////////////////////////////////////////////////////
 
 export interface MahjongSeasonDto {
-  season: number;
+  season?: number;
   startDate: string;
   endDate: string;
 }
