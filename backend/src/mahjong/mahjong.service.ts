@@ -598,7 +598,7 @@ export class MahjongService {
       .getRepository(MahjongSeason)
       .find({
         select: ['season', 'startDate', 'endDate'],
-        order: { season: 'ASC' },
+        order: { season: 'DESC' },
       });
     return queryResult;
   }
