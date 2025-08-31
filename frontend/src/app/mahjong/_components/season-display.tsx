@@ -7,7 +7,11 @@ interface SeasonDisplayProps {
 }
 
 export default function SeasonDisplay({ season }: SeasonDisplayProps) {
-  const display = season !== undefined && season !== null && season.season >= 0;
+  const display =
+    season !== undefined &&
+    season !== null &&
+    season.season != undefined &&
+    season.season >= 0;
   console.log(season);
   console.log(display);
   return display ? (
