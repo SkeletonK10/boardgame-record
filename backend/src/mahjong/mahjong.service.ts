@@ -556,7 +556,10 @@ export class MahjongService {
     const { season: lastSeason } = await this.getSeasonPeriod();
     const newSeason = lastSeason + 1;
 
-    // endDate를 23:59:59에 끝나도록. GMT+9 기준
+    // startDate와 endDate를 GMT+9 기준으로 맞춤
+    endDate = new Date(
+      new Date(endDate).getTime() - 1000 * 60 * 60 * 9,
+    ).toISOString();
     endDate = new Date(
       new Date(endDate).getTime() + 1000 * 60 * 60 * 15 - 1,
     ).toISOString();
