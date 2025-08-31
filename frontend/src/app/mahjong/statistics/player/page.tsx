@@ -65,7 +65,7 @@ export default function MahjongPlayerStatisticsPage() {
         })
       );
       await setSeasons(await fetchSeasons());
-      setSelectedSeason(Math.max(...seasons.map((season) => season.season)));
+      //setSelectedSeason(Math.max(...seasons.map((season) => season.season)));
     });
   }, [category, period, isSeason, selectedSeason]);
 
