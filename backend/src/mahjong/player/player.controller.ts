@@ -83,7 +83,6 @@ export class MahjongPlayerController {
   async getRanking(
     @Query() { startDate, endDate, season, category }: MahjongOptionDto,
   ) {
-    category = category ?? '4마';
     if (season) {
       const { startDate: start, endDate: end } =
         await this.mahjongService.getSeasonPeriod(season);

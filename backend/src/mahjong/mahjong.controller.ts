@@ -43,7 +43,6 @@ export class MahjongController {
     @Query()
     { season, startDate, endDate, playerName, category }: MahjongOptionDto,
   ) {
-    category = category ?? '4마';
     if (season) {
       console.log('season', season);
       const { startDate: start, endDate: end } =
@@ -104,7 +103,6 @@ export class MahjongController {
     @Query()
     { startDate, endDate, season, playerName, category }: MahjongOptionDto,
   ) {
-    category = category ?? '4마';
     if (season) {
       const { startDate: start, endDate: end } =
         await this.mahjongService.getSeasonPeriod(season);
@@ -125,7 +123,6 @@ export class MahjongController {
     @Query()
     { startDate, endDate, season, playerName, category }: MahjongOptionDto,
   ) {
-    category = category ?? '4마';
     if (season) {
       const { startDate: start, endDate: end } =
         await this.mahjongService.getSeasonPeriod(season);
