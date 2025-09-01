@@ -53,6 +53,19 @@ export default function MahjongPlayerStatisticsPage() {
   const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
+    startTransition(async () => {
+      const seasonResponse = await fetchSeasons();
+      setSeasons(seasonResponse);
+      if (seasonResponse.length > 0) {
+        const runningSeasons = getRunningSeasons(seasonResponse);
+        setSelectedSeason(
+          runningSeasons.length > 0 ? runningSeasons[0].season ?? 0 : 0
+        );
+      }
+    });
+  }, []);
+
+  useEffect(() => {
     const { start, end } = period;
     startTransition(async () => {
       await setStats(
@@ -64,8 +77,6 @@ export default function MahjongPlayerStatisticsPage() {
           end,
         })
       );
-      await setSeasons(await fetchSeasons());
-      //setSelectedSeason(Math.max(...seasons.map((season) => season.season)));
     });
   }, [category, period, isSeason, selectedSeason]);
 
