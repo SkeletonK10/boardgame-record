@@ -202,7 +202,7 @@ export class MahjongService {
     const sortedScores = scores
       .map((v, i) => [(v - returnScore) / 1000, i])
       .sort((v1, v2) => v2[0] - v1[0]);
-    const uma = playerCount === 4 ? [15, 5, -5, -15] : [15, 0, -15];
+    const uma = playerCount === 4 ? [30, 10, -10, -30] : [30, 0, -30];
     const oka = playerCount === 4 ? [20, 0, 0, 0] : [15, 0, 0];
     const updatedRating = sortedScores.map((v, i) => [
       v[0] + uma[i] + oka[i],
