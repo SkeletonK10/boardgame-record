@@ -10,9 +10,9 @@ import {
   MahjongPlayerPageDto,
 } from "@/types/mahjong";
 import CategoryRadio from "../../_components/category-radio";
-import RecordEntry from "../../_components/record-entry";
 import { useSearchParams } from "next/navigation";
 import { MahjongCategoryValues } from "@/lib/constants/mahjong";
+import MahjongGameList from "../../_components/game-list";
 
 const Grid632 = ({ children }: { children: React.ReactNode }) => (
   <Grid size={{ xs: 6, sm: 3, md: 2 }}>{children}</Grid>
@@ -204,11 +204,7 @@ export default function MahjongPlayerPage({ params }: Props) {
           </Link>
         </Grid632>
       </Grid>
-      <List sx={{ width: "100%" }}>
-        {player.records[category].map((value) => (
-          <RecordEntry key={value.id} {...value} />
-        ))}
-      </List>
+      <MahjongGameList record={player.records[category]} />
     </Box>
   );
 }
