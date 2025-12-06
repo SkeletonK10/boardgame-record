@@ -16,13 +16,15 @@ export default function MahjongGameList({ record }: MahjongGameListProps) {
     setSortOrder(sortOrder === "newest" ? "oldest" : "newest");
   };
 
-  const sortedRecord = record.slice(0, 10).sort((a, b) => {
-    if (sortOrder === "newest") {
-      return b.createdAt.localeCompare(a.createdAt);
-    } else {
-      return a.createdAt.localeCompare(b.createdAt);
-    }
-  });
+  const sortedRecord = record
+    .sort((a, b) => {
+      if (sortOrder === "newest") {
+        return b.createdAt.localeCompare(a.createdAt);
+      } else {
+        return a.createdAt.localeCompare(b.createdAt);
+      }
+    })
+    .slice(0, 10);
 
   return (
     <Box>
